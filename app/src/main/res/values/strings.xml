@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">groupsaa</string>
+
+<!--    Navigation-->
+    <string name="navigation_item_home">Дім</string>
+    <string name="navigation_item_meeting">групи</string>
+    <string name="navigation_item_news">новини</string>
+    <string name="navigation_item_read">чтиво</string>
+
+
+</resources>
