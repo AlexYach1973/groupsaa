@@ -21,7 +21,7 @@ class NavigationState(
     }
 
     fun navigateToGroup(group: Group) {
-        navHotController.navigate(Screen.Group.route)
+        navHotController.navigate(Screen.Group.getRouteWithArgs(group = group))
     }
 
 }

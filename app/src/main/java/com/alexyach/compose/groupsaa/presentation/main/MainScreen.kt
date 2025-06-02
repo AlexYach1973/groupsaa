@@ -13,6 +13,9 @@ import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationS
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.presentation.group.GroupScreen
+import com.alexyach.compose.groupsaa.presentation.grouplist.GroupListScreen
 import com.alexyach.compose.groupsaa.presentation.navigation.AppNavGraph
 
 @Composable
@@ -70,9 +73,26 @@ fun MainScreen() {
 
         AppNavGraph(
             navHostController = navigationState.navHotController,
+
             homeScreenContent = { Text(text = "HOME") },
-            groupListScreenContent = { Text(text = "GroupList") },
-            groupScreenContent = { Text(text = "group") },
+
+            groupListScreenContent = {
+                GroupListScreen(
+                    paddingValues = innerPadding,
+                    onGroupClickListener = {group ->
+                        navigationState.navigateToGroup(group = group)
+                    }
+                )
+            },
+
+            groupScreenContent = {group ->
+                GroupScreen(
+                    group = group,
+                    onBackPress = {
+                        navigationState.navHotController.popBackStack()
+                    }
+                )
+            },
             newsScreenContent = { Text(text = "News") },
             readScreenContent = { Text(text = "Read") },
         )
