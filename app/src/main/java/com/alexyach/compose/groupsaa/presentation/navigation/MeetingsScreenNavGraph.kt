@@ -2,9 +2,12 @@ package com.alexyach.compose.groupsaa.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.google.gson.Gson
 
 fun NavGraphBuilder.meetingsScreenNavGraph(
     groupListScreenContent: @Composable () -> Unit,
@@ -17,10 +20,17 @@ fun NavGraphBuilder.meetingsScreenNavGraph(
         composable(Screen.GroupList.route) {
             groupListScreenContent()
         }
-        composable(Screen.Group.route) {// {group_name}
-            val groupName= it.arguments?.getString(Screen.KEY_GROUP_NAME) ?: "no"
-
-            groupScreenContent(Group(name = groupName,"","","","",""))
+        composable(
+            route = Screen.Group.route,
+            arguments = listOf(
+                navArgument(Screen.KEY_GROUP) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val groupJson= it.arguments?.getString(Screen.KEY_GROUP) ?: "no Object"
+            val group = Gson().fromJson(groupJson, Group::class.java)
+            groupScreenContent(group)
         }
 
     }

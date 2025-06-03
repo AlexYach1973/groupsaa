@@ -1,5 +1,8 @@
 package com.alexyach.compose.groupsaa.presentation.navigation
 
+import android.net.Uri
+import com.google.gson.Gson
+
 sealed class Screen(
     val route: String
 ) {
@@ -11,7 +14,8 @@ sealed class Screen(
         private const val ROUTE_FOR_ARGS = "group"
 
         fun getRouteWithArgs(group: com.alexyach.compose.groupsaa.domain.entity.Group) : String {
-            return "$ROUTE_FOR_ARGS/${group.name}"
+            val groupJson = Gson().toJson(group)
+            return "$ROUTE_FOR_ARGS/${groupJson.encode()}"
         }
     }
 
@@ -20,17 +24,21 @@ sealed class Screen(
 
     companion object {
 
-        const val KEY_GROUP_NAME = "group_name"
+        const val KEY_GROUP = "key_group"
 
         const val ROUTE_HOME = "home"
 
         const val ROUTE_MEETINGS = "meetings" // contains "GroupList" and "group"
         const val ROUTE_GROUP_LIST = "groupList"
-        const val ROUTE_GROUP = "group/{$KEY_GROUP_NAME}"
+        const val ROUTE_GROUP = "group/{$KEY_GROUP}"
 
         const val ROUTE_NEWS = "news"
         const val ROUTE_READ = "read"
 
     }
 
+}
+
+fun String.encode(): String {
+    return Uri.encode(this)
 }

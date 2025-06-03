@@ -12,6 +12,7 @@ composeBom = "2025.05.01"
 composeNav = "2.9.0"
 livedata = "1.8.2"
 viewModelComp = "2.9.0"
+gson = "2.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-navigation = {group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNav"}
 androidx-compose-livedata = {group = "androidx.compose.runtime", name ="runtime-livedata", version.ref = "livedata"}
 androidx-compose-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModelComp"}
+androidx-gson = {group = "com.google.code.gson", name = "gson", version.ref = "gson"}
 
 
 [plugins]

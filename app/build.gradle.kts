@@ -2,7 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+//    alias(libs.plugins.kotlin.parcelize)
+    id("kotlin-parcelize")
 }
+
 
 android {
     namespace = "com.alexyach.compose.groupsaa"
@@ -53,6 +56,7 @@ dependencies {
     implementation(libs.androidx.navigation)
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.compose.viewmodel)
+    implementation(libs.androidx.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
