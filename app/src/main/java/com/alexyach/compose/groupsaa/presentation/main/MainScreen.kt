@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.alexyach.compose.groupsaa.domain.entity.Group
@@ -51,7 +52,7 @@ fun MainScreen() {
                             }
                         },
                         icon = {
-                            Icon(item.icon, contentDescription = null)
+                            Icon(painterResource(item.icon), contentDescription = null)
                         },
                         label = {
                             Text(text = stringResource(id = item.titleResId))
