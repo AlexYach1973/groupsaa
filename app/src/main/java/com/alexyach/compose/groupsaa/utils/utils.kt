@@ -6,7 +6,7 @@ import com.alexyach.compose.groupsaa.presentation.navigation.Screen
 fun getListGroup(): List<Group> {
     return listOf(
         Group(
-            name = "Оболонь",
+            name = "\"Оболонь\"",
             addresses = " м.\"Героїв Дніпра\", вул. Прирічна, 21а  ",
             schedule = "щодня о 19:00",
             telephone = "097-476-3601",
@@ -17,7 +17,7 @@ fun getListGroup(): List<Group> {
             addressForMap = "ул.+Приречная,+21А,+Киев"
         ),
         Group(
-            name = "Фенікс",
+            name = "\"Фенікс\"",
             addresses = "м.\"Кловська\", Печерський узвіз, 19",
             schedule = "щодня о 19:00",
             telephone = "098-300-0101",
@@ -28,7 +28,7 @@ fun getListGroup(): List<Group> {
             addressForMap = "Печерский+спуск,+19,+Киев"
         ),
         Group(
-            name = "Дом на Горі",
+            name = "\"Дом на Горі\"",
             addresses = "м.\"Деміївська\", вул. Карпатської Січі, 2а",
             schedule = "щодня о 19:00",
             telephone = "095-774-3089",
@@ -39,7 +39,7 @@ fun getListGroup(): List<Group> {
             addressForMap = "ул.+Гвардейская,+2А,+Киев"
         ),
         Group(
-            name = "Друг",
+            name = "\"Друг\"",
             addresses = "м.\"Шулявська\", вул. Довженка, 2 Соцслужба",
             schedule = "вівторок о 19:00",
             telephone = "044-384-2209",
@@ -51,7 +51,7 @@ fun getListGroup(): List<Group> {
             addressForMap = "ул.+Александра+Довженко,+2,+Киев"
         ),
         Group(
-            name = "Десна",
+            name = "\"Десна\"",
             addresses = "ж/м \"Троєщина\", вул. М.Закревського, 29а",
             schedule = "щодня о 19:00",
             telephone = "068-372-6878",

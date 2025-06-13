@@ -2,14 +2,22 @@ package com.alexyach.compose.groupsaa.presentation.group
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +25,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +50,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -62,7 +73,7 @@ fun GroupScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = group.name)
+                    Text(text = "до списку груп")
                 },
                 navigationIcon = {
                     IconButton(onClick = { onBackPress() }) {
@@ -78,24 +89,40 @@ fun GroupScreen(
         ) { paddingValue ->
         val pv = paddingValue
         val scrollState = rememberScrollState()
+        val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+
         Column(
             modifier = Modifier
+                .background(MaterialTheme.colorScheme.primaryContainer)
+//                .background(MaterialTheme.colorScheme.background)
                 .padding(
 //                    paddingValues = paddingValue)
-                    top = 88.dp,
+                    top = 124.dp,
                     end = 8.dp,
                     start = 8.dp,
                     bottom = 132.dp
                 )
-                .padding(start = 8.dp, end = 8.dp)
+                .fillMaxSize()
                 .verticalScroll(scrollState),
 
             ) {
-            Text(
-                text = group.name,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+//                    .background(MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                Text(
+                    text = group.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+//                    modifier = Modifier
+//                        .background(Color.Green)
+                )
+            }
+
             Spacer(modifier = Modifier.padding(8.dp))
 
             AddressGroup(
@@ -103,11 +130,6 @@ fun GroupScreen(
                 viewModel = viewModel,
                 group = group
             )
-//                Text(
-//                    text = group.addresses,
-//                    fontSize = 26.sp,
-//                    fontFamily = FontFamily.Cursive
-//                )
             Spacer(modifier = Modifier.padding(8.dp))
 
             GroupSchedule(group = group)
@@ -126,71 +148,31 @@ fun GroupScreen(
 
             Spacer(modifier = Modifier.padding(8.dp))
 
-            Text(
-                text = group.note,
-                fontSize = 22.sp,
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            OutlinedTextField(
-                value = group.telephone,
-//                enabled = false,
-                readOnly = true,
-                onValueChange = { },
-                label = {
-                    Text(text = "call")
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Call,
-                        contentDescription = null,
-                        tint = Color.DarkGray,
+            if (group.note.isNotEmpty()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp,
+                            brush = brush,
+                            shape = RoundedCornerShape(12.dp),
+//                shape = RectangleShape
+                        )
+                ) {
+                    Text(
+                        text = group.note,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
-                            .clip(shape = CircleShape)
-                            .background(Color.Green)
-                            .clickable {
-                                viewModel.makeCallGroup(
-                                    context = context,
-                                    phoneNumber = group.telephone
-                                )
-                            }
+                            .padding(8.dp)
+//                fontSize = 22.sp,
                     )
-                },
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .size(width = 200.dp, height = 60.dp)
-
-            )
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            Text(
-                text = "TEXTTEXTTEXT",
-                color = Color.Green,
-                fontSize = 42.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            Text(
-                text = "TEXTTEXTTEXT",
-                color = Color.Blue,
-                fontSize = 42.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            Text(
-                text = "TEXTTEXTTEXT",
-                color = Color.Red,
-                fontSize = 42.sp,
-                fontWeight = FontWeight.Bold,
-            )
-
+                }
+            }
         }
-    }
 
+    }
 
 }
 
@@ -207,36 +189,52 @@ private fun TelephoneGroup(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+//                Log.d("Logs", "GroupScreen clickable")
+                viewModel.makeCallGroup(
+                    context = context,
+                    phoneNumber = group.telephone
+                )
+            }
 //            .background(brush = brush)
-            .padding(8.dp)
             .border(
-                width = 1.dp,
+                width = 2.dp,
 //                color = Color.DarkGray,
                 brush = brush,
                 shape = RoundedCornerShape(12.dp),
 //                shape = RectangleShape
             )
     ) {
+
         Icon(
             imageVector = Icons.Default.Call,
             contentDescription = null,
             tint = Color.Green,
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .size(70.dp)
+//                .clip(shape = RoundedCornerShape(32.dp))
+//                .background(MaterialTheme.colorScheme.tertiary)
         )
 
-        Text(
-            text = group.telephone,
-            fontSize = 18.sp,
+        Row(
             modifier = Modifier
-                .padding(4.dp)
-                .clickable {
-                    Log.d("logs", "GroupScreen clickable")
-                    viewModel.makeCallGroup(
-                        context = context,
-                        phoneNumber = group.telephone
-                    )
-                }
-        )
+                .weight(1f)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+
+        ) {
+            Text(
+                text = group.telephone,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = 28.sp,
+                modifier = Modifier
+                    .padding(4.dp)
+            )
+        }
+
     }
 }
 
@@ -249,11 +247,9 @@ fun InternetLink(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-//            .background(Color.Yellow)
-//            .padding(16.dp)
+            .fillMaxWidth()
             .border(
-                width = 1.dp,
-//                color = Color.DarkGray,
+                width = 2.dp,
                 brush = brush,
                 shape = RoundedCornerShape(12.dp),
 //                shape = RectangleShape
@@ -264,25 +260,34 @@ fun InternetLink(
             painter = painterResource(id = R.drawable.web),
             contentDescription = null,
             tint = Color.Blue,
-            modifier = Modifier.padding(start = 8.dp)
-        )
-
-        Text(
-            text = buildAnnotatedString {
-                withLink(
-                    LinkAnnotation.Url(
-                        group.email,
-                        TextLinkStyles(style = SpanStyle(color = Color.Blue))
-                    )
-                ) {
-                    append(group.email)
-                }
-            },
-            fontSize = 14.sp,
             modifier = Modifier
-                .padding(8.dp)
-
+                .padding(start = 8.dp)
+                .size(50.dp)
         )
+
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    withLink(
+                        LinkAnnotation.Url(
+                            group.email,
+                            TextLinkStyles(style = SpanStyle(color = Color.Blue))
+                        )
+                    ) {
+                        append(group.email)
+                    }
+                },
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+        }
+
     }
 
 }
@@ -291,32 +296,41 @@ fun InternetLink(
 fun GroupSchedule(
     group: Group
 ) {
+    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-//            .background(Color.Yellow)
-//            .padding(16.dp)
+            .fillMaxWidth()
             .border(
-                width = 1.dp,
-                color = Color.DarkGray,
-//                brush = brush,
+                width = 2.dp,
+//                color = Color.DarkGray,
+                brush = brush,
                 shape = RoundedCornerShape(12.dp),
             )
     ) {
         Icon(
             painterResource(R.drawable.handwatch),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-        )
-
-        Text(
-            text = group.schedule,
-            fontSize = 24.sp,
+            tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
-                .padding(4.dp)
-
+                .size(50.dp)
+                .padding(start = 8.dp, end = 0.dp, top = 4.dp, bottom = 4.dp)
         )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = group.schedule,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(4.dp)
+            )
+        }
+
     }
 }
 
@@ -326,41 +340,57 @@ fun AddressGroup(
     viewModel: GroupViewModel,
     group: Group
 ) {
+    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .fillMaxWidth()
             .clickable {
                 viewModel.showGroupMap(
                     context = context,
                     addressForMap = group.addressForMap
                 )
-//                viewModel.showGroupMap(
-//                    context = context,
-//                    group = group
-//                )
             }
-//            .background(Color.Yellow)
             .border(
-                width = 1.dp,
-                color = Color.DarkGray,
-//                brush = brush,
+                width = 2.dp,
+                brush = brush,
+//                color = MaterialTheme.colorScheme.onPrimaryContainer,
+//                color = Color.DarkGray,
                 shape = RoundedCornerShape(12.dp),
             )
     ) {
         Icon(
-            painterResource(R.drawable.map),
+            painterResource(R.drawable.map1),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-        )
-
-        Text(
-            text = group.addresses,
-            fontSize = 26.sp,
-            fontFamily = FontFamily.Cursive,
+            tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
-                .padding(4.dp)
-
+                .padding(start = 8.dp, end = 8.dp)
+                .size(50.dp)
         )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = group.addresses,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(4.dp)
+            )
+        }
+
+
     }
+}
+
+@Preview
+@Composable
+private fun ViewGroupScreen() {
+    GroupScreen(
+        Group("Obolon", "we 12", "18-00", "qw@wq", "123-3221", "BlaBlaBla", 1.1, 2.2),
+        { }
+    )
 }

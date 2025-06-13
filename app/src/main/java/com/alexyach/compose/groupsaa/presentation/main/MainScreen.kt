@@ -1,5 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.main
 
+import androidx.compose.foundation.background
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -25,7 +27,8 @@ fun MainScreen() {
     val navigationState = rememberNavigationState()
 
     Scaffold(
-//        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background),
 
         bottomBar = {
 
@@ -58,8 +61,8 @@ fun MainScreen() {
                             Text(text = stringResource(id = item.titleResId))
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSecondary
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.secondary
                         )
                     )
 

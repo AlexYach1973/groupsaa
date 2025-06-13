@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,7 +32,12 @@ fun CardGroup(
 ) {
 
     Card(
-//        modifier = modifier.clickable{
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+            colors = CardDefaults.cardColors(
+                MaterialTheme.colorScheme.secondaryContainer
+            )
+    //        .clickable{
 //            onGroupClickListener(group)
 //        }
     ) {
@@ -70,16 +77,20 @@ private fun InfoAboutGroup(
     ) {
         Text(
             text = group.name,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge
+//            fontSize = 24.sp,
+//            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
 
         Text(
             text = group.addresses,
-            fontSize = 18.sp,
-            fontFamily = FontFamily.Cursive
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.bodyLarge
+//            fontSize = 18.sp,
+//            fontFamily = FontFamily.Cursive
         )
 
     }

@@ -1,13 +1,16 @@
 package com.alexyach.compose.groupsaa.presentation.grouplist
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.domain.entity.Group
@@ -25,7 +28,7 @@ fun GroupListScreen(
         is GroupListScreenState.Groups -> {
             Groups(
                 groups = currentState.group,
-                viewModel = viewModel,
+//                viewModel = viewModel,
                 paddingValues = paddingValues,
                 onGroupClickListener = onGroupClickListener
             )
@@ -40,20 +43,24 @@ fun GroupListScreen(
 @Composable
 private fun Groups(
     groups: List<Group>,
-    viewModel: GroupListViewModel,
+//    viewModel: GroupListViewModel,
     onGroupClickListener : (Group) -> Unit,
     paddingValues: PaddingValues
 ) {
 
     LazyColumn(
-        modifier = Modifier.padding(paddingValues),
+        modifier = Modifier
+            .padding(paddingValues)
+            .background(
+                color = MaterialTheme.colorScheme.background
+            ),
         contentPadding = PaddingValues(
             top = 16.dp,
-            start = 8.dp,
-            end = 8.dp,
+            start = 0.dp,
+            end = 0.dp,
             bottom = 16.dp
         ),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
 
         items(
@@ -71,3 +78,12 @@ private fun Groups(
     }
 
 }
+
+//@Preview
+//@Composable
+//private fun ViewGroupListScreen() {
+//    GroupListScreen(
+//        paddingValues = PaddingValues(0.dp),
+//        onGroupClickListener = {}
+//    )
+//}

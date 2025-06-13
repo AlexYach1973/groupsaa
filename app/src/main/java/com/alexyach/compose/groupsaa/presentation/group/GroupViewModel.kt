@@ -25,7 +25,7 @@ class GroupViewModel(
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = "tel:$phoneNumber".toUri()
         }
-        Log.d("Logs","makeCallGroup phoneNumber: $phoneNumber")
+//        Log.d("Logs","makeCallGroup phoneNumber: $phoneNumber")
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         } else {
