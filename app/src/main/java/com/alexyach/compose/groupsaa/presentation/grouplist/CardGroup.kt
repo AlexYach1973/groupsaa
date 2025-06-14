@@ -1,7 +1,9 @@
 package com.alexyach.compose.groupsaa.presentation.grouplist
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -60,10 +63,20 @@ fun CardGroup(
 
 @Composable
 private fun DistanceToGroup(group: Group){
-    Text(
-        text = String.format("%.1f", group.distance)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+//            .size(50.dp),
+
+    ) {
+        Text(
+            text = String.format("%.1f", group.distance) + "км",
+            fontSize = 28.sp,
+            color = MaterialTheme.colorScheme.primary
 //        text = group.distance.toString()
-    )
+        )
+    }
+
 }
 
 @Composable
