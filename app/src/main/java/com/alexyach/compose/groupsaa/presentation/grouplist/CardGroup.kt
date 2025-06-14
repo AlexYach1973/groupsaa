@@ -44,7 +44,9 @@ fun CardGroup(
         Row(
             modifier = Modifier.fillMaxSize()
         ) {
-            DistanceToGroup()
+            DistanceToGroup(
+                group = group,
+            )
             Spacer(modifier = Modifier.padding(4.dp))
             InfoAboutGroup(
                 group = group,
@@ -57,11 +59,10 @@ fun CardGroup(
 
 
 @Composable
-private fun DistanceToGroup(){
-    Image(
-        painter = painterResource(id = R.drawable.community),
-        contentDescription = "community",
-        modifier = Modifier.size(100.dp)
+private fun DistanceToGroup(group: Group){
+    Text(
+        text = String.format("%.1f", group.distance)
+//        text = group.distance.toString()
     )
 }
 

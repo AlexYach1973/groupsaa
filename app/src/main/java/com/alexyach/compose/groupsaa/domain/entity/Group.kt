@@ -7,7 +7,8 @@ package com.alexyach.compose.groupsaa.domain.entity
      val email: String,
      val telephone: String,
      val note: String,
-     val longitude: Double,
      val latitude: Double,
+     val longitude: Double,
+     var distance: Double = 0.0,
      val addressForMap: String = ""
 )

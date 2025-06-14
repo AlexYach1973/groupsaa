@@ -13,6 +13,7 @@ composeNav = "2.9.0"
 livedata = "1.8.2"
 viewModelComp = "2.9.0"
 gson = "2.11.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ androidx-navigation = {group = "androidx.navigation", name = "navigation-compose
 androidx-compose-livedata = {group = "androidx.compose.runtime", name ="runtime-livedata", version.ref = "livedata"}
 androidx-compose-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModelComp"}
 androidx-gson = {group = "com.google.code.gson", name = "gson", version.ref = "gson"}
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 
 [plugins]

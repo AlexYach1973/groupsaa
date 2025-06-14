@@ -12,8 +12,8 @@ fun getListGroup(): List<Group> {
             telephone = "097-476-3601",
             email = "https://www.aa.kiev.ua/grupa-aa-obolon/",
             note = "Підвальне приміщення з тилу будинку",
-            longitude = 50.52046,
-            latitude = 30.52119,
+            latitude = 50.52046,
+            longitude = 30.52119,
             addressForMap = "ул.+Приречная,+21А,+Киев"
         ),
         Group(
@@ -23,8 +23,8 @@ fun getListGroup(): List<Group> {
             telephone = "098-300-0101",
             email = "https://www.aa.kiev.ua/grupa-aa-feniks/",
             note = "",
-            longitude = 50.43650,
-            latitude = 30.53890,
+            latitude =  50.43650,
+            longitude = 30.53890,
             addressForMap = "Печерский+спуск,+19,+Киев"
         ),
         Group(
@@ -34,8 +34,8 @@ fun getListGroup(): List<Group> {
             telephone = "095-774-3089",
             email = "https://www.aa.kiev.ua/dim-na-gori/",
             note = "Зібрання проводиться в Монастирі Сестер місіонерок любові",
-            longitude = 50.40674,
-            latitude = 30.50053,
+            latitude = 50.40674,
+            longitude = 30.50053,
             addressForMap = "ул.+Гвардейская,+2А,+Киев"
         ),
         Group(
@@ -46,8 +46,8 @@ fun getListGroup(): List<Group> {
             email = "https://www.aa.kiev.ua/grupa-aa-drug/",
             note = "Приміщення Київського Міського Центру Соціальних Служб для сім’ї, дітей та молоді." +
                     "У перший вівторок кожного місяця – спікерськє зібрання",
-            longitude = 50.45648,
-            latitude = 30.44696,
+            latitude = 50.45648,
+            longitude = 30.44696,
             addressForMap = "ул.+Александра+Довженко,+2,+Киев"
         ),
         Group(
@@ -57,8 +57,8 @@ fun getListGroup(): List<Group> {
             telephone = "068-372-6878",
             email = "https://www.aa.kiev.ua/grupa-aa-desna/",
             note = "ЖЕД 305, другий поверх, направо, останні двері.",
-            longitude = 50.50135,
-            latitude = 30.60912,
+            latitude = 50.50135,
+            longitude = 30.60912,
             addressForMap = "ул.+Николая+Закревского,+29a,+Киев"
         ),
 

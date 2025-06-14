@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.gson)
+    implementation(libs.play.services.location)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
