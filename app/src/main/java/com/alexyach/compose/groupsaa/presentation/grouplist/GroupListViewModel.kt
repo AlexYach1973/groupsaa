@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexyach.compose.groupsaa.data.model.ResponseDto
+import com.alexyach.compose.groupsaa.data.model.toGroup
+import com.alexyach.compose.groupsaa.data.repository.GroupListRepository
 import com.alexyach.compose.groupsaa.domain.entity.Group
 import com.alexyach.compose.groupsaa.utils.getListGroup
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -19,13 +22,15 @@ import kotlin.math.sqrt
 
 class GroupListViewModel : ViewModel() {
 
+    private val repository = GroupListRepository()
+
     private val _screenState =
         MutableLiveData<GroupListScreenState>(GroupListScreenState.Initial)
     val screenState: LiveData<GroupListScreenState> = _screenState
 
     /* Location */
-    private val _testLoc = MutableLiveData<Double>(0.0)
-    val testLoc: LiveData<Double> = _testLoc
+//    private val _testLoc = MutableLiveData<Double>(0.0)
+//    val testLoc: LiveData<Double> = _testLoc
 
     init {
         getGroupList()
@@ -35,15 +40,22 @@ class GroupListViewModel : ViewModel() {
         _screenState.value = GroupListScreenState.Loading
 
         viewModelScope.launch {
-            delay(2000L)
-        _screenState.value = GroupListScreenState.Groups(getListGroup())
+            repository.retrofitImpl().collect {listGroupDto ->
+
+                Log.d("Logs", "listGroupDto: $listGroupDto")
+
+                _screenState.value =  GroupListScreenState.Groups(
+                    listGroupDto.map {
+                        it.toGroup()
+                    }
+                )
+
+            }
         }
 
 
     }
 
-
-    /* TEST MAP */
 
     fun getCurrentLocation(
         fusedLocationClient: FusedLocationProviderClient,
@@ -53,7 +65,7 @@ class GroupListViewModel : ViewModel() {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: android.location.Location? ->
                     location?.let { location ->
-                        _testLoc.value = location.latitude
+//                        _testLoc.value = location.latitude
 
                         distanceToGroups(
                             currentLocation = location,

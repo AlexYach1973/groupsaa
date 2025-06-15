@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.gson)
     implementation(libs.play.services.location)
+    // Retrofit
+    implementation(libs.androidx.retrofit)
+    implementation(libs.androidx.retrofit.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

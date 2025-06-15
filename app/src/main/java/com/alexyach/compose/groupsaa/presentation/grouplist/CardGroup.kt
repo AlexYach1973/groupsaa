@@ -1,25 +1,23 @@
 package com.alexyach.compose.groupsaa.presentation.grouplist
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,17 +33,24 @@ fun CardGroup(
 ) {
 
     Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .border(
+                width = 2.dp,
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.onSecondary
+            ),
+
             colors = CardDefaults.cardColors(
                 MaterialTheme.colorScheme.secondaryContainer
-            )
-    //        .clickable{
-//            onGroupClickListener(group)
-//        }
+            ),
+        onClick = { onGroupClickListener(group) }
     ) {
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             DistanceToGroup(
                 group = group,
@@ -63,17 +68,25 @@ fun CardGroup(
 
 @Composable
 private fun DistanceToGroup(group: Group){
-    Box(
-        contentAlignment = Alignment.Center,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-//            .size(50.dp),
+            .padding(start = 4.dp)
+            .width(100.dp)
 
     ) {
+        Icon(
+            painterResource(id = R.drawable.group),
+            contentDescription = "groups",
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .size(30.dp)
+        )
+
         Text(
             text = String.format("%.1f", group.distance) + "км",
             fontSize = 28.sp,
             color = MaterialTheme.colorScheme.primary
-//        text = group.distance.toString()
         )
     }
 
@@ -87,14 +100,11 @@ private fun InfoAboutGroup(
     Column(
         modifier = Modifier
             .padding(8.dp)
-            .clickable{ onGroupClickListener(group) }
     ) {
         Text(
             text = group.name,
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleLarge
-//            fontSize = 24.sp,
-//            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
@@ -103,8 +113,6 @@ private fun InfoAboutGroup(
             text = group.addresses,
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodyLarge
-//            fontSize = 18.sp,
-//            fontFamily = FontFamily.Cursive
         )
 
     }
@@ -115,6 +123,9 @@ private fun InfoAboutGroup(
 @Composable
 fun GreetingPreview() {
     GroupsaaTheme {
-//        CardGroup()
+        CardGroup(
+            Group("Name", "qweqwe", "qw@qw", "3434","","",0.1, 0.1),
+            {}
+        )
     }
 }

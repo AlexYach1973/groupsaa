@@ -23,7 +23,7 @@ fun getListGroup(): List<Group> {
             telephone = "098-300-0101",
             email = "https://www.aa.kiev.ua/grupa-aa-feniks/",
             note = "",
-            latitude =  50.43650,
+            latitude = 50.43650,
             longitude = 30.53890,
             addressForMap = "Печерский+спуск,+19,+Киев"
         ),
@@ -61,6 +61,83 @@ fun getListGroup(): List<Group> {
             longitude = 30.60912,
             addressForMap = "ул.+Николая+Закревского,+29a,+Киев"
         ),
-
+        Group(
+            name = "\"Group\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
+        ),
+        Group(
+            name = "\"Group\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
+        ),
+        Group(
+            name = "\"Group\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
+        ),
+        Group(
+            name = "\"Group\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
+        ),
+        Group(
+            name = "\"Group\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
+        ),
+        Group(
+            name = "\"Group\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
+        ),
+        Group(
+            name = "\"END\"",
+            addresses = " \"Centr\", вул. Srtreet, Yа",
+            schedule = "щодня о 19:00",
+            telephone = "XXX-XXX-XXXX",
+            email = "https://www.aa.__________________",
+            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            latitude = 0.0,
+            longitude = 0.0,
+            addressForMap = "ул.+Приречная,+21А,+Киев"
         )
+
+    )
 }

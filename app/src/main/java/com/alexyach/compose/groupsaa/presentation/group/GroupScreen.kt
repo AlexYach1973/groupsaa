@@ -93,7 +93,7 @@ fun GroupScreen(
 
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
 //                .background(MaterialTheme.colorScheme.background)
                 .padding(
 //                    paddingValues = paddingValue)
@@ -191,7 +191,6 @@ private fun TelephoneGroup(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-//                Log.d("Logs", "GroupScreen clickable")
                 viewModel.makeCallGroup(
                     context = context,
                     phoneNumber = group.telephone

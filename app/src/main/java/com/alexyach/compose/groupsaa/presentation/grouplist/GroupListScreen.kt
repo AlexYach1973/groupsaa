@@ -10,18 +10,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.domain.entity.Group
@@ -32,13 +39,13 @@ import com.google.android.gms.location.LocationServices
 @Composable
 fun GroupListScreen(
     paddingValues: PaddingValues,
-    onGroupClickListener : (Group) -> Unit
+    onGroupClickListener: (Group) -> Unit
 ) {
     val viewModel: GroupListViewModel = viewModel()
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
     val currentState = screenState.value
 
-    when(currentState) {
+    when (currentState) {
         is GroupListScreenState.Groups -> {
             Groups(
                 groups = currentState.group,
@@ -47,8 +54,11 @@ fun GroupListScreen(
                 onGroupClickListener = onGroupClickListener
             )
         }
+
         GroupListScreenState.Initial -> {}
-        GroupListScreenState.Loading -> { LoadingListGroup() }
+        GroupListScreenState.Loading -> {
+            LoadingListGroup()
+        }
     }
 }
 
@@ -68,48 +78,49 @@ fun LoadingListGroup() {
 private fun Groups(
     groups: List<Group>,
     viewModel: GroupListViewModel,
-    onGroupClickListener : (Group) -> Unit,
+    onGroupClickListener: (Group) -> Unit,
     paddingValues: PaddingValues
 ) {
+    val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.padding(top = 40.dp)
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+//            .background(MaterialTheme.colorScheme.background)
+            .padding(paddingValues)
+//            .padding(top = 40.dp)
     )
     {
 
         LaunchCurrentLocation(viewModel, groups)
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .background(
-                    color = MaterialTheme.colorScheme.background
-                ),
-            contentPadding = PaddingValues(
-                top = 16.dp,
-                start = 0.dp,
-                end = 0.dp,
-                bottom = 16.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
+        HeaderGroupList()
 
-            items(
-                items = groups,
-                key = { it.name }
-            ) {
-
-                CardGroup(
-                    group = it,
-                    onGroupClickListener
-                )
-
-            }
-
+        groups.forEach {
+            CardGroup(
+                group = it,
+                onGroupClickListener
+            )
         }
+
     }
+}
 
-
+@Composable
+private fun HeaderGroupList() {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "Офлайн групи",
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
 }
 
 
@@ -123,7 +134,8 @@ fun LaunchCurrentLocation(
 
     val context = LocalContext.current
 
-    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    val fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -153,7 +165,7 @@ fun LaunchCurrentLocation(
         )
 
     }
-/* ************ */
+    /* ************ */
 //    currentLocation?.let { location ->
 //        testText = location.latitude.toString()
 
@@ -168,7 +180,6 @@ fun LaunchCurrentLocation(
 }
 
 /* END TEST MAP */
-
 
 
 //@Preview
