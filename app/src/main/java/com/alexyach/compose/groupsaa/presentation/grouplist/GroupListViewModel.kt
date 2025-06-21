@@ -6,13 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexyach.compose.groupsaa.data.model.ResponseDto
-import com.alexyach.compose.groupsaa.data.model.toGroup
-import com.alexyach.compose.groupsaa.data.repository.GroupListRepository
-import com.alexyach.compose.groupsaa.domain.entity.Group
-import com.alexyach.compose.groupsaa.utils.getListGroup
+import com.alexyach.compose.groupsaa.data.db.GroupDao
+import com.alexyach.compose.groupsaa.data.db.toGroup
+import com.alexyach.compose.groupsaa.data.repository.GroupsRepositoryImpl
+import com.alexyach.compose.groupsaa.domain.model.Group
+import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.google.android.gms.location.FusedLocationProviderClient
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -20,41 +21,45 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class GroupListViewModel : ViewModel() {
+class GroupListViewModel(
+    private val groupDao: GroupDao
+) : ViewModel() {
 
-    private val repository = GroupListRepository()
+    private val repository = GroupsRepositoryImpl(groupDao = groupDao)
 
     private val _screenState =
-        MutableLiveData<GroupListScreenState>(GroupListScreenState.Initial)
-    val screenState: LiveData<GroupListScreenState> = _screenState
+        MutableStateFlow<GroupListScreenState>(GroupListScreenState.Initial)
+    val screenState: StateFlow<GroupListScreenState> = _screenState
 
-    /* Location */
-//    private val _testLoc = MutableLiveData<Double>(0.0)
-//    val testLoc: LiveData<Double> = _testLoc
 
     init {
         getGroupList()
     }
 
     private fun getGroupList() {
-        _screenState.value = GroupListScreenState.Loading
+        _screenState.value = GroupListScreenState.Loading(LoadInet)
 
         viewModelScope.launch {
-            repository.retrofitImpl().collect {listGroupDto ->
 
-                Log.d("Logs", "listGroupDto: $listGroupDto")
+            /* From Internet*/
+            repository.getAllGroupList().collect {
+                _screenState.value = GroupListScreenState.Groups(it)
 
-                _screenState.value =  GroupListScreenState.Groups(
-                    listGroupDto.map {
-                        it.toGroup()
-                    }
-                )
+            }.runCatching {
+                _screenState.value = GroupListScreenState.Loading(LoadingFrom.LoadRoom)
 
+                /* From Room */
+                repository.getAllFromRoom().collect { listGroupEntity ->
+                    _screenState.value =
+                        GroupListScreenState.Groups(listGroupEntity.map { it.toGroup() })
+                }
+//                Log.d("Logs", "GroupListViewModel runCatching")
             }
+
+
         }
-
-
     }
+
 
 
     fun getCurrentLocation(
@@ -65,8 +70,6 @@ class GroupListViewModel : ViewModel() {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: android.location.Location? ->
                     location?.let { location ->
-//                        _testLoc.value = location.latitude
-
                         distanceToGroups(
                             currentLocation = location,
                             groups = groups

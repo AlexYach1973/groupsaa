@@ -1,6 +1,8 @@
 package com.alexyach.compose.groupsaa.data.model
 
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.data.db.GroupDao
+import com.alexyach.compose.groupsaa.data.db.GroupEntity
+import com.alexyach.compose.groupsaa.domain.model.Group
 
 data class ResponseDto(
     val name: String,
@@ -16,6 +18,21 @@ data class ResponseDto(
 
 fun ResponseDto.toGroup() : Group {
     return Group(
+        name = this.name,
+        addresses = this.addresses,
+        schedule = this.schedule,
+        email = this.email,
+        telephone = this.telephone,
+        note = this.note,
+        latitude = this.latitude,
+        longitude = this.longitude,
+        addressForMap = this.addressForMap
+    )
+}
+
+fun ResponseDto.toGroupEntity() : GroupEntity {
+    return GroupEntity(
+        id = 0,
         name = this.name,
         addresses = this.addresses,
         schedule = this.schedule,

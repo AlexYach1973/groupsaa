@@ -1,8 +1,11 @@
+import android.databinding.tool.ext.cleanLazyProps
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-//    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.ksp)
     id("kotlin-parcelize")
 }
 
@@ -40,7 +43,21 @@ android {
     buildFeatures {
         compose = true
     }
+
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.11"
+//    }
+
 }
+
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
+//configurations.all {
+//    exclude(group = "com.intellij", module = "annotations")
+//}
+
 
 dependencies {
 
@@ -61,6 +78,10 @@ dependencies {
     // Retrofit
     implementation(libs.androidx.retrofit)
     implementation(libs.androidx.retrofit.gson)
+    // Room
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

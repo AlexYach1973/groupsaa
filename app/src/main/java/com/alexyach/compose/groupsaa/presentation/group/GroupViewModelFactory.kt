@@ -2,7 +2,7 @@ package com.alexyach.compose.groupsaa.presentation.group
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.domain.model.Group
 
 class GroupViewModelFactory(
     private val group: Group

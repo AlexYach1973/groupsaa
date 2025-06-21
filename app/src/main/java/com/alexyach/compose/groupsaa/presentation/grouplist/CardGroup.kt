@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alexyach.compose.groupsaa.R
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.ui.theme.GroupsaaTheme
 
 @Composable

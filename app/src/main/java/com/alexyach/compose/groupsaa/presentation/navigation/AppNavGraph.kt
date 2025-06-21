@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.domain.model.Group
 
 @Composable
 fun AppNavGraph(

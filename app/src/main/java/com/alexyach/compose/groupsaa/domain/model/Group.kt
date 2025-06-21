@@ -1,4 +1,4 @@
-package com.alexyach.compose.groupsaa.domain.entity
+package com.alexyach.compose.groupsaa.domain.model
 
  data class Group (
      val name: String,

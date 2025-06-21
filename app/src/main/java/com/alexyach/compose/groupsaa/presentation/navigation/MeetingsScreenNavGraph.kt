@@ -6,7 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.domain.model.Group
 import com.google.gson.Gson
 
 fun NavGraphBuilder.meetingsScreenNavGraph(

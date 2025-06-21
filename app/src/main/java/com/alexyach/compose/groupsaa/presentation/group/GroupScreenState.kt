@@ -1,6 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.group
 
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.domain.model.Group
 
 sealed class GroupScreenState {
     object initial : GroupScreenState()

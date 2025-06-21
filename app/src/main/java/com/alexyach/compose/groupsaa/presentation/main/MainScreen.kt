@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.alexyach.compose.groupsaa.domain.entity.Group
 import com.alexyach.compose.groupsaa.presentation.group.GroupScreen
 import com.alexyach.compose.groupsaa.presentation.grouplist.GroupListScreen
 import com.alexyach.compose.groupsaa.presentation.navigation.AppNavGraph

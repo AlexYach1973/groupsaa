@@ -13,7 +13,7 @@ sealed class Screen(
     object Group: Screen(ROUTE_GROUP) {
         private const val ROUTE_FOR_ARGS = "group"
 
-        fun getRouteWithArgs(group: com.alexyach.compose.groupsaa.domain.entity.Group) : String {
+        fun getRouteWithArgs(group: com.alexyach.compose.groupsaa.domain.model.Group) : String {
             val groupJson = Gson().toJson(group)
             return "$ROUTE_FOR_ARGS/${groupJson.encode()}"
         }

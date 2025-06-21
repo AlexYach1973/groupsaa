@@ -14,24 +14,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.alexyach.compose.groupsaa.domain.entity.Group
+import com.alexyach.compose.groupsaa.App
+import com.alexyach.compose.groupsaa.domain.model.Group
+import com.alexyach.compose.groupsaa.presentation.grouplist.GroupListScreenState.*
+import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -41,8 +42,14 @@ fun GroupListScreen(
     paddingValues: PaddingValues,
     onGroupClickListener: (Group) -> Unit
 ) {
-    val viewModel: GroupListViewModel = viewModel()
-    val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
+    val viewModel: GroupListViewModel = viewModel(
+        factory = GroupListViewModelFactory(
+            application = LocalContext.current.applicationContext as App
+        )
+    )
+
+    val screenState = viewModel.screenState.collectAsState()
+//    observeAsState(GroupListScreenState.Initial)
     val currentState = screenState.value
 
     when (currentState) {
@@ -55,21 +62,48 @@ fun GroupListScreen(
             )
         }
 
-        GroupListScreenState.Initial -> {}
-        GroupListScreenState.Loading -> {
-            LoadingListGroup()
+        is GroupListScreenState.Loading -> {
+            when (currentState.loadFrom) {
+                LoadInet -> LoadingListGroup("load from Internet")
+                LoadRoom -> LoadingListGroup("load from local BD")
+            }
         }
+
+        GroupListScreenState.Error -> {
+            ErrorListGroup()
+        }
+
+        GroupListScreenState.Initial -> {}
     }
 }
 
 @Composable
-fun LoadingListGroup() {
+fun ErrorListGroup() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+       Text(
+           text = "Не вдалося загрузити список груп із сайту, спробуйте пізніше"
+       )
+    }
+}
+
+@Composable
+fun LoadingListGroup(
+    loadFrom : String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         CircularProgressIndicator()
+        Text(
+            text = loadFrom
+        )
     }
 }
 
