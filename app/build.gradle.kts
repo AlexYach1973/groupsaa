@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.gson)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.compose.permission)
     // Retrofit
     implementation(libs.androidx.retrofit)
     implementation(libs.androidx.retrofit.gson)
@@ -82,6 +83,12 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
+
+    implementation(libs.androidx.coroutines.play.services)
+
+    //!!!
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1")
+//    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

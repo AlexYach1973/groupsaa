@@ -2,7 +2,7 @@ package com.alexyach.compose.groupsaa.utils
 
 import com.alexyach.compose.groupsaa.domain.model.Group
 
-fun getListGroup(): List<Group> {
+fun getListGroupTest(): List<Group> {
     return listOf(
         Group(
             name = "\"Оболонь\"",
@@ -72,7 +72,7 @@ fun getListGroup(): List<Group> {
             addressForMap = "ул.+Приречная,+21А,+Киев"
         ),
         Group(
-            name = "\"Group\"",
+            name = "\"Group 1\"",
             addresses = " \"Centr\", вул. Srtreet, Yа",
             schedule = "щодня о 19:00",
             telephone = "XXX-XXX-XXXX",
@@ -83,7 +83,7 @@ fun getListGroup(): List<Group> {
             addressForMap = "ул.+Приречная,+21А,+Киев"
         ),
         Group(
-            name = "\"Group\"",
+            name = "\"Group 2\"",
             addresses = " \"Centr\", вул. Srtreet, Yа",
             schedule = "щодня о 19:00",
             telephone = "XXX-XXX-XXXX",

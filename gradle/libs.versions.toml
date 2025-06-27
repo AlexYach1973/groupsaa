@@ -14,10 +14,13 @@ livedata = "1.8.3"
 viewModelComp = "2.9.1"
 gson = "2.11.0"
 playServicesLocation = "21.3.0"
+permisiion = "0.34.0"
 retrofit = "2.9.0"
 gson_retrofit = "2.9.0"
 ksp = "2.1.21-2.0.1"
 room = "2.7.2"
+coroutinePlayServ = "1.7.3"
+
 
 
 [libraries]
@@ -41,8 +44,10 @@ androidx-compose-livedata = {group = "androidx.compose.runtime", name ="runtime-
 androidx-compose-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModelComp"}
 androidx-gson = {group = "com.google.code.gson", name = "gson", version.ref = "gson"}
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-compose-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "permisiion" }
 androidx-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 androidx-retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson_retrofit" }
+androidx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutinePlayServ" }
 
 androidx-room-compiler = { module = "androidx.room:room-compiler" , version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx" , version.ref = "room" }
