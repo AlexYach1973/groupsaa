@@ -20,6 +20,7 @@ gson_retrofit = "2.9.0"
 ksp = "2.1.21-2.0.1"
 room = "2.7.2"
 coroutinePlayServ = "1.7.3"
+dataStorePref = "1.1.7"
 
 
 
@@ -48,10 +49,14 @@ androidx-compose-permission = { group = "com.google.accompanist", name = "accomp
 androidx-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 androidx-retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson_retrofit" }
 androidx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutinePlayServ" }
+androidx-datastore-preference = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStorePref" }
+
 
 androidx-room-compiler = { module = "androidx.room:room-compiler" , version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx" , version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime" , version.ref = "room" }
+
+
 
 
 

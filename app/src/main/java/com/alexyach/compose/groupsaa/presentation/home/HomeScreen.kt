@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
+import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
 
 
 @Composable
@@ -52,12 +52,28 @@ fun HomeScreen(
 ) {
 
     val conntext = LocalContext.current
-    val viewModel: HomeViewModel = viewModel()
+    val viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(DataStoreManager(LocalContext.current))
+    )
 
     val scrollState = rememberScrollState()
 
-    val difference = viewModel.difference.collectAsState(listOf<Int>())
-    val selectedDate = viewModel.selectedDate.collectAsState("")
+    val difference by viewModel.difference.collectAsState(listOf<Int>(0,0,0))
+    val selectedDate by viewModel.selectedDate.collectAsState("")
+    val totalDays by viewModel.totalDays.collectAsState(0)
+
+    /* TEST */
+    val dataTest by viewModel.testDay.collectAsState(-5)
+    val dataYear by viewModel.testYear.collectAsState(-5)
+
+
+    val dataStoreYear by viewModel.dataStoreYear.collectAsState(-1)
+    val dataStoreMonth by viewModel.dataStoreMonth.collectAsState(-1)
+    val dataStoreDay by viewModel.dataStoreDay.collectAsState(-1)
+
+    if (dataStoreYear > 0 && dataStoreMonth > 0 && dataStoreDay > 0) {
+        viewModel.formatingDate(listOf(dataStoreYear, dataStoreMonth, dataStoreDay))
+    }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -72,8 +88,15 @@ fun HomeScreen(
         PeriodOfSobrietyCard(
             context = conntext,
             viewModel = viewModel,
-            difference = difference.value,
-            selectedDate = selectedDate.value
+            difference = difference,
+            selectedDate = selectedDate,
+            totalDays = totalDays
+        )
+
+        /* TEST */
+        Text(
+            text = "$dataTest day $dataYear year",
+            fontSize = 25.sp
         )
 
 
@@ -89,7 +112,8 @@ private fun PeriodOfSobrietyCard(
     context: Context,
     viewModel: HomeViewModel,
     difference: List<Int>,
-    selectedDate: String
+    selectedDate: String,
+    totalDays: Int
 ) {
 
     Card(
@@ -170,7 +194,7 @@ private fun PeriodOfSobrietyCard(
             ) {
                 if (difference.isNotEmpty()) {
                     Text(
-                        text = "або ${difference[3]} days",
+                        text = "або $totalDays",
                         style = MaterialTheme.typography.bodyLarge,
                         fontStyle = FontStyle.Italic
                     )
@@ -188,7 +212,7 @@ private fun PeriodOfSobrietyCard(
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     modifier = Modifier
-                        .weight(0.5f)
+                        .weight(4f)
                 ) {
                     Text(
                         text = selectedDate,
@@ -201,7 +225,7 @@ private fun PeriodOfSobrietyCard(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .weight(0.5f)
+                        .weight(1f)
                         .clickable { openDialog = true }
                 ) {
                     Text(

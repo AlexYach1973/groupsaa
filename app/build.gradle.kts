@@ -84,6 +84,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
 
+    implementation(libs.androidx.datastore.preference)
+
     implementation(libs.androidx.coroutines.play.services)
 
     //!!!
