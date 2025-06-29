@@ -9,16 +9,17 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alexyach.compose.groupsaa.presentation.group.GroupScreen
 import com.alexyach.compose.groupsaa.presentation.grouplist.GroupListScreen
+import com.alexyach.compose.groupsaa.presentation.home.HomeScreen
 import com.alexyach.compose.groupsaa.presentation.navigation.AppNavGraph
+import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationState
 
 @Composable
 fun MainScreen() {
@@ -77,18 +78,25 @@ fun MainScreen() {
         AppNavGraph(
             navHostController = navigationState.navHotController,
 
-            homeScreenContent = { Text(text = "HOME") },
+            homeScreenContent = {
+                HomeScreen(
+                    paddingValues = innerPadding,
+                    onReadClickListener = {
+                            navigationState.navigateTo(NavigationItem.Read.screen.route)
+                        }
+                )
+            },
 
             groupListScreenContent = {
                 GroupListScreen(
                     paddingValues = innerPadding,
-                    onGroupClickListener = {group ->
+                    onGroupClickListener = { group ->
                         navigationState.navigateToGroup(group = group)
                     }
                 )
             },
 
-            groupScreenContent = {group ->
+            groupScreenContent = { group ->
                 GroupScreen(
                     group = group,
                     onBackPress = {

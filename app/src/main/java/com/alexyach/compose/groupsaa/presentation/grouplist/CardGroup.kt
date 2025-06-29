@@ -57,8 +57,7 @@ fun CardGroup(
             )
             Spacer(modifier = Modifier.padding(4.dp))
             InfoAboutGroup(
-                group = group,
-                onGroupClickListener
+                group = group
             )
         }
     }
@@ -94,8 +93,7 @@ private fun DistanceToGroup(group: Group){
 
 @Composable
 private fun InfoAboutGroup(
-    group: Group,
-    onGroupClickListener : (Group) -> Unit
+    group: Group
 ) {
     Column(
         modifier = Modifier

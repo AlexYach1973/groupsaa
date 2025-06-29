@@ -8,4 +8,10 @@
     <string name="navigation_item_read">чтиво</string>
 
 
+<!--    HomeScreen-->
+    <string name="homescreen_sobriety_card_title">Ти тверезий на сьогодні:</string>
+    <string name="homescreen_sobriety_not_date">Дата не вибрана, нажмть Edit</string>
+
+
+
 </resources>

@@ -47,7 +47,7 @@ class GroupListViewModel(
 
 
     init {
-//        _screenState.value = GroupListScreenState.Groups(getListGroupTest())
+//        _screenState.value = GroupListScreenState.Groups(getListGroupTest()) // TEST
 
         getGroupList()
     }
@@ -56,7 +56,6 @@ class GroupListViewModel(
         _screenState.value = GroupListScreenState.Loading(LoadInet)
 
         viewModelScope.launch {
-
 
             /* From Internet*/
             repository.getAllGroupList().collect {currentListGroup->

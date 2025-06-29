@@ -68,7 +68,6 @@ fun GroupListScreen(
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
 
 
-
     var isInternet = viewModel.isInternet.collectAsState(true)
 
     when (val currentState = screenState.value) {
@@ -100,6 +99,7 @@ fun GroupListScreen(
 //                    isInternet = true
                     LoadingListGroup("load from Internet")
                 }
+
                 LoadRoom -> {
 //                    isInternet = false
                     LoadingListGroup("load from local BD")
@@ -122,15 +122,15 @@ fun ErrorListGroup() {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-       Text(
-           text = "Не вдалося загрузити список груп, спробуйте пізніше"
-       )
+        Text(
+            text = "Не вдалося загрузити список груп, спробуйте пізніше"
+        )
     }
 }
 
 @Composable
 fun LoadingListGroup(
-    loadFrom : String
+    loadFrom: String
 ) {
     Column(
         modifier = Modifier
@@ -161,11 +161,11 @@ private fun Groups(
 
     /* Get Current Location */
 //    SideEffect {
-        viewModel.getLocation(
-            context = context,
-            permissionState = permissionState,
-            groups = groups
-        )
+    viewModel.getLocation(
+        context = context,
+        permissionState = permissionState,
+        groups = groups
+    )
 //    }
 
 
@@ -248,8 +248,6 @@ private fun HeaderGroupList(
 //
 //
 //}
-
-
 
 
 //@Preview
