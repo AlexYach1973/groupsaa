@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
+import com.alexyach.compose.groupsaa.utils.formatPeriod
+import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,14 +21,14 @@ import java.util.Locale
 
 class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel() {
 
-    private val _difference = MutableStateFlow<List<Int>>(mutableListOf())
-    val difference: StateFlow<List<Int>> = _difference
+    private val _difference = MutableStateFlow<String>("")
+    val difference: StateFlow<String> = _difference
 
     private val _selectedDate = MutableStateFlow<String>("")
     val selectedDate: StateFlow<String> = _selectedDate
 
-    private val _totalDays = MutableStateFlow<Int>(0)
-    val totalDays: StateFlow<Int> = _totalDays
+    private val _totalDays = MutableStateFlow<String>("")
+    val totalDays: StateFlow<String> = _totalDays
 
     /* Load From Date Store */
     val dataStoreYear = dataStoreManager.loadYear
@@ -38,28 +40,8 @@ class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel(
     val dataStoreDay = dataStoreManager.loadDay
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), -1)
 
-    val testDay = MutableStateFlow<Int>(0)
-    val testYear = MutableStateFlow<Int>(0)
 
     init {
-        loadTest()
-    }
-
-    /* TEST */
-    private fun loadTest() {
-        viewModelScope.launch {
-            dataStoreManager.loadDay.collect { day ->
-                Log.d("Logs", "init $day")
-                testDay.value = day
-            }
-        }
-        viewModelScope.launch {
-            dataStoreManager.loadYear.collect { year ->
-                Log.d("Logs", "init $year")
-                testYear.value = year
-            }
-        }
-
     }
 
     fun dataPickerSelected(dataMill: Long?) {
@@ -109,13 +91,14 @@ class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel(
         /* Вычислить разницу */
         val period = Period.between(selectedDate, currentDate)
         /* Общее количество дней */
-        _totalDays.value = ChronoUnit.DAYS.between(selectedDate, currentDate).toInt()
+        _totalDays.value = formatTotalDays(ChronoUnit.DAYS.between(selectedDate, currentDate).toInt())
+//        _totalDays.value = ChronoUnit.DAYS.between(selectedDate, currentDate).toInt()
 
         /* Разница */
-        _difference.value = listOf(period.years, period.months, period.days)
-
+        _difference.value = formatPeriod(period = period)
 
     }
+
 
 
 }

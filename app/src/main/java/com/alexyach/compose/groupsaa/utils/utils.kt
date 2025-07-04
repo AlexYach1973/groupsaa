@@ -1,7 +1,85 @@
 package com.alexyach.compose.groupsaa.utils
 
+import android.text.style.StyleSpan
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.core.text.HtmlCompat
 import com.alexyach.compose.groupsaa.domain.model.Group
+import java.time.Period
 
+/* Format Text Home Screen */
+fun formatPeriod(period: Period): String {
+    val years = period.years
+    val months = period.months
+    val days = period.days
+
+    val yearsText = when {
+        years == 0 -> ""
+        years == 1 -> "$years рік"
+        years in 2..4 -> "$years роки"
+        else -> "$years років"
+    }
+
+    val monthsText = when {
+        months == 0 -> ""
+        months == 1 -> "$months місяць"
+        months in 2..4 -> "$months місяці"
+        else -> "$months місяців"
+    }
+
+    val daysText = when {
+        days == 0 -> ""
+        days == 1 -> "$days день"
+        days in 2..4 -> "$days дні"
+        else -> "$days днів"
+    }
+
+    // Об'єднання частин, виключаючи порожні
+    return listOf(yearsText, monthsText, daysText)
+        .filter { it.isNotEmpty() }
+        .joinToString(" ")
+}
+
+fun formatTotalDays(days: Int): String {
+    return when {
+        days == 0 -> ""
+        days == 1 -> "$days день"
+        days in 2..4 -> "$days дні"
+        else -> "$days днів"
+    }
+}
+
+/* Утиліта для конвертації HTML у AnnotatedString */
+@Composable
+fun htmlToAnnotatedString(html: String): AnnotatedString {
+    val spanned = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+    return buildAnnotatedString {
+        append(spanned.toString())
+        spanned.getSpans(0, spanned.length, Any::class.java).forEach { span ->
+            when (span) {
+                is StyleSpan -> {
+                    val start = spanned.getSpanStart(span)
+                    val end = spanned.getSpanEnd(span)
+                    when (span.style) {
+                        android.graphics.Typeface.BOLD -> {
+                            addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                        }
+                        android.graphics.Typeface.ITALIC -> {
+                            addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/* ************************* TEST ************************ */
 fun getListGroupTest(): List<Group> {
     return listOf(
         Group(

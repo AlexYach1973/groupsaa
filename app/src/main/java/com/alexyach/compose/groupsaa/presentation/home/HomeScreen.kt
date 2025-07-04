@@ -1,10 +1,14 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
 import android.content.Context
+import android.text.style.StyleSpan
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,18 +30,27 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,6 +58,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
+
+import androidx.core.text.toSpanned
+import androidx.compose.ui.text.fromHtml // Уявна утиліта, потрібно реалізувати
+import androidx.core.text.HtmlCompat
 
 
 @Composable
@@ -58,14 +77,9 @@ fun HomeScreen(
 
     val scrollState = rememberScrollState()
 
-    val difference by viewModel.difference.collectAsState(listOf<Int>(0,0,0))
+    val difference by viewModel.difference.collectAsState("")
     val selectedDate by viewModel.selectedDate.collectAsState("")
-    val totalDays by viewModel.totalDays.collectAsState(0)
-
-    /* TEST */
-    val dataTest by viewModel.testDay.collectAsState(-5)
-    val dataYear by viewModel.testYear.collectAsState(-5)
-
+    val totalDays by viewModel.totalDays.collectAsState("")
 
     val dataStoreYear by viewModel.dataStoreYear.collectAsState(-1)
     val dataStoreMonth by viewModel.dataStoreMonth.collectAsState(-1)
@@ -93,11 +107,70 @@ fun HomeScreen(
             totalDays = totalDays
         )
 
-        /* TEST */
-        Text(
-            text = "$dataTest day $dataYear year",
-            fontSize = 25.sp
+/* *************************   PRAYER ***************************   */
+
+        var isHideMorningPrayer by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHideMorningPrayer,
+            onClickHideListener = { isHideMorningPrayer = !isHideMorningPrayer },
+            resTextTitle = stringResource(R.string.number_step_eleven_morning_title),
+            resTextStart = stringResource(R.string.number_step_eleven_morning_start),
+            resTextFull = stringResource(R.string.number_step_eleven_morning)
         )
+
+        var isHideEveningPrayer by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHideEveningPrayer,
+            onClickHideListener = { isHideEveningPrayer = !isHideEveningPrayer },
+            resTextTitle = stringResource(R.string.number_step_eleven_evening_title),
+            resTextStart = stringResource(R.string.number_step_eleven_evening_start),
+            resTextFull = stringResource(R.string.number_step_eleven_evening)
+        )
+
+        var isHidePrayerDelegation by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHidePrayerDelegation,
+            onClickHideListener = { isHidePrayerDelegation = !isHidePrayerDelegation },
+            resTextTitle = stringResource(R.string.prayer_delegation_title),
+            resTextStart = stringResource(R.string.prayer_delegation_start),
+            resTextFull = stringResource(R.string.prayer_delegation)
+        )
+
+        var isHidePrayerPeaceOfMind by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHidePrayerPeaceOfMind,
+            onClickHideListener = { isHidePrayerPeaceOfMind = !isHidePrayerPeaceOfMind },
+            resTextTitle = stringResource(R.string.peace_of_mind_title),
+            resTextStart = stringResource(R.string.peace_of_mind_start),
+            resTextFull = stringResource(R.string.peace_of_mind_full)
+        )
+
+        var isHidePrayerResentment by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHidePrayerResentment,
+            onClickHideListener = { isHidePrayerResentment = !isHidePrayerResentment },
+            resTextTitle = stringResource(R.string.resentment_title),
+            resTextStart = stringResource(R.string.resentment_start),
+            resTextFull = stringResource(R.string.resentment_full)
+        )
+
+        var isHidePrayerFear by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHidePrayerFear,
+            onClickHideListener = { isHidePrayerFear = !isHidePrayerFear },
+            resTextTitle = stringResource(R.string.prayer_fear_title),
+            resTextStart = stringResource(R.string.prayer_fear_start),
+            resTextFull = stringResource(R.string.prayer_fear_full)
+        )
+
+
+
+
+        /* TEST */
+//        Text(
+//            text = "$dataTest day $dataYear year",
+//            fontSize = 25.sp
+//        )
 
 
     }
@@ -111,9 +184,9 @@ fun HomeScreen(
 private fun PeriodOfSobrietyCard(
     context: Context,
     viewModel: HomeViewModel,
-    difference: List<Int>,
+    difference: String,
     selectedDate: String,
-    totalDays: Int
+    totalDays: String
 ) {
 
     Card(
@@ -135,121 +208,133 @@ private fun PeriodOfSobrietyCard(
         if (openDialog) {
             DataSelection(
                 viewModel = viewModel,
-//                    openDialog = openDialog,
                 onDismissClickListener = { openDialog = it }
             )
         }
 
-
-        Column(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
 
         ) {
-            /* 1 Line */
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            Image(
+                painter = painterResource(id = R.drawable.shar),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth, // Масштабування, щоб заповнити екран
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+
             ) {
-                Text(
-                    text = context.getString(R.string.homescreen_sobriety_card_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Normal
+                /* 1 Line */
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = context.getString(R.string.homescreen_sobriety_card_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Normal
 //                        fontSize = 28.sp
 //                        fontStyle = FontStyle.Italic
-                )
-            }
-
-            /* 2 Line */
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                if (difference.isNotEmpty()) {
-                    Text(
-                        text = "${difference[0]}  Years ${difference[1]} Months ${difference[2]} Days",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-//                            fontSize = 22.sp,
-//                            fontWeight = FontWeight.Bold
                     )
-                } else {
-                    Text(
-                        text = context.getString(R.string.homescreen_sobriety_not_date),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontStyle = FontStyle.Italic
+                }
+
+                /* 2 Line */
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    if (difference.isNotEmpty()) {
+                        Text(
+                            text = difference,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 26.sp
+                        )
+                    } else {
+                        Text(
+                            text = context.getString(R.string.homescreen_sobriety_not_date),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontStyle = FontStyle.Italic
 //                            fontSize = 18.sp,
 //                            fontStyle = FontStyle.Italic
-                    )
+                        )
+                    }
                 }
-            }
 
-            /* 3 Line */
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                if (difference.isNotEmpty()) {
-                    Text(
-                        text = "або $totalDays",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontStyle = FontStyle.Italic
-                    )
-                }
-            }
-
-
-            /* 4 Line */
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-
+                /* 3 Line */
                 Row(
-                    horizontalArrangement = Arrangement.Start,
                     modifier = Modifier
-                        .weight(4f)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = selectedDate,
-                        style = MaterialTheme.typography.labelMedium
-                    )
+                    if (difference.isNotEmpty()) {
+                        Text(
+                            text = "або $totalDays",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontStyle = FontStyle.Italic,
+                            fontSize = 22.sp
+                        )
+                    }
                 }
 
 
+                /* 4 Line */
                 Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .weight(1f)
-                        .clickable { openDialog = true }
+                        .padding(top = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Edit",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontStyle = FontStyle.Italic,
+
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
                         modifier = Modifier
-                            .padding(end = 8.dp)
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "setting",
-                        tint = MaterialTheme.colorScheme.primary,
+                            .weight(4f)
+                    ) {
+                        Text(
+                            text = "від $selectedDate",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+
+
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(20.dp)
+                            .weight(1f)
+                            .clickable { openDialog = true }
+                    ) {
+                        Text(
+                            text = "Edit",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontStyle = FontStyle.Italic,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "setting",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(20.dp)
 //                            .clickable { openDialog = true }
-                    )
+                        )
+                    }
                 }
+
+
             }
 
 
-        }
-
-
+        } // Box
     }
 
 }
@@ -258,25 +343,17 @@ private fun PeriodOfSobrietyCard(
 @Composable
 private fun DataSelection(
     viewModel: HomeViewModel,
-//    openDialog: Boolean,
     onDismissClickListener: (Boolean) -> Unit
 ) {
 
-//    var openDialog by remember { mutableStateOf(false) }
-//    var selectedDate by remember { mutableStateOf<Long?>(null) }
     val datePickerState = rememberDatePickerState()
 
-//    var openDialog1 = openDialog
-
-
-//    if (openDialog) {
     DatePickerDialog(
         onDismissRequest = { onDismissClickListener(false) },
         confirmButton = {
             TextButton(
                 onClick = {
                     viewModel.dataPickerSelected(datePickerState.selectedDateMillis)
-//                        openDialog = false
                     onDismissClickListener(false)
                 }
             ) { Text(text = "Ok") }
@@ -288,8 +365,106 @@ private fun DataSelection(
     ) {
         DatePicker(state = datePickerState)
     }
-//    }
 }
+
+
+@Composable
+private fun PrayerCard(
+    isHide: Boolean,
+    onClickHideListener: (Boolean) -> Unit,
+    resTextTitle: String,
+    resTextStart: String,
+    resTextFull: String
+) {
+    var fontSizeText by remember { mutableIntStateOf(18) }
+
+    Card(
+
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .border(
+                width = 2.dp,
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+            .clickable { onClickHideListener(isHide) },
+
+        colors = CardDefaults.cardColors(
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            /* Text Size */
+            if (!isHide) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "plus",
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable { fontSizeText++ }
+                )
+
+                Icon(
+                    painter = painterResource(R.drawable.minus),
+                    contentDescription = "plus",
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable { fontSizeText-- }
+                )
+            }
+        }
+
+        if (isHide) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = resTextTitle,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Normal
+                )
+                Text(
+                    text = resTextStart,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = "arrow"
+                )
+
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+//                    .background(color = MaterialTheme.colorScheme.primary)
+            ) {
+
+                Text(
+                    text = resTextFull,
+                    fontSize = fontSizeText.sp,
+//                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                )
+            }
+
+        }
+
+    }
+}
+
+
 
 
 
