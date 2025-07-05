@@ -12,28 +12,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,8 +34,6 @@ import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.CoroutineScope
-import kotlin.Any
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -68,7 +55,7 @@ fun GroupListScreen(
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
 
 
-    var isInternet = viewModel.isInternet.collectAsState(true)
+    val isInternet = viewModel.isInternet.collectAsState(true)
 
     when (val currentState = screenState.value) {
         is GroupListScreenState.Groups -> {
@@ -180,9 +167,6 @@ private fun Groups(
     )
     {
 
-        /* OLD Code */
-//        LaunchCurrentLocation(viewModel, groups)
-
         HeaderGroupList(
             isInternet = isInternet
         )
@@ -204,6 +188,7 @@ private fun HeaderGroupList(
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -220,14 +205,22 @@ private fun HeaderGroupList(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Icon(
+            Text(
+                text = if(isInternet) "internet" else "local DB",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Light,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
+
+            /*Icon(
                 painter = painterResource(id = com.alexyach.compose.groupsaa.R.drawable.wifi),
                 contentDescription = null,
                 tint = if (isInternet) Color.Green else Color.Red,
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .size(50.dp)
-            )
+            )*/
 
         }
 

@@ -163,6 +163,15 @@ fun HomeScreen(
             resTextFull = stringResource(R.string.prayer_fear_full)
         )
 
+        var isHideStepTen by remember { mutableStateOf(true) }
+        PrayerCard(
+            isHide = isHideStepTen,
+            onClickHideListener = { isHideStepTen = !isHideStepTen },
+            resTextTitle = stringResource(R.string.step_number_ten_title),
+            resTextStart = stringResource(R.string.step_number_ten_start),
+            resTextFull = stringResource(R.string.step_number_ten_full)
+        )
+
 
 
 
@@ -376,14 +385,14 @@ private fun PrayerCard(
     resTextStart: String,
     resTextFull: String
 ) {
-    var fontSizeText by remember { mutableIntStateOf(18) }
+    var fontSizeText by remember { mutableIntStateOf(16) }
 
     Card(
 
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .border(
                 width = 2.dp,
                 shape = RoundedCornerShape(8.dp),
@@ -406,6 +415,7 @@ private fun PrayerCard(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "plus",
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clickable { fontSizeText++ }
@@ -413,7 +423,8 @@ private fun PrayerCard(
 
                 Icon(
                     painter = painterResource(R.drawable.minus),
-                    contentDescription = "plus",
+                    contentDescription = "minus",
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clickable { fontSizeText-- }

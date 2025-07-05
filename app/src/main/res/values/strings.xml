@@ -2,7 +2,7 @@
     <string name="app_name">groupsaa</string>
 
 <!--    Navigation-->
-    <string name="navigation_item_home">Дім</string>
+    <string name="navigation_item_home">Головна</string>
     <string name="navigation_item_meeting">групи</string>
     <string name="navigation_item_news">новини</string>
     <string name="navigation_item_read">чтиво</string>
@@ -213,8 +213,8 @@
         \n
     </string>
 
-    /* О душ.покое */
-    /*peace of mind */
+<!--     О душ.покое -->
+<!--    peace of mind -->
     <string name="peace_of_mind_title">О душевному спокої </string>
     <string name="peace_of_mind_start">
         <b>Боже</b>, дай мне разум и душевный покой,\n
@@ -238,7 +238,7 @@
         <b>Да исполнится воля Твоя, а не моя!</b>\n
     </string>
 
-    /* resentment */
+<!--   resentment -->
     <string name="resentment_title">Злоба </string>
     <string name="resentment_start"><b>Боже</b>, помоги мне относиться к <i>(имя человека)</i>
         с той же терпимостью, с тем же состраданием и жалостью,
@@ -252,7 +252,7 @@
         Да исполнится воля <b>Твоя</b>.\n
     </string>
 
-    /* fear */
+<!--     fear -->
     <string name="prayer_fear_title">Страхи </string>
     <string name="prayer_fear_start"><b>Господи</b>, помоги мне увидеть, что этот страх
         <i>(название страха)</i> из-за моей надежды на самого себя,
@@ -268,8 +268,25 @@
         воле, надлежит быть (радостным, свободным и счастливым).\n
     </string>
 
-
-
+<!--    10 Step-->
+    <string name="step_number_ten_title">Алгоритм десятого кроку</string>
+    <string name="step_number_ten_start"> 1. Продолжаем следить за проявлениями <b>себялюбия, нечестности,
+        негодования и страха</b>\n
+        Когда они появляются, мы:\n
+        2. <b>Сразу же просим Бога</b> избавить нас от них.\n
+    </string>
+    <string name="step_number_ten_full"><b>Алгоритм десятого шага:</b>\n
+        1. Продолжаем следить за проявлениями <b>себялюбия, нечестности,
+        негодования и страха</b>\n
+        Когда они появляются, мы:\n
+        2. <b>Сразу же просим Бога</b> избавить нас от них.\n
+        ("Господи избавь от …")\n
+        3. Мы <b>немедленно обсуждаем</b> это с кем-то и\n
+        4. <b>Быстро исправляем ошибки,</b> если мы причинили ущерб кому-либо.\n
+        5. <b>Затем мы решительно обращаем наши мысли</b> к тем, кому мы можем помочь.\n
+        \n
+        <i>Любовь и терпимость к другим являются нашим кодексом.</i>\n
+    </string>
 
 
 
