@@ -26,7 +26,7 @@ import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.ui.theme.GroupsaaTheme
 
 @Composable
-fun CardGroup(
+fun CardGroups(
     group: Group,
     onGroupClickListener : (Group) -> Unit,
     modifier: Modifier = Modifier
@@ -55,7 +55,7 @@ fun CardGroup(
             DistanceToGroup(
                 group = group,
             )
-            Spacer(modifier = Modifier.padding(4.dp))
+//            Spacer(modifier = Modifier.padding(4.dp))
             InfoAboutGroup(
                 group = group
             )
@@ -70,23 +70,41 @@ private fun DistanceToGroup(group: Group){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(start = 4.dp)
+            .padding(top = 8.dp, start = 4.dp, end = 4.dp, bottom = 4.dp)
             .width(100.dp)
 
     ) {
-        Icon(
-            painterResource(id = R.drawable.group),
-            contentDescription = "groups",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .size(30.dp)
-        )
+        if (group.latitude == 0.0) {
+            Icon(
+                painterResource(id = R.drawable.seminar),
+                contentDescription = "groups",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(45.dp)
+            )
 
-        Text(
-            text = String.format("%.1f", group.distance) + "км",
-            fontSize = 28.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
+            Text(
+                text = "online",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+        } else {
+            Icon(
+                painterResource(id = R.drawable.group),
+                contentDescription = "groups",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(45.dp)
+            )
+
+            Text(
+                text = String.format("%.1f", group.distance) + "км",
+                fontSize = 28.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
     }
 
 }
@@ -97,7 +115,7 @@ private fun InfoAboutGroup(
 ) {
     Column(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(4.dp)
     ) {
         Text(
             text = group.name,
@@ -121,8 +139,8 @@ private fun InfoAboutGroup(
 @Composable
 fun GreetingPreview() {
     GroupsaaTheme {
-        CardGroup(
-            Group("Name", "qweqwe", "qw@qw", "3434","","",0.1, 0.1),
+        CardGroups(
+            Group("Name", "qweqwe", listOf(), "3434","","",0.1, 0.1),
             {}
         )
     }

@@ -2,13 +2,13 @@ package com.alexyach.compose.groupsaa.presentation.grouplist
 
 import android.Manifest
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,15 +19,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.App
+import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
@@ -110,7 +116,7 @@ fun ErrorListGroup() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Не вдалося загрузити список груп, спробуйте пізніше"
+            text = stringResource(R.string.grouplistscreen_error_load)
         )
     }
 }
@@ -147,34 +153,45 @@ private fun Groups(
     val scrollState = rememberScrollState()
 
     /* Get Current Location */
-//    SideEffect {
     viewModel.getLocation(
         context = context,
         permissionState = permissionState,
         groups = groups
     )
-//    }
-
 
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.secondaryContainer)
-//            .background(MaterialTheme.colorScheme.background)
             .padding(paddingValues)
-//            .padding(top = 40.dp)
     )
     {
 
+        /* Offline */
         HeaderGroupList(
-            isInternet = isInternet
+            isInternet = isInternet,
+            resStringTitle = R.string.grouplistscreen_offline_title
         )
 
-        groups.forEach {
-            Log.d("Logs", "Distance= ${it.distance}")
-            CardGroup(
-                group = it,
+        groups.filter { it.latitude != 0.0 }.forEach { group ->
+            CardGroups(
+                group = group,
+                onGroupClickListener
+            )
+        }
+
+        /* Online */
+        Spacer(modifier = Modifier.padding(4.dp))
+        HeaderGroupList(
+            isInternet = isInternet,
+            resStringTitle = R.string.grouplistscreen_online_title
+        )
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        groups.filter { it.latitude == 0.0 }.forEach { group ->
+            CardGroups(
+                group = group,
                 onGroupClickListener
             )
         }
@@ -184,7 +201,8 @@ private fun Groups(
 
 @Composable
 private fun HeaderGroupList(
-    isInternet: Boolean
+    isInternet: Boolean,
+    resStringTitle: Int
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -199,7 +217,7 @@ private fun HeaderGroupList(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Офлайн групи",
+                text = stringResource(resStringTitle),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

@@ -7,7 +7,7 @@ import com.alexyach.compose.groupsaa.domain.model.Group
 data class ResponseDto(
     val name: String,
     val addresses: String,
-    val schedule: String,
+    val schedule: List<String>,
     val telephone: String,
     val email: String,
     val note: String,
@@ -15,6 +15,7 @@ data class ResponseDto(
     val longitude: Double,
     val addressForMap: String
 )
+/*PHP array('19:00','19:00','19:00','19:00','19:00','19:00','19:00') */
 
 fun ResponseDto.toGroup() : Group {
     return Group(

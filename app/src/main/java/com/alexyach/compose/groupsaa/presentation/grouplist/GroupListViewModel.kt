@@ -66,7 +66,6 @@ class GroupListViewModel(
                 /* Оновити Room */
                 updateRoomGroups(currentListGroup)
 
-
             }.runCatching {
                 _screenState.value = GroupListScreenState.Loading(LoadingFrom.LoadRoom)
 
@@ -83,7 +82,7 @@ class GroupListViewModel(
                         Log.d("Logs", "GroupListViewModel listFromRoom.isEmpty()")
                         _screenState.value = GroupListScreenState.Groups(
                             listOf(
-                                Group("База пуста", "", "", "", "", "", 0.0, 0.0)
+                                Group("База пуста", "", listOf(), "", "", "", 0.0, 0.0)
                             )
                         )
                     } else {
@@ -113,7 +112,8 @@ class GroupListViewModel(
     }
 
 
-    /*  New Code */
+
+    /*  New Code Distance */
     @OptIn(ExperimentalPermissionsApi::class)
     @SuppressLint("MissingPermission")
     fun getLocation(
@@ -152,7 +152,7 @@ class GroupListViewModel(
         currentLocation: Location,
         groups: List<Group>
     ) {
-        Log.d("Logs", "GroupListViewModel distanceToGroups start")
+//        Log.d("Logs", "GroupListViewModel distanceToGroups start")
 
         var distance: Double
         val latCurrent = currentLocation.latitude
@@ -170,7 +170,7 @@ class GroupListViewModel(
                 val c = 2 * atan2(sqrt(a), sqrt(1 - a))
                 distance = radiusEarth * c
 
-                Log.d("Logs", "distanceToGroups name: ${group.name} distance: $distance")
+//                Log.d("Logs", "distanceToGroups name: ${group.name} distance: $distance")
 
                 group.copy(distance = distance)
             }

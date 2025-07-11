@@ -57,6 +57,12 @@ class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel(
 //            val month = selectedDate.monthValue
 //            val day = selectedDate.dayOfMonth
 
+            /* Day Of Week */
+            /*
+            SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY
+             */
+//            Log.d("Logs","HomeViewModel day: ${selectedDate.dayOfWeek}")
+
             /* Save to DataStore*/
             saveToDataStore(
                 listOf(

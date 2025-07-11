@@ -10,7 +10,7 @@ data class GroupEntity(
     val id: Int,
     val name: String,
     val addresses: String,
-    val schedule: String,
+    val schedule: List<String>,
     val email: String,
     val telephone: String,
     val note: String,

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">groupsaa</string>
+    <string name="app_name">groupsAA</string>
 
 <!--    Navigation-->
     <string name="navigation_item_home">Головна</string>
@@ -12,12 +12,28 @@
     <string name="homescreen_sobriety_card_title">Ти тверезий на сьогодні:</string>
     <string name="homescreen_sobriety_not_date">Дата не вибрана, нажмть Edit</string>
 
+<!--    GroupListScreen-->
+    <string name="grouplistscreen_offline_title">Офлайн групи</string>
+    <string name="grouplistscreen_online_title">Онлайн групи</string>
+    <string name="grouplistscreen_error_load">Не вдалося загрузити список груп, спробуйте пізніше</string>
+
+<!--    group Screen-->
+    <string name="groupscreen_online_chat">посилання на чат</string>
+
+
+
+
+
+
+
+
 <!--    ***************   PRAYER   ****************   -->
 
 <!--    3 крок-->
     <string name="prayer_delegation_title">Перепорука </string>
 
-    <string name="prayer_delegation_start"><b>Господи</b>, я предаю себя Тебе, чтобы создавать и творить при моем участии,
+    <string name="prayer_delegation_start"><b>Господи</b>,
+        я предаю себя Тебе, чтобы создавать и творить при моем участии,
         как Тебе угодно.\n
         Освободи меня от пут себялюбия, чтобы я лучше мог выполнять Твою волю...
     </string>
@@ -217,17 +233,18 @@
 <!--    peace of mind -->
     <string name="peace_of_mind_title">О душевному спокої </string>
     <string name="peace_of_mind_start">
-        <b>Боже</b>, дай мне разум и душевный покой,\n
-        Принять то, что я не в силах изменить,\n
-        Мужество изменить то, что могу и\n
-        Мудрость отличить одно от другого,\n
+        <b>Боже</b>,  даруй мені душевний спокій,\n
+        приймати те, що я не можу змінити,\n
+        мужність змінити те, що можу,\n
+        І мудрість відрізнити одне від іншого.\n
     </string>
 
     <string name="peace_of_mind_full">
-        <b>Боже</b>, дай мне разум и душевный покой,\n
-        Принять то, что я не в силах изменить,\n
-        Мужество изменить то, что могу и\n
-        Мудрость отличить одно от другого,\n\n
+        <b>Боже</b>,  даруй мені душевний спокій,\n
+        приймати те, що я не можу змінити,\n
+        мужність змінити те, що можу,\n
+        І мудрість відрізнити одне від іншого.\n\n
+
         Терпение к вещам, требующим время,\n\n
         Благодарность за все, что я имею,\n\n
         Терпимость к духовно страдающим людям,\n\n
