@@ -1,6 +1,7 @@
 package com.alexyach.compose.groupsaa.presentation.group
 
 import android.content.Context
+import android.icu.util.LocaleData
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,6 +55,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Group
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -574,15 +576,14 @@ fun GroupSchedule(
         )
 
         /* Date */
-        val currentData = ZonedDateTime.now()
-        val currentDay = currentData.dayOfWeek.name
+        val currentDay = LocalDateTime.now().dayOfWeek.name
+        /* Hour */
+        val currentTime = LocalTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
         for ((index, listScheduleItem) in listSchedule.withIndex()) {
             if (listScheduleItem.isNotBlank()) {
 
-                /* Hour */
-                val currentTime = LocalTime.now()
-                val formatter = DateTimeFormatter.ofPattern("HH:mm")
                 val timeSchedule = LocalTime.parse(listScheduleItem, formatter)
                 val timeSchedulePlusHour = timeSchedule.plusHours(1)
 

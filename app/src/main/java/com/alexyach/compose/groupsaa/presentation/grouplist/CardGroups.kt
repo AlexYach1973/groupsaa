@@ -1,5 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.grouplist
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.ui.theme.GroupsaaTheme
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun CardGroups(
@@ -78,7 +83,11 @@ private fun DistanceToGroup(group: Group){
             Icon(
                 painterResource(id = R.drawable.seminar),
                 contentDescription = "groups",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = if (isActiveGroup(group = group)) {
+                    Color.Green
+                } else {
+                    MaterialTheme.colorScheme.primary
+                },
                 modifier = Modifier
                     .size(45.dp)
             )
@@ -86,14 +95,22 @@ private fun DistanceToGroup(group: Group){
             Text(
                 text = "online",
                 fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary
+                color = if (isActiveGroup(group = group)) {
+                    Color.Green
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
             )
 
         } else {
             Icon(
                 painterResource(id = R.drawable.group),
                 contentDescription = "groups",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = if (isActiveGroup(group = group)) {
+                    Color.Green
+                } else {
+                    MaterialTheme.colorScheme.primary
+                },
                 modifier = Modifier
                     .size(45.dp)
             )
@@ -135,12 +152,55 @@ private fun InfoAboutGroup(
 }
 
 
+private fun isActiveGroup(group: Group): Boolean {
+
+    val dayOfWeek = listOf(
+        "monday", "tuesday", "wednesday", "thursday",
+        "friday", "saturday", "sunday"
+    )
+
+    /* Date */
+    val currentDay = LocalDateTime.now().dayOfWeek.name.lowercase()
+    /* Hour */
+    val currentTime = LocalTime.now()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    val indexListDay = dayOfWeek.indexOf(currentDay)
+    val timeTodayStr = group.schedule[indexListDay]
+
+//    Log.d("Logs", "isActiveGroup ${group.name} indexListDay= $indexListDay; timeTodayStr= $timeTodayStr")
+
+    if (timeTodayStr.isNotBlank()) {
+
+        val timeToday = LocalTime.parse(timeTodayStr, formatter)
+        val timeTodayPlusHour = timeToday.plusHours(1)
+
+        val isTimeMatched = currentTime.isAfter(timeToday) &&
+                currentTime.isBefore(timeTodayPlusHour)
+
+        return isTimeMatched
+
+    } else {
+        return false
+    }
+
+}
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     GroupsaaTheme {
         CardGroups(
-            Group("Name", "qweqwe", listOf(), "3434","","",0.1, 0.1),
+            Group("Name",
+                "qweqwe",
+                listOf("","","","","16:00","",""),
+                "3434",
+                "",
+                "",
+                0.1,
+                0.1),
             {}
         )
     }

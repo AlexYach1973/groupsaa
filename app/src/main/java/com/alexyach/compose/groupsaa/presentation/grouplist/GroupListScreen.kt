@@ -2,6 +2,7 @@ package com.alexyach.compose.groupsaa.presentation.grouplist
 
 import android.Manifest
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,11 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +37,10 @@ import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import kotlin.text.lowercase
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -181,8 +182,9 @@ private fun Groups(
             )
         }
 
-        /* Online */
         Spacer(modifier = Modifier.padding(4.dp))
+
+        /* Online */
         HeaderGroupList(
             isInternet = isInternet,
             resStringTitle = R.string.grouplistscreen_online_title
