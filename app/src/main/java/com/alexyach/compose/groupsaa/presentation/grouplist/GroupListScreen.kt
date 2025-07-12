@@ -233,14 +233,6 @@ private fun HeaderGroupList(
                     .padding(start = 8.dp)
             )
 
-            /*Icon(
-                painter = painterResource(id = com.alexyach.compose.groupsaa.R.drawable.wifi),
-                contentDescription = null,
-                tint = if (isInternet) Color.Green else Color.Red,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(50.dp)
-            )*/
 
         }
 

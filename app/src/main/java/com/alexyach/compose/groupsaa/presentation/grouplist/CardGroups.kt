@@ -195,12 +195,12 @@ fun GreetingPreview() {
         CardGroups(
             Group("Name",
                 "qweqwe",
-                listOf("","","","","16:00","",""),
+                listOf("","","","","18:00","",""),
                 "3434",
                 "",
                 "",
-                0.1,
-                0.1),
+                0.0,
+                0.0),
             {}
         )
     }

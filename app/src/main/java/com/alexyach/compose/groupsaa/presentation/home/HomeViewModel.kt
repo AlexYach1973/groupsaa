@@ -30,7 +30,7 @@ class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel(
     private val _totalDays = MutableStateFlow<String>("")
     val totalDays: StateFlow<String> = _totalDays
 
-    /* Load From Date Store */
+    /* Load From Date Store Date */
     val dataStoreYear = dataStoreManager.loadYear
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), -1)
 
@@ -39,6 +39,22 @@ class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel(
 
     val dataStoreDay = dataStoreManager.loadDay
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), -1)
+
+    /* Load From Date Store Preferences Show Prayer */
+    val prefMorningPrayer = dataStoreManager.prefMorningPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
+    val prefEveningPrayer = dataStoreManager.prefEveningPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
+    val prefDelegationPrayer = dataStoreManager.prefDelegationPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
+    val prefPeaceOfMindPrayer = dataStoreManager.prefPeaceOfMindPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
+    val prefResentmentPrayer = dataStoreManager.prefResentmentPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
+    val prefFearPrayer = dataStoreManager.prefFearPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
+    val prefStepTenPrayer = dataStoreManager.prefStepTenPrayer
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
 
 
     init {
@@ -105,6 +121,44 @@ class HomeViewModel(private val dataStoreManager: DataStoreManager) : ViewModel(
 
     }
 
+
+    /* *** Save Preference Show Prayer ** */
+    fun savePrefMorningPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.saveMorningPrayer(value)
+        }
+    }
+
+    fun savePrefEveningPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.saveEveningPrayer(value)
+        }
+    }
+    fun savePrefDelegationPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.saveDelegationPrayer(value)
+        }
+    }
+    fun savePrefPeaceOfMindPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.savePeaceOfMindPrayer(value)
+        }
+    }
+    fun saveResentmentPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.saveResentmentPrayer(value)
+        }
+    }
+    fun saveFearPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.saveFearPrayer(value)
+        }
+    }
+    fun saveStepTenPrayer(value: Boolean) {
+        viewModelScope.launch {
+            dataStoreManager.saveStepTenPrayer(value)
+        }
+    }
 
 
 }

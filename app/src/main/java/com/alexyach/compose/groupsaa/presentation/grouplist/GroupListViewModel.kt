@@ -76,13 +76,15 @@ class GroupListViewModel(
 
                 /* From Room */
                 repository.getAllFromRoom().collect { listGroupEntity ->
+
                     val listFromRoom = listGroupEntity.map { it.toGroup() }
 
                     if (listFromRoom.isEmpty()) {
                         Log.d("Logs", "GroupListViewModel listFromRoom.isEmpty()")
                         _screenState.value = GroupListScreenState.Groups(
                             listOf(
-                                Group("База пуста", "", listOf(), "", "", "", 0.0, 0.0)
+                                Group("База пуста", "", listOf("","","","","","",""),
+                                    "", "", "", 0.0, 0.0)
                             )
                         )
                     } else {
@@ -90,6 +92,9 @@ class GroupListViewModel(
                         Log.d("Logs", "GroupListViewModel listFromRoom NO Empty")
                     }
 
+                }.runCatching {
+                    Log.d("Logs", "Error ROOM")
+                    _screenState.value = GroupListScreenState.Error
                 }
             }
         }

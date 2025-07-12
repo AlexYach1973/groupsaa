@@ -12,18 +12,22 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -114,9 +119,13 @@ fun GroupScreen(
                 navigationIcon = {
                     IconButton(onClick = { onBackPress() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            painterResource(R.drawable.left_arrow_button),
+//                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
 //                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Arrow Back"
+                            contentDescription = "Arrow Back",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .size(30.dp)
                         )
                     }
                 }
@@ -460,6 +469,12 @@ private fun TelephoneGroup(
             )
     ) {
 
+        /*CallButton(
+            context = context,
+            viewModel = viewModel,
+            group = group
+        )*/
+
         Icon(
             imageVector = Icons.Default.Call,
             contentDescription = null,
@@ -493,9 +508,6 @@ fun InternetLink(
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.onSecondary
-//                brush = brush,
-//                shape = RoundedCornerShape(12.dp),
-//                shape = RectangleShape
             )
     ) {
 
@@ -503,18 +515,9 @@ fun InternetLink(
             painterResource(R.drawable.website),
             contentDescription = "website",
             modifier = Modifier
-                .padding(start = 8.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp)
                 .size(60.dp)
         )
-
-        /*Icon(
-            painter = painterResource(id = R.drawable.web),
-            contentDescription = null,
-            tint = Color.Blue,
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .size(60.dp)
-        )*/
 
         Row(
             modifier = Modifier
@@ -710,6 +713,38 @@ fun AddressGroup(
         }
 
 
+    }
+}
+
+@Composable
+private fun CallButton(
+    context: Context,
+    viewModel: GroupViewModel,
+    group: Group
+) {
+    Button(
+        onClick = {
+            viewModel.makeCallGroup(
+                context = context,
+                phoneNumber = group.telephone
+            )
+        },
+        contentPadding = PaddingValues(4.dp),
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .size(50.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Call,
+            contentDescription = null,
+            tint = Color.Green,
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .clip(shape = CircleShape)
+//                .padding(0.dp)
+                .size(50.dp)
+        )
     }
 }
 
