@@ -171,12 +171,25 @@ private fun isActiveGroup(group: Group): Boolean {
 //    Log.d("Logs", "isActiveGroup ${group.name} indexListDay= $indexListDay; timeTodayStr= $timeTodayStr")
 
     if (timeTodayStr.isNotBlank()) {
+        var isTimeMatched = false
 
-        val timeToday = LocalTime.parse(timeTodayStr, formatter)
-        val timeTodayPlusHour = timeToday.plusHours(1)
+        /*  If Schedule list (12:00, 18:00) */
+            val listScheduleItem: List<String> = timeTodayStr.split(",")
+            val timeScheduleList = mutableListOf<LocalTime>()
+            val timeSchedulePlusHourList = mutableListOf<LocalTime>()
 
-        val isTimeMatched = currentTime.isAfter(timeToday) &&
-                currentTime.isBefore(timeTodayPlusHour)
+            listScheduleItem.forEach {timeScheduleList.add(LocalTime.parse(it,formatter))}
+            timeScheduleList.forEach {timeSchedulePlusHourList.add(it.plusHours(1))}
+
+
+            for (i in 0..(listScheduleItem.size-1)) {
+                if (
+                    currentTime.isAfter(timeScheduleList[i]) &&
+                    currentTime.isBefore(timeSchedulePlusHourList[i])
+                ) {
+                    isTimeMatched = true
+                }
+            }
 
         return isTimeMatched
 

@@ -85,7 +85,7 @@ fun getListGroupTest(): List<Group> {
         Group(
             name = "\"Оболонь\"",
             addresses = " м.\"Героїв Дніпра\", вул. Прирічна, 21а  ",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
+            schedule = listOf("19:00","13:00,19:00","19:00","19:00","19:00","10:00,19:00","11:00,19:00"),
             telephone = "097-476-3601",
             email = "https://www.aa.kiev.ua/grupa-aa-obolon/",
             note = "Підвальне приміщення з тилу будинку",
@@ -96,7 +96,7 @@ fun getListGroupTest(): List<Group> {
         Group(
             name = "\"Фенікс\"",
             addresses = "м.\"Кловська\", Печерський узвіз, 19",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","10:00"),
+            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","12:00,11:00"),
             telephone = "098-300-0101",
             email = "https://www.aa.kiev.ua/grupa-aa-feniks/",
             note = "",

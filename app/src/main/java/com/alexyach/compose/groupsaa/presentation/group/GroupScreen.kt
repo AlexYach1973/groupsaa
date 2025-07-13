@@ -464,8 +464,6 @@ private fun TelephoneGroup(
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.onSecondary
-//                brush = brush,
-//                shape = RoundedCornerShape(12.dp),
             )
     ) {
 
@@ -584,16 +582,29 @@ fun GroupSchedule(
         val currentTime = LocalTime.now()
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
-        for ((index, listScheduleItem) in listSchedule.withIndex()) {
-            if (listScheduleItem.isNotBlank()) {
+        for ((index, scheduleItem) in listSchedule.withIndex()) {
+            if (scheduleItem.isNotBlank()) {
 
-                val timeSchedule = LocalTime.parse(listScheduleItem, formatter)
-                val timeSchedulePlusHour = timeSchedule.plusHours(1)
+                var isTimeMatched = false
+                /*  If Schedule list (12:00, 18:00) */
+                val listScheduleItem: List<String> = scheduleItem.split(",")
+                val timeScheduleList = mutableListOf<LocalTime>()
+                val timeSchedulePlusHourList = mutableListOf<LocalTime>()
+
+                listScheduleItem.forEach { timeScheduleList.add(LocalTime.parse(it, formatter)) }
+                timeScheduleList.forEach { timeSchedulePlusHourList.add(it.plusHours(1)) }
+
+                for (i in 0..(listScheduleItem.size - 1)) {
+                    if (
+                        currentTime.isAfter(timeScheduleList[i]) &&
+                        currentTime.isBefore(timeSchedulePlusHourList[i])
+                    ) {
+                        isTimeMatched = true
+                    }
+                }
+
 
                 val isDayMatched = currentDay.lowercase() == dayOfWeek[index].lowercase()
-                val isTimeMatched = currentTime.isAfter(timeSchedule) &&
-                        currentTime.isBefore(timeSchedulePlusHour)
-
 
 //                    Log.d("Logs", "currentTime= $currentTime; timeSchedule= $timeSchedule")
 
@@ -647,7 +658,8 @@ fun GroupSchedule(
                             .weight(1f)
                     ) {
                         Text(
-                            text = listScheduleItem,
+                            text = scheduleItem,
+//                            text = group.schedule.joinToString(separator = ", "),
                             style = MaterialTheme.typography.bodyLarge,
                             color = if (isTimeMatched && isDayMatched) {
                                 colorResource(R.color.purple_200)
@@ -764,7 +776,7 @@ private fun ViewGroupScreen() {
         Group(
             "Obolon",
             "qwefwe werwerwer werqwerqe qwer 12",
-            listOf("19:00", "19:00", "19:00", "19:00", "19:00", "19:00", "19:00"),
+            listOf("19:00", "19:00", "19:00", "19:00", "19:00,10:00", "19:00", "19:00"),
             "qw@wqBlaBlaBlaBlaBlaBla",
             "123-3221",
             "BlaBlaBlaBlaBlaBla BlaBlaBla BlaBlaBlaBlaBlaBlaBlaBlaBla BlaBlaBla",
