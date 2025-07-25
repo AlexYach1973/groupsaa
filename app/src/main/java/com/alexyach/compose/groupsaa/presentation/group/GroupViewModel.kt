@@ -26,7 +26,7 @@ class GroupViewModel(
     )
     val screenState: LiveData<GroupScreenState> = _screenState
 
-    val _errorToast: MutableStateFlow<Int> = MutableStateFlow<Int>(0)
+    val _errorToast: MutableStateFlow<Int> = MutableStateFlow(0)
     val errorToast: StateFlow<Int> = _errorToast
 
 

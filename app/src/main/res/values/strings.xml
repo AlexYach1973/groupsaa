@@ -12,6 +12,7 @@
     <string name="homescreen_sobriety_card_title">Ти тверезий на сьогодні:</string>
     <string name="homescreen_sobriety_not_date">Дата не вибрана, нажмть Edit</string>
     <string name="homescreen_prayer_title">МОЛИТВИ</string>
+    <string name="homescreen_daily_title">ЩОДЕННІ РОЗДУМИ</string>
 
 <!--    GroupListScreen-->
     <string name="grouplistscreen_offline_title">Офлайн групи</string>

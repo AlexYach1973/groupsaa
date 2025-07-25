@@ -1,5 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
+import android.app.Application
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +27,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -51,9 +54,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
-import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
+import com.alexyach.compose.groupsaa.domain.model.DailyReflections
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     paddingValues: PaddingValues,
@@ -62,18 +70,26 @@ fun HomeScreen(
 
     val context = LocalContext.current
     val viewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelFactory(DataStoreManager(LocalContext.current))
+        factory = HomeViewModelFactory(
+            application = LocalContext.current.applicationContext as Application
+        )
     )
 
     val scrollState = rememberScrollState()
 
     val difference by viewModel.difference.collectAsState("")
-    val selectedDate by viewModel.selectedDate.collectAsState("")
+    val selectedDate by viewModel.selectedDateSobriety.collectAsState("")
     val totalDays by viewModel.totalDays.collectAsState("")
 
     val dataStoreYear by viewModel.dataStoreYear.collectAsState(-1)
     val dataStoreMonth by viewModel.dataStoreMonth.collectAsState(-1)
     val dataStoreDay by viewModel.dataStoreDay.collectAsState(-1)
+
+    /* Daily */
+    val dailyDate by viewModel.selectDateForDaily.collectAsState(LocalDate.now())
+    val dailyItem by viewModel.dailyItem.collectAsState(
+        DailyReflections("Title", "", "")
+    )
 
 
 
@@ -99,7 +115,19 @@ fun HomeScreen(
             totalDays = totalDays
         )
 
-/* *************************   PRAYER ***************************   */
+        /* Daily reflection */
+        var isHideDailyReflection by remember { mutableStateOf(true) }
+
+        DailyReflectionCard(
+            isHide = isHideDailyReflection,
+            dailyItem = dailyItem?.let { dailyItem } ?: DailyReflections("Нема","",""),
+            onClickHideListener = { isHideDailyReflection = !isHideDailyReflection },
+            viewModel = viewModel,
+            dailyDate = dailyDate
+        )
+
+
+        /* *************************   PRAYER ***************************   */
 
         /* From Data Store Preference Show Prayer */
         val prefMorningPrayer by viewModel.prefMorningPrayer.collectAsState(true)
@@ -159,7 +187,7 @@ fun HomeScreen(
                         MaterialTheme.colorScheme.onPrimary
                     } else {
                         MaterialTheme.colorScheme.primary
-                           },
+                    },
                     modifier = Modifier
                         .padding(end = 16.dp)
                         .size(20.dp)
@@ -305,8 +333,6 @@ fun HomeScreen(
         }
 
 
-
-
         /* TEST */
 //        Text(
 //            text = "$dataTest day $dataYear year",
@@ -321,6 +347,7 @@ fun HomeScreen(
 
 // period of sobriety
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PeriodOfSobrietyCard(
     context: Context,
@@ -346,10 +373,14 @@ private fun PeriodOfSobrietyCard(
     ) {
 
         var openDialog by remember { mutableStateOf(false) }
+        val datePickerState = rememberDatePickerState()
+
         if (openDialog) {
             DataSelection(
-                viewModel = viewModel,
-                onDismissClickListener = { openDialog = it }
+                datePickerState = datePickerState,
+                onDismissClickListener = { openDialog = it },
+                onConfirmClickListener =
+                    { viewModel.dataPickerSelected(datePickerState.selectedDateMillis) }
             )
         }
 
@@ -483,18 +514,19 @@ private fun PeriodOfSobrietyCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DataSelection(
-    viewModel: HomeViewModel,
-    onDismissClickListener: (Boolean) -> Unit
+    datePickerState: DatePickerState,
+    onDismissClickListener: (Boolean) -> Unit,
+    onConfirmClickListener: () -> Unit
 ) {
 
-    val datePickerState = rememberDatePickerState()
+//    val datePickerState = rememberDatePickerState()
 
     DatePickerDialog(
         onDismissRequest = { onDismissClickListener(false) },
         confirmButton = {
             TextButton(
                 onClick = {
-                    viewModel.dataPickerSelected(datePickerState.selectedDateMillis)
+                    onConfirmClickListener()
                     onDismissClickListener(false)
                 }
             ) { Text(text = "Ok") }
@@ -505,6 +537,207 @@ private fun DataSelection(
 
     ) {
         DatePicker(state = datePickerState)
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DailyReflectionCard(
+    isHide: Boolean,
+    dailyItem: DailyReflections,
+    onClickHideListener: () -> Unit,
+    viewModel: HomeViewModel,
+    dailyDate: LocalDate
+) {
+
+    var fontSizeText by remember { mutableIntStateOf(16) }
+    val datePickerState = rememberDatePickerState()
+    var openDialog by remember { mutableStateOf(false) }
+
+    /* Tetle */
+
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.homescreen_daily_title),
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
+
+
+
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .border(
+                width = 2.dp,
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+            .clickable { onClickHideListener() },
+
+        colors = CardDefaults.cardColors(
+            MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+
+        if (openDialog) {
+            DataSelection(
+                datePickerState = datePickerState,
+                onDismissClickListener = { openDialog = it },
+                onConfirmClickListener = {
+                    datePickerState.selectedDateMillis?.let {millis ->
+
+                        val selectedDate = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                        viewModel.loadDailyForDate(selectedDate)
+                    }
+                }
+            )
+        }
+
+        /* Text Size */
+        if (!isHide) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .weight(0.3f)
+
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.calendar),
+                        contentDescription = "calendar",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable { openDialog = true }
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .padding(8.dp)
+//                        .background(Color.Green)
+
+                ) {
+                    Text(
+                        text = dailyDate.format(DateTimeFormatter.ofPattern("dd MMMM"))
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(0.3f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "plus",
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .clickable { fontSizeText++ }
+                    )
+
+                    Icon(
+                        painter = painterResource(R.drawable.minus),
+                        contentDescription = "minus",
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .clickable { fontSizeText-- }
+                    )
+                }
+
+            }
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+
+            if (isHide) {
+                /* Title */
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = dailyItem.title,
+                        fontSize = 18.sp,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                    )
+                }
+
+                /* Quote */
+                Text(
+                    text = dailyItem.quote,
+                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontStyle = FontStyle.Italic
+                )
+            } else {
+
+                /* Title */
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ){
+                    Text(
+                        text = dailyItem.title,
+                        fontSize = fontSizeText.sp,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                    )
+                }
+
+
+                /* Quote */
+                Text(
+                    text = dailyItem.quote,
+                    fontSize = fontSizeText.sp,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontStyle = FontStyle.Italic,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                )
+
+                /* Discussion */
+                Text(
+                    text = dailyItem.discussion,
+                    fontSize = fontSizeText.sp,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        }
+
     }
 }
 
