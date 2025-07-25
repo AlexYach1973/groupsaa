@@ -154,6 +154,8 @@ private fun InfoAboutGroup(
 
 private fun isActiveGroup(group: Group): Boolean {
 
+    if (group.schedule.isEmpty()) return false
+
     val dayOfWeek = listOf(
         "monday", "tuesday", "wednesday", "thursday",
         "friday", "saturday", "sunday"

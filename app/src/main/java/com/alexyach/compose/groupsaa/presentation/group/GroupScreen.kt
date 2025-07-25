@@ -199,13 +199,6 @@ private fun GroupScreenOffline(
         )
         Spacer(modifier = Modifier.padding(8.dp))
 
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.Center,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//        ) {
-
         TelephoneGroup(
             context = context,
             viewModel = viewModel,
@@ -214,9 +207,6 @@ private fun GroupScreenOffline(
         Spacer(Modifier.padding(8.dp))
 
         InternetLink(group = group)
-
-//        }
-
 
         Spacer(modifier = Modifier.padding(8.dp))
 
@@ -350,7 +340,7 @@ private fun GroupScreenOnline(
 
 
 
-        if (group.telephone.isDigitsOnly()) {
+        if (group.telephone.isNotEmpty()) {
             TelephoneGroup(
                 group = group,
                 viewModel = viewModel,
@@ -449,48 +439,92 @@ private fun TelephoneGroup(
     context: Context
 ) {
 
-    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+    /**
+     * КиевСтар:  067, 068, 077, 096, 097, 098;
+     * Lifecell 063, 073, 093;
+     * Vodafone (050, 066, 095, 099);
+     * 3Mob (091),
+     * PEOPLEnet (092),
+     * Интертелеком (094)
+     */
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+
+    val listTelephone = group.telephone.split(";")
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                viewModel.makeCallGroup(
-                    context = context,
-                    phoneNumber = group.telephone
-                )
-            }
-            .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.onSecondary
-            )
     ) {
 
-        /*CallButton(
-            context = context,
-            viewModel = viewModel,
-            group = group
-        )*/
+        listTelephone.forEach {telephone ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        viewModel.makeCallGroup(
+                            context = context,
+                            phoneNumber = group.telephone
+                        )
+                    }
+                    .border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+            ) {
 
-        Icon(
-            imageVector = Icons.Default.Call,
-            contentDescription = null,
-            tint = Color.Green,
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-                .size(60.dp)
-        )
+                Icon(
+                    imageVector = Icons.Default.Call,
+                    contentDescription = "Call",
+                    tint = Color.Green,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .size(60.dp)
+                )
 
-        Text(
-            text = group.telephone,
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-        )
+                Text(
+                    text = telephone,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+                Image(
+                    painter = if(telephone.contains("067") || telephone.contains("068") ||
+                        telephone.contains("096") || telephone.contains("097") ||
+                        telephone.contains("098")) {
+
+                        painterResource(R.drawable.kyivstar)
+
+                    } else if(telephone.contains("063") || telephone.contains("073") ||
+                        telephone.contains("093")){
+
+                        painterResource(R.drawable.lifecell_logo)
+
+                    } else if(telephone.contains("050") || telephone.contains("066") ||
+                        telephone.contains("095") || telephone.contains("099")) {
+
+                        painterResource(R.drawable.vodafon)
+
+                    } else {
+                        painterResource(R.drawable.home_phone)
+                    },
+                    contentDescription = "Kyivstar",
+                    modifier = Modifier
+                        .padding(vertical = 4.dp, horizontal = 8.dp)
+                        .size(50.dp)
+                )
+
+            }
+            Spacer(Modifier.padding(4.dp))
+
+        }
 
     }
+
+
 }
 
 @Composable
@@ -498,6 +532,8 @@ fun InternetLink(
     group: Group
 ) {
     val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+
+
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -728,37 +764,6 @@ fun AddressGroup(
     }
 }
 
-@Composable
-private fun CallButton(
-    context: Context,
-    viewModel: GroupViewModel,
-    group: Group
-) {
-    Button(
-        onClick = {
-            viewModel.makeCallGroup(
-                context = context,
-                phoneNumber = group.telephone
-            )
-        },
-        contentPadding = PaddingValues(4.dp),
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-            .size(50.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Call,
-            contentDescription = null,
-            tint = Color.Green,
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .clip(shape = CircleShape)
-//                .padding(0.dp)
-                .size(50.dp)
-        )
-    }
-}
 
 /* Toast */
 private fun toastShow(

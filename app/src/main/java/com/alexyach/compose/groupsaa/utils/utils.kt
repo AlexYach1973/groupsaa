@@ -139,15 +139,15 @@ fun getListGroupTest(): List<Group> {
             addressForMap = "ул.+Николая+Закревского,+29a,+Киев"
         ),
         Group(
-            name = "\"Group\"",
-            addresses = " \"Centr\", вул. Srtreet, Yа",
+            name = "Лівобережка",
+            addresses = " м. Дарниця, бульвар Перова, 1-Б",
             schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
-            telephone = "XXX-XXX-XXXX",
-            email = "https://www.aa.__________________",
-            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
-            latitude = 0.0,
-            longitude = 0.0,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            telephone = "099-782-30-31;093-556-6477;097-058-4010",
+            email = "https://www.aa-levoberezhka.kiev.ua/",
+            note = "Римокатолицький монастир, вхід у ліве крило, по сходам.",
+            latitude = 50.47451,
+            longitude = 30.59605,
+            addressForMap = "бул.+Перова,+1Б,+Киев"
         ),
         Group(
             name = "\"Group 1\"",
@@ -161,59 +161,59 @@ fun getListGroupTest(): List<Group> {
             addressForMap = "ул.+Приречная,+21А,+Киев"
         ),
         Group(
-            name = "\"Group 2\"",
-            addresses = " \"Centr\", вул. Srtreet, Yа",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
-            telephone = "XXX-XXX-XXXX",
-            email = "https://www.aa.__________________",
-            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            name = "Все просто",
+            addresses = " Конференція в Telegram.",
+            schedule = listOf("21:30","21:30","21:30","21:30","21:30","21:30","21:30"),
+            telephone = "",
+            email = "",
+            note = "",
             latitude = 0.0,
             longitude = 0.0,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            addressForMap = "https://t.me/AA_VseProsto"
         ),
         Group(
-            name = "\"Group\"",
-            addresses = " \"Centr\", вул. Srtreet, Yа",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
-            telephone = "XXX-XXX-XXXX",
-            email = "https://www.aa.__________________",
-            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            name = "День незалежності",
+            addresses = " Конференція в Telegram.",
+            schedule = listOf(),
+            telephone = "",
+            email = "https://aa-id.com.ua/",
+            note = "",
             latitude = 0.0,
             longitude = 0.0,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            addressForMap = "https://t.me/aaindependencedaychat"
         ),
         Group(
-            name = "\"Group\"",
-            addresses = " \"Centr\", вул. Srtreet, Yа",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
-            telephone = "XXX-XXX-XXXX",
-            email = "https://www.aa.__________________",
-            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            name = "Выбор.UA",
+            addresses = " Конференція в Skype.",
+            schedule = listOf("22:00","22:00","22:00","22:00","22:00","22:00","22:00"),
+            telephone = "",
+            email = "",
+            note = "",
             latitude = 0.0,
             longitude = 0.0,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            addressForMap = "https://join.skype.com/hy7Zo9p4ccvH"
         ),
         Group(
-            name = "\"Group\"",
-            addresses = " \"Centr\", вул. Srtreet, Yа",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
-            telephone = "XXX-XXX-XXXX",
-            email = "https://www.aa.__________________",
-            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            name = "Рубікон",
+            addresses = " Конференція в Zoom.",
+            schedule = listOf("","","19:00","","","10:00",""),
+            telephone = "",
+            email = "",
+            note = "English-speaking group.",
             latitude = 0.0,
             longitude = 0.0,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            addressForMap = "https://us02web.zoom.us/j/73923582283?pwd=ZTdYSzhudWNZRzR6M1dtK0lyVWdVUT09"
         ),
         Group(
-            name = "\"END\"",
-            addresses = " \"Centr\", вул. Srtreet, Yа",
-            schedule = listOf("19:00","19:00","19:00","19:00","19:00","19:00","19:00"),
+            name = "Михайлівська",
+            addresses = " Конференція в Zoom.",
+            schedule = listOf("","19:00","","19:00","","","09:00"),
             telephone = "XXX-XXX-XXXX",
-            email = "https://www.aa.__________________",
-            note = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.",
+            email = "",
+            note = "",
             latitude = 0.0,
             longitude = 0.0,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            addressForMap = "https://us02web.zoom.us/j/81853560361"
         )
 
     )
