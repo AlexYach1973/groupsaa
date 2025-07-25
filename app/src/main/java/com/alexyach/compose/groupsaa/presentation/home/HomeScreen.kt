@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
+import com.alexyach.compose.groupsaa.domain.model.Prayers
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -211,7 +212,8 @@ fun HomeScreen(
                 isShowPrayer = isShowMorningPrayer,
                 onClickShowMorningPrayer = {
                     isShowMorningPrayer = !isShowMorningPrayer
-                    viewModel.savePrefMorningPrayer(isShowMorningPrayer)
+                    viewModel.savePrefPrayer (Prayers.MorningPrayer, isShowMorningPrayer)
+//                    viewModel.savePrefMorningPrayer(isShowMorningPrayer)
                 }
 
             )
@@ -232,7 +234,8 @@ fun HomeScreen(
                 isShowPrayer = isShowEveningPrayer,
                 onClickShowMorningPrayer = {
                     isShowEveningPrayer = !isShowEveningPrayer
-                    viewModel.savePrefEveningPrayer(isShowEveningPrayer)
+                    viewModel.savePrefPrayer(keyMap = Prayers.EveningPrayer, value = isShowEveningPrayer)
+//                    viewModel.savePrefEveningPrayer(isShowEveningPrayer)
                 }
             )
         }
@@ -251,7 +254,8 @@ fun HomeScreen(
                 isShowPrayer = isShowPrayerDelegation,
                 onClickShowMorningPrayer = {
                     isShowPrayerDelegation = !isShowPrayerDelegation
-                    viewModel.savePrefDelegationPrayer(isShowPrayerDelegation)
+                    viewModel.savePrefPrayer(keyMap = Prayers.DelegationPrayer, value = isShowPrayerDelegation)
+//                    viewModel.savePrefDelegationPrayer(isShowPrayerDelegation)
                 }
             )
         }
@@ -270,7 +274,8 @@ fun HomeScreen(
                 isShowPrayer = isShowPrayerPeaceOfMind,
                 onClickShowMorningPrayer = {
                     isShowPrayerPeaceOfMind = !isShowPrayerPeaceOfMind
-                    viewModel.savePrefPeaceOfMindPrayer(isShowPrayerPeaceOfMind)
+                    viewModel.savePrefPrayer(keyMap = Prayers.PeaceOfMindPrayer, value = isShowPrayerPeaceOfMind)
+//                    viewModel.savePrefPeaceOfMindPrayer(isShowPrayerPeaceOfMind)
                 }
             )
         }
@@ -289,7 +294,8 @@ fun HomeScreen(
                 isShowPrayer = isShowPrayerResentment,
                 onClickShowMorningPrayer = {
                     isShowPrayerResentment = !isShowPrayerResentment
-                    viewModel.saveResentmentPrayer(isShowPrayerResentment)
+                    viewModel.savePrefPrayer(keyMap = Prayers.ResentmentPrayer, value = isShowPrayerResentment)
+//                    viewModel.saveResentmentPrayer(isShowPrayerResentment)
                 }
             )
         }
@@ -308,7 +314,8 @@ fun HomeScreen(
                 isShowPrayer = isShowPrayerFear,
                 onClickShowMorningPrayer = {
                     isShowPrayerFear = !isShowPrayerFear
-                    viewModel.saveFearPrayer(isShowPrayerFear)
+                    viewModel.savePrefPrayer(keyMap = Prayers.FearPrayer, value = isShowPrayerFear)
+//                    viewModel.saveFearPrayer(isShowPrayerFear)
                 }
             )
         }
@@ -327,7 +334,8 @@ fun HomeScreen(
                 isShowPrayer = isShowStepTen,
                 onClickShowMorningPrayer = {
                     isShowStepTen = !isShowStepTen
-                    viewModel.saveStepTenPrayer(isShowStepTen)
+                    viewModel.savePrefPrayer(keyMap = Prayers.StepTenPrayer, value = isShowStepTen)
+//                    viewModel.saveStepTenPrayer(isShowStepTen)
                 }
             )
         }

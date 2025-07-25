@@ -1,13 +1,13 @@
 package com.alexyach.compose.groupsaa.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.alexyach.compose.groupsaa.domain.model.Prayers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -46,71 +46,47 @@ class DataStoreManager(private val context: Context) {
         }
 
     /* *** Save preferences Show Prayer *** */
-    suspend fun saveMorningPrayer(value: Boolean) {
-        context.dataStore.edit {preferences ->
-            preferences[KEY_MORNING_PRAYER] = value
-        }
-    }
-    suspend fun saveEveningPrayer(value: Boolean) {
+
+
+    suspend fun saveIsVisiblePrayer(keyMap: Prayers, value: Boolean) {
+
+        val key: Preferences.Key<Boolean> = prayerKeyMap[keyMap]!!
+
         context.dataStore.edit { preferences ->
-            preferences[KEY_EVENING_PRAYER] = value
+            preferences[key] = value
         }
     }
-    suspend fun saveDelegationPrayer(value: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[KEY_DELEGATION_PRAYER] = value
-        }
-    }
-    suspend fun savePeaceOfMindPrayer(value: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[KEY_PEACE_OF_MIND_PRAYER] = value
-        }
-    }
-    suspend fun saveResentmentPrayer(value: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[KEY_RESENTMENT_PRAYER] = value
-        }
-    }
-    suspend fun saveFearPrayer(value: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[KEY_FEAR_PRAYER] = value
-        }
-    }
-    suspend fun saveStepTenPrayer(value: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[KEY_STEP_TEN_PRAYER] = value
-        }
-    }
+
 
     /* *** Load preferences Show Prayer *** */
     val prefMorningPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_MORNING_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.MorningPrayer]!!]?: true
         }
 
     val prefEveningPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_EVENING_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.EveningPrayer]!!]?: true
         }
     val prefDelegationPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_DELEGATION_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.DelegationPrayer]!!]?: true
         }
     val prefPeaceOfMindPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_PEACE_OF_MIND_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.PeaceOfMindPrayer]!!]?: true
         }
     val prefResentmentPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_RESENTMENT_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.ResentmentPrayer]!!]?: true
         }
     val prefFearPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_FEAR_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.FearPrayer]!!]?: true
         }
     val prefStepTenPrayer: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[KEY_STEP_TEN_PRAYER]?: true
+            preferences[prayerKeyMap[Prayers.StepTenPrayer]!!]?: true
         }
 
 
@@ -120,15 +96,15 @@ class DataStoreManager(private val context: Context) {
         private val KEY_DAY = intPreferencesKey("user_day")
 
         /* preferences show Prayers */
-        private val KEY_MORNING_PRAYER = booleanPreferencesKey("morning_prayer")
-        private val KEY_EVENING_PRAYER = booleanPreferencesKey("evening_prayer")
-        private val KEY_DELEGATION_PRAYER = booleanPreferencesKey("delegation_prayer")
-        private val KEY_PEACE_OF_MIND_PRAYER = booleanPreferencesKey("peace_of_mind_prayer")
-        private val KEY_RESENTMENT_PRAYER = booleanPreferencesKey("resentment_prayer")
-        private val KEY_FEAR_PRAYER = booleanPreferencesKey("fear_prayer")
-        private val KEY_STEP_TEN_PRAYER = booleanPreferencesKey("step_ten_prayer")
-
-
+        val prayerKeyMap = mapOf<Prayers,  Preferences.Key<Boolean>>(
+            Prayers.MorningPrayer to booleanPreferencesKey("morning_prayer"),
+            Prayers.EveningPrayer to booleanPreferencesKey("evening_prayer"),
+            Prayers.DelegationPrayer to booleanPreferencesKey("delegation_prayer"),
+            Prayers.PeaceOfMindPrayer to booleanPreferencesKey("peace_of_mind_prayer"),
+            Prayers.ResentmentPrayer to booleanPreferencesKey("resentment_prayer"),
+            Prayers.FearPrayer to booleanPreferencesKey("fear_prayer"),
+            Prayers.StepTenPrayer to booleanPreferencesKey("step_ten_prayer")
+        )
 
     }
 

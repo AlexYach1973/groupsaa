@@ -7,7 +7,7 @@ import com.alexyach.compose.groupsaa.data.model.toGroup
 import com.alexyach.compose.groupsaa.data.network.ApiFactory
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.domain.model.toGroupEntity
-import com.alexyach.compose.groupsaa.domain.usecase.IRepository
+import com.alexyach.compose.groupsaa.domain.repository.IRepository
 import com.alexyach.compose.groupsaa.utils.getListGroupTest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
