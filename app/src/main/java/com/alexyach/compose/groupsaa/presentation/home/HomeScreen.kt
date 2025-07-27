@@ -43,7 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -56,6 +55,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
 import com.alexyach.compose.groupsaa.domain.model.Prayers
+import com.alexyach.compose.groupsaa.ui.theme.amatic
+import com.alexyach.compose.groupsaa.ui.theme.spice_rice
+import com.alexyach.compose.groupsaa.ui.theme.triodionr
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -69,289 +71,315 @@ fun HomeScreen(
     onReadClickListener: () -> Unit
 ) {
 
-    val context = LocalContext.current
-    val viewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelFactory(
-            application = LocalContext.current.applicationContext as Application
-        )
-    )
-
-    val scrollState = rememberScrollState()
-
-    val difference by viewModel.difference.collectAsState("")
-    val selectedDate by viewModel.selectedDateSobriety.collectAsState("")
-    val totalDays by viewModel.totalDays.collectAsState("")
-
-    val dataStoreYear by viewModel.dataStoreYear.collectAsState(-1)
-    val dataStoreMonth by viewModel.dataStoreMonth.collectAsState(-1)
-    val dataStoreDay by viewModel.dataStoreDay.collectAsState(-1)
-
-    /* Daily */
-    val dailyDate by viewModel.selectDateForDaily.collectAsState(LocalDate.now())
-    val dailyItem by viewModel.dailyItem.collectAsState(
-        DailyReflections("Title", "", "")
-    )
-
-
-
-    if (dataStoreYear > 0 && dataStoreMonth > 0 && dataStoreDay > 0) {
-        viewModel.formatingDate(listOf(dataStoreYear, dataStoreMonth, dataStoreDay))
-    }
-
-    Column(
-        verticalArrangement = Arrangement.Center,
+    Box(
         modifier = Modifier
-            .padding(paddingValues)
-            .verticalScroll(scrollState)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
 
 
-        PeriodOfSobrietyCard(
-            context = context,
-            viewModel = viewModel,
-            difference = difference,
-            selectedDate = selectedDate,
-            totalDays = totalDays
+        val context = LocalContext.current
+        val viewModel: HomeViewModel = viewModel(
+            factory = HomeViewModelFactory(
+                application = LocalContext.current.applicationContext as Application
+            )
         )
 
-        /* Daily reflection */
-        var isHideDailyReflection by remember { mutableStateOf(true) }
+        val scrollState = rememberScrollState()
 
-        DailyReflectionCard(
-            isHide = isHideDailyReflection,
-            dailyItem = dailyItem?.let { dailyItem } ?: DailyReflections("Нема","",""),
-            onClickHideListener = { isHideDailyReflection = !isHideDailyReflection },
-            viewModel = viewModel,
-            dailyDate = dailyDate
+        val difference by viewModel.difference.collectAsState("")
+        val selectedDate by viewModel.selectedDateSobriety.collectAsState("")
+        val totalDays by viewModel.totalDays.collectAsState("")
+
+        val dataStoreYear by viewModel.dataStoreYear.collectAsState(-1)
+        val dataStoreMonth by viewModel.dataStoreMonth.collectAsState(-1)
+        val dataStoreDay by viewModel.dataStoreDay.collectAsState(-1)
+
+        /* Daily */
+        val dailyDate by viewModel.selectDateForDaily.collectAsState(LocalDate.now())
+        val dailyItem by viewModel.dailyItem.collectAsState(
+            DailyReflections("Title", "", "")
         )
 
 
-        /* *************************   PRAYER ***************************   */
 
-        /* From Data Store Preference Show Prayer */
-        val prefMorningPrayer by viewModel.prefMorningPrayer.collectAsState(true)
-        val prefEveningPrayer by viewModel.prefEveningPrayer.collectAsState(true)
-        val prefDelegationPrayer by viewModel.prefDelegationPrayer.collectAsState(true)
-        val prefPeaceOfMindPrayer by viewModel.prefPeaceOfMindPrayer.collectAsState(true)
-        val prefResentmentPrayer by viewModel.prefResentmentPrayer.collectAsState(true)
-        val prefFearPrayer by viewModel.prefFearPrayer.collectAsState(true)
-        val prefStepTenPrayer by viewModel.prefStepTenPrayer.collectAsState(true)
+        if (dataStoreYear > 0 && dataStoreMonth > 0 && dataStoreDay > 0) {
+            viewModel.formatingDate(listOf(dataStoreYear, dataStoreMonth, dataStoreDay))
+        }
 
-        var isShowPrayerSetting by remember { mutableStateOf(false) }
-
-        /* *** TITLE *** */
-        Row(
+        Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .fillMaxWidth()
-//                .background(Color.Green)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center
+                .padding(paddingValues)
+                .verticalScroll(scrollState)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
 
+
+            PeriodOfSobrietyCard(
+                context = context,
+                viewModel = viewModel,
+                difference = difference,
+                selectedDate = selectedDate,
+                totalDays = totalDays
+            )
+
+            /* Daily reflection */
+            var isHideDailyReflection by remember { mutableStateOf(true) }
+
+            DailyReflectionCard(
+                isHide = isHideDailyReflection,
+                dailyItem = dailyItem?.let { dailyItem } ?: DailyReflections("Нема", "", ""),
+                onClickHideListener = { isHideDailyReflection = !isHideDailyReflection },
+                viewModel = viewModel,
+                dailyDate = dailyDate
+            )
+
+
+            /* *************************   PRAYER ***************************   */
+
+            /* From Data Store Preference Show Prayer */
+            val prefMorningPrayer by viewModel.prefMorningPrayer.collectAsState(true)
+            val prefEveningPrayer by viewModel.prefEveningPrayer.collectAsState(true)
+            val prefDelegationPrayer by viewModel.prefDelegationPrayer.collectAsState(true)
+            val prefPeaceOfMindPrayer by viewModel.prefPeaceOfMindPrayer.collectAsState(true)
+            val prefResentmentPrayer by viewModel.prefResentmentPrayer.collectAsState(true)
+            val prefFearPrayer by viewModel.prefFearPrayer.collectAsState(true)
+            val prefStepTenPrayer by viewModel.prefStepTenPrayer.collectAsState(true)
+
+            var isShowPrayerSetting by remember { mutableStateOf(false) }
+
+            /* *** TITLE *** */
             Row(
-                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .weight(4f)
-                    .padding(start = 40.dp)
+                    .fillMaxWidth()
+//                .background(Color.Green)
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = stringResource(R.string.homescreen_prayer_title),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { isShowPrayerSetting = !isShowPrayerSetting }
-            ) {
-                Text(
-                    text = "show",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontStyle = FontStyle.Italic,
-                    color = if (isShowPrayerSetting) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
+                Row(
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .padding(end = 8.dp)
-                )
-                Icon(
-                    painterResource(R.drawable.hand_eye),
-                    contentDescription = "setting",
-                    tint = if (isShowPrayerSetting) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
+                        .weight(4f)
+                        .padding(start = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.homescreen_prayer_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = triodionr
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(end = 16.dp)
-                        .size(20.dp)
-                )
+                        .weight(1f)
+                        .clickable { isShowPrayerSetting = !isShowPrayerSetting }
+                ) {
+                    Text(
+                        text = "show",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontStyle = FontStyle.Italic,
+                        color = if (isShowPrayerSetting) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.primary
+                        },
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                    )
+                    Icon(
+                        painterResource(R.drawable.hand_eye),
+                        contentDescription = "setting",
+                        tint = if (isShowPrayerSetting) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.primary
+                        },
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(20.dp)
+                    )
+                }
             }
-        }
-        /* *** END TITLE *** */
+            /* *** END TITLE *** */
 
 
-        var isHideMorningPrayer by remember { mutableStateOf(true) }
-        var isShowMorningPrayer = prefMorningPrayer
+            var isHideMorningPrayer by remember { mutableStateOf(true) }
+            var isShowMorningPrayer = prefMorningPrayer
 
-        if (isShowMorningPrayer || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHideMorningPrayer,
-                onClickHideListener = { isHideMorningPrayer = !isHideMorningPrayer },
-                resTextTitle = stringResource(R.string.number_step_eleven_morning_title),
-                resTextStart = stringResource(R.string.number_step_eleven_morning_start),
-                resTextFull = stringResource(R.string.number_step_eleven_morning),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowMorningPrayer,
-                onClickShowMorningPrayer = {
-                    isShowMorningPrayer = !isShowMorningPrayer
-                    viewModel.savePrefPrayer (Prayers.MorningPrayer, isShowMorningPrayer)
+            if (isShowMorningPrayer || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHideMorningPrayer,
+                    onClickHideListener = { isHideMorningPrayer = !isHideMorningPrayer },
+                    resTextTitle = stringResource(R.string.number_step_eleven_morning_title),
+                    resTextStart = stringResource(R.string.number_step_eleven_morning_start),
+                    resTextFull = stringResource(R.string.number_step_eleven_morning),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowMorningPrayer,
+                    onClickShowMorningPrayer = {
+                        isShowMorningPrayer = !isShowMorningPrayer
+                        viewModel.savePrefPrayer(Prayers.MorningPrayer, isShowMorningPrayer)
 //                    viewModel.savePrefMorningPrayer(isShowMorningPrayer)
-                }
+                    }
 
-            )
-        }
+                )
+            }
 
 
-        var isHideEveningPrayer by remember { mutableStateOf(true) }
-        var isShowEveningPrayer = prefEveningPrayer
+            var isHideEveningPrayer by remember { mutableStateOf(true) }
+            var isShowEveningPrayer = prefEveningPrayer
 
-        if (isShowEveningPrayer || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHideEveningPrayer,
-                onClickHideListener = { isHideEveningPrayer = !isHideEveningPrayer },
-                resTextTitle = stringResource(R.string.number_step_eleven_evening_title),
-                resTextStart = stringResource(R.string.number_step_eleven_evening_start),
-                resTextFull = stringResource(R.string.number_step_eleven_evening),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowEveningPrayer,
-                onClickShowMorningPrayer = {
-                    isShowEveningPrayer = !isShowEveningPrayer
-                    viewModel.savePrefPrayer(keyMap = Prayers.EveningPrayer, value = isShowEveningPrayer)
+            if (isShowEveningPrayer || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHideEveningPrayer,
+                    onClickHideListener = { isHideEveningPrayer = !isHideEveningPrayer },
+                    resTextTitle = stringResource(R.string.number_step_eleven_evening_title),
+                    resTextStart = stringResource(R.string.number_step_eleven_evening_start),
+                    resTextFull = stringResource(R.string.number_step_eleven_evening),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowEveningPrayer,
+                    onClickShowMorningPrayer = {
+                        isShowEveningPrayer = !isShowEveningPrayer
+                        viewModel.savePrefPrayer(
+                            keyMap = Prayers.EveningPrayer,
+                            value = isShowEveningPrayer
+                        )
 //                    viewModel.savePrefEveningPrayer(isShowEveningPrayer)
-                }
-            )
-        }
+                    }
+                )
+            }
 
-        var isHidePrayerDelegation by remember { mutableStateOf(true) }
-        var isShowPrayerDelegation = prefDelegationPrayer
+            var isHidePrayerDelegation by remember { mutableStateOf(true) }
+            var isShowPrayerDelegation = prefDelegationPrayer
 
-        if (isShowPrayerDelegation || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHidePrayerDelegation,
-                onClickHideListener = { isHidePrayerDelegation = !isHidePrayerDelegation },
-                resTextTitle = stringResource(R.string.prayer_delegation_title),
-                resTextStart = stringResource(R.string.prayer_delegation_start),
-                resTextFull = stringResource(R.string.prayer_delegation),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowPrayerDelegation,
-                onClickShowMorningPrayer = {
-                    isShowPrayerDelegation = !isShowPrayerDelegation
-                    viewModel.savePrefPrayer(keyMap = Prayers.DelegationPrayer, value = isShowPrayerDelegation)
+            if (isShowPrayerDelegation || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHidePrayerDelegation,
+                    onClickHideListener = { isHidePrayerDelegation = !isHidePrayerDelegation },
+                    resTextTitle = stringResource(R.string.prayer_delegation_title),
+                    resTextStart = stringResource(R.string.prayer_delegation_start),
+                    resTextFull = stringResource(R.string.prayer_delegation),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowPrayerDelegation,
+                    onClickShowMorningPrayer = {
+                        isShowPrayerDelegation = !isShowPrayerDelegation
+                        viewModel.savePrefPrayer(
+                            keyMap = Prayers.DelegationPrayer,
+                            value = isShowPrayerDelegation
+                        )
 //                    viewModel.savePrefDelegationPrayer(isShowPrayerDelegation)
-                }
-            )
-        }
+                    }
+                )
+            }
 
-        var isHidePrayerPeaceOfMind by remember { mutableStateOf(true) }
-        var isShowPrayerPeaceOfMind = prefPeaceOfMindPrayer
+            var isHidePrayerPeaceOfMind by remember { mutableStateOf(true) }
+            var isShowPrayerPeaceOfMind = prefPeaceOfMindPrayer
 
-        if (isShowPrayerPeaceOfMind || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHidePrayerPeaceOfMind,
-                onClickHideListener = { isHidePrayerPeaceOfMind = !isHidePrayerPeaceOfMind },
-                resTextTitle = stringResource(R.string.peace_of_mind_title),
-                resTextStart = stringResource(R.string.peace_of_mind_start),
-                resTextFull = stringResource(R.string.peace_of_mind_full),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowPrayerPeaceOfMind,
-                onClickShowMorningPrayer = {
-                    isShowPrayerPeaceOfMind = !isShowPrayerPeaceOfMind
-                    viewModel.savePrefPrayer(keyMap = Prayers.PeaceOfMindPrayer, value = isShowPrayerPeaceOfMind)
+            if (isShowPrayerPeaceOfMind || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHidePrayerPeaceOfMind,
+                    onClickHideListener = { isHidePrayerPeaceOfMind = !isHidePrayerPeaceOfMind },
+                    resTextTitle = stringResource(R.string.peace_of_mind_title),
+                    resTextStart = stringResource(R.string.peace_of_mind_start),
+                    resTextFull = stringResource(R.string.peace_of_mind_full),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowPrayerPeaceOfMind,
+                    onClickShowMorningPrayer = {
+                        isShowPrayerPeaceOfMind = !isShowPrayerPeaceOfMind
+                        viewModel.savePrefPrayer(
+                            keyMap = Prayers.PeaceOfMindPrayer,
+                            value = isShowPrayerPeaceOfMind
+                        )
 //                    viewModel.savePrefPeaceOfMindPrayer(isShowPrayerPeaceOfMind)
-                }
-            )
-        }
+                    }
+                )
+            }
 
-        var isHidePrayerResentment by remember { mutableStateOf(true) }
-        var isShowPrayerResentment = prefResentmentPrayer
+            var isHidePrayerResentment by remember { mutableStateOf(true) }
+            var isShowPrayerResentment = prefResentmentPrayer
 
-        if (isShowPrayerResentment || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHidePrayerResentment,
-                onClickHideListener = { isHidePrayerResentment = !isHidePrayerResentment },
-                resTextTitle = stringResource(R.string.resentment_title),
-                resTextStart = stringResource(R.string.resentment_start),
-                resTextFull = stringResource(R.string.resentment_full),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowPrayerResentment,
-                onClickShowMorningPrayer = {
-                    isShowPrayerResentment = !isShowPrayerResentment
-                    viewModel.savePrefPrayer(keyMap = Prayers.ResentmentPrayer, value = isShowPrayerResentment)
+            if (isShowPrayerResentment || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHidePrayerResentment,
+                    onClickHideListener = { isHidePrayerResentment = !isHidePrayerResentment },
+                    resTextTitle = stringResource(R.string.resentment_title),
+                    resTextStart = stringResource(R.string.resentment_start),
+                    resTextFull = stringResource(R.string.resentment_full),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowPrayerResentment,
+                    onClickShowMorningPrayer = {
+                        isShowPrayerResentment = !isShowPrayerResentment
+                        viewModel.savePrefPrayer(
+                            keyMap = Prayers.ResentmentPrayer,
+                            value = isShowPrayerResentment
+                        )
 //                    viewModel.saveResentmentPrayer(isShowPrayerResentment)
-                }
-            )
-        }
+                    }
+                )
+            }
 
-        var isHidePrayerFear by remember { mutableStateOf(true) }
-        var isShowPrayerFear = prefFearPrayer
+            var isHidePrayerFear by remember { mutableStateOf(true) }
+            var isShowPrayerFear = prefFearPrayer
 
-        if (isShowPrayerFear || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHidePrayerFear,
-                onClickHideListener = { isHidePrayerFear = !isHidePrayerFear },
-                resTextTitle = stringResource(R.string.prayer_fear_title),
-                resTextStart = stringResource(R.string.prayer_fear_start),
-                resTextFull = stringResource(R.string.prayer_fear_full),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowPrayerFear,
-                onClickShowMorningPrayer = {
-                    isShowPrayerFear = !isShowPrayerFear
-                    viewModel.savePrefPrayer(keyMap = Prayers.FearPrayer, value = isShowPrayerFear)
+            if (isShowPrayerFear || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHidePrayerFear,
+                    onClickHideListener = { isHidePrayerFear = !isHidePrayerFear },
+                    resTextTitle = stringResource(R.string.prayer_fear_title),
+                    resTextStart = stringResource(R.string.prayer_fear_start),
+                    resTextFull = stringResource(R.string.prayer_fear_full),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowPrayerFear,
+                    onClickShowMorningPrayer = {
+                        isShowPrayerFear = !isShowPrayerFear
+                        viewModel.savePrefPrayer(
+                            keyMap = Prayers.FearPrayer,
+                            value = isShowPrayerFear
+                        )
 //                    viewModel.saveFearPrayer(isShowPrayerFear)
-                }
-            )
-        }
+                    }
+                )
+            }
 
-        var isHideStepTen by remember { mutableStateOf(true) }
-        var isShowStepTen = prefStepTenPrayer
+            var isHideStepTen by remember { mutableStateOf(true) }
+            var isShowStepTen = prefStepTenPrayer
 
-        if (isShowStepTen || isShowPrayerSetting) {
-            PrayerCard(
-                isHide = isHideStepTen,
-                onClickHideListener = { isHideStepTen = !isHideStepTen },
-                resTextTitle = stringResource(R.string.step_number_ten_title),
-                resTextStart = stringResource(R.string.step_number_ten_start),
-                resTextFull = stringResource(R.string.step_number_ten_full),
-                isShowPrayerSetting = isShowPrayerSetting,
-                isShowPrayer = isShowStepTen,
-                onClickShowMorningPrayer = {
-                    isShowStepTen = !isShowStepTen
-                    viewModel.savePrefPrayer(keyMap = Prayers.StepTenPrayer, value = isShowStepTen)
+            if (isShowStepTen || isShowPrayerSetting) {
+                PrayerCard(
+                    isHide = isHideStepTen,
+                    onClickHideListener = { isHideStepTen = !isHideStepTen },
+                    resTextTitle = stringResource(R.string.step_number_ten_title),
+                    resTextStart = stringResource(R.string.step_number_ten_start),
+                    resTextFull = stringResource(R.string.step_number_ten_full),
+                    isShowPrayerSetting = isShowPrayerSetting,
+                    isShowPrayer = isShowStepTen,
+                    onClickShowMorningPrayer = {
+                        isShowStepTen = !isShowStepTen
+                        viewModel.savePrefPrayer(
+                            keyMap = Prayers.StepTenPrayer,
+                            value = isShowStepTen
+                        )
 //                    viewModel.saveStepTenPrayer(isShowStepTen)
-                }
-            )
-        }
+                    }
+                )
+            }
 
 
-        /* TEST */
+            /* TEST */
 //        Text(
 //            text = "$dataTest day $dataYear year",
 //            fontSize = 25.sp
 //        )
 
 
+        }
+
     }
-
 }
-
 
 // period of sobriety
 
@@ -563,7 +591,7 @@ private fun DailyReflectionCard(
     val datePickerState = rememberDatePickerState()
     var openDialog by remember { mutableStateOf(false) }
 
-    /* Tetle */
+    /* Title */
 
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -573,7 +601,8 @@ private fun DailyReflectionCard(
     ) {
         Text(
             text = stringResource(R.string.homescreen_daily_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            fontFamily = triodionr
         )
     }
 
@@ -696,6 +725,7 @@ private fun DailyReflectionCard(
                         fontSize = 18.sp,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = spice_rice,
                         modifier = Modifier
                             .padding(bottom = 8.dp)
                     )
@@ -706,7 +736,8 @@ private fun DailyReflectionCard(
                     text = dailyItem.quote,
                     fontSize = 14.sp,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontStyle = FontStyle.Italic
+                    fontStyle = FontStyle.Italic,
+                    fontFamily = spice_rice
                 )
             } else {
 
@@ -721,6 +752,7 @@ private fun DailyReflectionCard(
                         fontSize = fontSizeText.sp,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = spice_rice,
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                     )
@@ -733,6 +765,7 @@ private fun DailyReflectionCard(
                     fontSize = fontSizeText.sp,
                     style = MaterialTheme.typography.bodyLarge,
                     fontStyle = FontStyle.Italic,
+                    fontFamily = spice_rice,
                     modifier = Modifier
                         .padding(bottom = 16.dp)
                 )
@@ -742,6 +775,7 @@ private fun DailyReflectionCard(
                     text = dailyItem.discussion,
                     fontSize = fontSizeText.sp,
                     style = MaterialTheme.typography.bodyLarge,
+                    fontFamily = spice_rice
                 )
             }
         }
@@ -831,11 +865,13 @@ private fun PrayerCard(
                 Text(
                     text = resTextTitle,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = spice_rice,
                 )
                 Text(
                     text = resTextStart,
                     style = MaterialTheme.typography.bodySmall,
+                    fontFamily = spice_rice,
                 )
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
@@ -853,6 +889,7 @@ private fun PrayerCard(
                 Text(
                     text = resTextFull,
                     fontSize = fontSizeText.sp,
+                    fontFamily = spice_rice,
 //                    color = MaterialTheme.colorScheme.primaryContainer,
                     modifier = Modifier
                         .padding(horizontal = 8.dp)

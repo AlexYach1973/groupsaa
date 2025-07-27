@@ -22,6 +22,31 @@
 <!--    group Screen-->
     <string name="groupscreen_online_chat">посилання на чат</string>
 
+<!--    Read Screen-->
+    <string name="readscreen_iteratura">ЛІТЕРАТУРА</string>
+    <string name="readscreen_library_kyiv">Бібліотека регіону АА Київ:</string>
+    <string name="readscreen_library_region">Запити з інших регіонів опрацьовує бібліотека ГО УЦО АА:</string>
+
+    <string name="readscreen_book_bigaa">Анонімні Алкоголіки</string>
+    <string name="readscreen_book_bigaa_descr">Книгу «Анонімні Алкоголіки» називають ще «Великою книгою» і цю назву вона повністю виправдовує…</string>
+
+    <string name="readscreen_book_12_12">Дванадцять кроків та Дванадцять традицій</string>
+    <string name="readscreen_book_12_12_descr">Зміст закладений у програмі Дванадцять кроків та Дванадцять традицій настільки глибокий та об’ємний,
+        що для того щоб донести його…</string>
+
+    <string name="readscreen_book_live_sober">Жити тверезо</string>
+    <string name="readscreen_book_live_sober_descr">«Жити тверезо» – це путівник у нове, тверезе життя!
+        У книзі зібрані поради та рекомендації, продиктовані досвідом одужуючих…</string>
+
+    <string name="readscreen_book_sees_bill">ЯК ЦЕ БАЧИТЬ БІЛЛ</string>
+    <string name="readscreen_book_sees_bill_descr">Пропонована вашій увазі книга містить кілька сотень витягів з нашої літератури,
+        що стосуються практично всіх аспектів життя АА…</string>
+
+
+
+
+
+
 
 
 

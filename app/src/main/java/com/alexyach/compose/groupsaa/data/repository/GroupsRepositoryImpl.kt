@@ -27,7 +27,10 @@ class GroupsRepositoryImpl(val groupDao: GroupDao) : IRepository {
         /* END TEST */
 
         val groupsDTO = apiService.getGroupList()
-        emit( groupsDTO.map {it.toGroup()}) // to viewModel
+        emit( groupsDTO.map {
+            Log.d("Logs", "getAllGroupList() emit: $it")
+            it.toGroup()
+        }) // to viewModel
 
 
     }.catch {

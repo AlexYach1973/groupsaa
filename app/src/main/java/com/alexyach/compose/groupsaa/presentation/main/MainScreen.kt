@@ -20,6 +20,8 @@ import com.alexyach.compose.groupsaa.presentation.grouplist.GroupListScreen
 import com.alexyach.compose.groupsaa.presentation.home.HomeScreen
 import com.alexyach.compose.groupsaa.presentation.navigation.AppNavGraph
 import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationState
+import com.alexyach.compose.groupsaa.presentation.news.NewsScreen
+import com.alexyach.compose.groupsaa.presentation.read.ReadScreen
 
 @Composable
 fun MainScreen() {
@@ -104,8 +106,16 @@ fun MainScreen() {
                     }
                 )
             },
-            newsScreenContent = { Text(text = "News") },
-            readScreenContent = { Text(text = "Read") },
+            newsScreenContent = {
+                NewsScreen(
+                    paddingValues = innerPadding
+                )
+            },
+            readScreenContent = {
+                ReadScreen(
+                    paddingValues = innerPadding
+                )
+            },
         )
 
 

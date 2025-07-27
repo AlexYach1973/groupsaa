@@ -4,6 +4,6 @@ import com.alexyach.compose.groupsaa.data.model.ResponseDto
 import retrofit2.http.GET
 
 interface ApiService {
-    @GET("wp-json/custom/v2/grouplist")
+    @GET("wp-json/groups/v1/listgroup")
     suspend fun getGroupList(): List<ResponseDto>
 }

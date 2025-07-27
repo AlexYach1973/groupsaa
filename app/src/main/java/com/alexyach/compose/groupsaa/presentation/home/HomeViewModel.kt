@@ -147,7 +147,6 @@ class HomeViewModel(application: Application) : ViewModel() {
         /* Общее количество дней */
         _totalDays.value =
             formatTotalDays(ChronoUnit.DAYS.between(selectedDate, currentDate).toInt())
-//        _totalDays.value = ChronoUnit.DAYS.between(selectedDate, currentDate).toInt()
 
         /* Разница */
         _difference.value = formatPeriod(period = period)
