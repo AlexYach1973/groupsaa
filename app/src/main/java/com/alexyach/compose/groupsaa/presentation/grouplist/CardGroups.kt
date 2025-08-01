@@ -151,15 +151,15 @@ private fun InfoAboutGroup(
     }
 }
 
-
-private fun isActiveGroup(group: Group): Boolean {
+val dayOfWeek = listOf(
+    "monday", "tuesday", "wednesday", "thursday",
+    "friday", "saturday", "sunday"
+)
+fun isActiveGroup(group: Group): Boolean {
 
     if (group.schedule.isEmpty()) return false
 
-    val dayOfWeek = listOf(
-        "monday", "tuesday", "wednesday", "thursday",
-        "friday", "saturday", "sunday"
-    )
+
 
     /* Date */
     val currentDay = LocalDateTime.now().dayOfWeek.name.lowercase()
@@ -201,6 +201,14 @@ private fun isActiveGroup(group: Group): Boolean {
 
 }
 
+fun isTodayGroup(group: Group) : Boolean {
+    /* Date */
+    val currentDay = LocalDateTime.now().dayOfWeek.name.lowercase()
+    val indexListDay = dayOfWeek.indexOf(currentDay)
+
+    return group.schedule[indexListDay].isNotBlank()
+
+}
 
 
 @Preview(showBackground = true)

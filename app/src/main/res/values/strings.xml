@@ -18,6 +18,9 @@
     <string name="grouplistscreen_offline_title">Офлайн групи</string>
     <string name="grouplistscreen_online_title">Онлайн групи</string>
     <string name="grouplistscreen_error_load">Не вдалося загрузити список груп, спробуйте пізніше</string>
+    <string name="grouplistscreen_button_all">всі</string>
+    <string name="grouplistscreen_button_today">сьогодні</string>
+    <string name="grouplistscreen_button_now">зараз</string>
 
 <!--    group Screen-->
     <string name="groupscreen_online_chat">посилання на чат</string>

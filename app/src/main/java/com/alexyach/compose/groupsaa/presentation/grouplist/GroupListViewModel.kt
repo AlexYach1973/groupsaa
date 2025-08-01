@@ -13,6 +13,7 @@ import com.alexyach.compose.groupsaa.data.db.GroupEntity
 import com.alexyach.compose.groupsaa.data.db.toGroup
 import com.alexyach.compose.groupsaa.data.repository.GroupsRepositoryImpl
 import com.alexyach.compose.groupsaa.domain.model.Group
+import com.alexyach.compose.groupsaa.presentation.grouplist.FilterGroupsState
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.alexyach.compose.groupsaa.utils.getListGroupTest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -43,6 +44,9 @@ class GroupListViewModel(
     private val _isInternet = MutableStateFlow <Boolean>(true)
     val isInternet: StateFlow<Boolean> = _isInternet
 
+    private val _filterForGroups = MutableStateFlow<FilterGroupsState>(FilterGroupsState.All)
+    val filterForGroups: StateFlow<FilterGroupsState> = _filterForGroups
+
 
 
 
@@ -50,6 +54,10 @@ class GroupListViewModel(
 //        _screenState.value = GroupListScreenState.Groups(getListGroupTest()) // TEST
 
         getGroupList()
+    }
+
+    fun setFilterForGroups(filter: FilterGroupsState) {
+        _filterForGroups.value = filter
     }
 
     private fun getGroupList() {
