@@ -96,7 +96,7 @@ fun GroupListScreen(
                     .padding(top = 48.dp)
             ) {
                 Button(
-                    onClick = { viewModel.setFilterForGroups(FilterGroupsState.All)},
+                    onClick = { viewModel.setFilterForGroups(FilterGroupsState.All) },
 
                     colors = ButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary,
@@ -105,7 +105,7 @@ fun GroupListScreen(
                         disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier
-                        .size(height = 38.dp, width = 100.dp)
+                        .size(height = 38.dp, width = 110.dp)
                         .border(
                             width = 1.dp,
                             color = if (filterForGroups.value == FilterGroupsState.All) {
@@ -133,7 +133,7 @@ fun GroupListScreen(
                         disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier
-                        .size(height = 38.dp, width = 100.dp)
+                        .size(height = 38.dp, width = 110.dp)
                         .border(
                             width = 1.dp,
                             color = if (filterForGroups.value == FilterGroupsState.Today) {
@@ -157,7 +157,7 @@ fun GroupListScreen(
                         disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier
-                        .size(height = 38.dp, width = 100.dp)
+                        .size(height = 38.dp, width = 110.dp)
                         .border(
                             width = 1.dp,
                             color = if (filterForGroups.value == FilterGroupsState.Now) {
