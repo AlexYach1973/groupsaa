@@ -132,6 +132,9 @@ val onPrimaryContainerDark = Color(0xFFD6E3FF)
 val secondaryDark = Color(0xFFBEC6DC)
 val onSecondaryDark = Color(0xFF283141)
 val secondaryContainerDark = Color(0xFF3E4759)
+/* */
+val secondaryContainerTrans = Color(0x883E4759)
+/* */
 val onSecondaryContainerDark = Color(0xFFDAE2F9)
 val tertiaryDark = Color(0xFFDDBCE0)
 val onTertiaryDark = Color(0xFF3F2844)

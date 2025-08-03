@@ -5,6 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
 const val baseURL="https://gso.aa.kiev.ua/"
+//const val baseURL="https://slavaukraine.whf.bz/"
 object ApiFactory {
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseURL)

@@ -9,18 +9,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.db.GroupDao
-import com.alexyach.compose.groupsaa.data.db.GroupEntity
 import com.alexyach.compose.groupsaa.data.db.toGroup
 import com.alexyach.compose.groupsaa.data.repository.GroupsRepositoryImpl
 import com.alexyach.compose.groupsaa.domain.model.Group
-import com.alexyach.compose.groupsaa.presentation.grouplist.FilterGroupsState
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
-import com.alexyach.compose.groupsaa.utils.getListGroupTest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -41,8 +37,8 @@ class GroupListViewModel(
         MutableLiveData<GroupListScreenState>(GroupListScreenState.Initial)
     val screenState: LiveData<GroupListScreenState> = _screenState
 
-    private val _isInternet = MutableStateFlow <Boolean>(true)
-    val isInternet: StateFlow<Boolean> = _isInternet
+    private val _isLoadFromInternet = MutableStateFlow <Boolean>(true)
+    val isLoadFromInternet: StateFlow<Boolean> = _isLoadFromInternet
 
     private val _filterForGroups = MutableStateFlow<FilterGroupsState>(FilterGroupsState.All)
     val filterForGroups: StateFlow<FilterGroupsState> = _filterForGroups
@@ -69,7 +65,7 @@ class GroupListViewModel(
             repository.getAllGroupList().collect {currentListGroup->
                 _screenState.value = GroupListScreenState.Groups(currentListGroup)
 
-                _isInternet.value = true
+                _isLoadFromInternet.value = true
 
                 /* Оновити Room */
                 updateRoomGroups(currentListGroup)
@@ -77,7 +73,7 @@ class GroupListViewModel(
             }.runCatching {
                 _screenState.value = GroupListScreenState.Loading(LoadingFrom.LoadRoom)
 
-                _isInternet.value = false
+                _isLoadFromInternet.value = false
 
 //                Log.d("Logs", "GroupListViewModel runCatching")
 //                delay(3000)

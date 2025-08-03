@@ -37,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,22 +78,20 @@ fun GroupScreen(
         factory = GroupViewModelFactory(group = group)
     )
 
-    /* Errors observable */
-    val errorToast = viewModel.errorToast.collectAsState(0)
-    if (errorToast.value == 1) {
-        toastShow(context, "Launch Skype error")
-        viewModel.setErrorToast(0)
-    }
-    if (errorToast.value == 2) {
-        toastShow(context, "Launch Telegram error")
-        viewModel.setErrorToast(0)
-    }
-    if (errorToast.value == 3) {
-        toastShow(context, "Launch Zoom error")
-        viewModel.setErrorToast(0)
-    }
-    /* END Errors observable */
+    /* Errors State observable */
+    val errorState = viewModel.errorState.collectAsState(GroupScreenErrorState.NoError)
 
+    LaunchedEffect(errorState.value) {
+        when(errorState.value) {
+            GroupScreenErrorState.NoError -> {}
+            is GroupScreenErrorState.TelegramError -> { toastShow(context, "Launch Telegram error") }
+            GroupScreenErrorState.SkypeError -> { toastShow(context, "Launch Skype error") }
+            GroupScreenErrorState.ZoomError -> { toastShow(context, "Launch Zoom error") }
+        }
+        viewModel.setGroupScreenErrorState(GroupScreenErrorState.NoError)
+    }
+
+    /* END Errors observable */
 
     Scaffold(
         topBar = {
@@ -191,9 +190,11 @@ private fun GroupScreenOffline(
         AddressGroup(
             group = group,
             onClickLaunchMapListener = {
-                viewModel.showGroupMap(
-                    context = context,
-                    addressForMap = group.addressForMap
+                viewModel.handlerGroupScreenAction(
+                    GroupScreenAction.GroupMap(
+                        context = context,
+                        addressForMap = group.addressForMap
+                    )
                 )
             }
         )
@@ -278,26 +279,19 @@ private fun GroupScreenOnline(
             .verticalScroll(scrollState),
     ) {
 
-//        if (group.addresses.isNotEmpty()) {
-//            AddressGroup(
-//                group = group,
-//                onClickLaunchMapListener = {}
-//            )
-//        }
-
-//        Spacer(modifier = Modifier.padding(8.dp))
-
         /* *** Launch Conference *** */
         if (group.addressForMap.contains("t.me")) {
             LaunchOnlineConference(
                 viewModel = viewModel,
                 resIcon = R.drawable.telegram_logo,
                 onClickLaunchListener = {
-                    viewModel.launchTelegram(
-                        context = context,
-                        telegramLauncher = telegramLauncher,
-                        uri = group.addressForMap,
-                        playStoreLauncher = playStoreLauncher
+                    viewModel.handlerGroupScreenAction(
+                        GroupScreenAction.LaunchTelegram(
+                            context = context,
+                            telegramLauncher = telegramLauncher,
+                            uri = group.addressForMap,
+                            playStoreLauncher = playStoreLauncher
+                        )
                     )
                 }
             )
@@ -306,11 +300,13 @@ private fun GroupScreenOnline(
                 viewModel = viewModel,
                 resIcon = R.drawable.skype_logo,
                 onClickLaunchListener = {
-                    viewModel.launchSkype(
-                        context = context,
-                        skypeLauncher = skypeLauncher,
-                        uri = group.addressForMap,
-                        playStoreLauncher = playStoreLauncher
+                    viewModel.handlerGroupScreenAction(
+                        GroupScreenAction.LaunchSkype(
+                            context = context,
+                            skypeLauncher = skypeLauncher,
+                            uri = group.addressForMap,
+                            playStoreLauncher = playStoreLauncher
+                        )
                     )
                 }
             )
@@ -319,11 +315,13 @@ private fun GroupScreenOnline(
                 viewModel = viewModel,
                 resIcon = R.drawable.zoom_logo,
                 onClickLaunchListener = {
-                    viewModel.launchZoom(
-                        context = context,
-                        zoomLauncher = zoomLauncher,
-                        uri = group.addressForMap,
-                        playStoreLauncher = playStoreLauncher
+                    viewModel.handlerGroupScreenAction(
+                        GroupScreenAction.LaunchZoom(
+                            context = context,
+                            zoomLauncher = zoomLauncher,
+                            uri = group.addressForMap,
+                            playStoreLauncher = playStoreLauncher
+                        )
                     )
                 }
             )
@@ -464,9 +462,11 @@ private fun TelephoneGroup(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        viewModel.makeCallGroup(
-                            context = context,
-                            phoneNumber = group.telephone
+                        viewModel.handlerGroupScreenAction(
+                            GroupScreenAction.CallGroup(
+                                context = context,
+                                phoneNumber = group.telephone
+                            )
                         )
                     }
                     .border(

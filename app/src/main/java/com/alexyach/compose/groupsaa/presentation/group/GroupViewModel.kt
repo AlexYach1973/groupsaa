@@ -21,16 +21,50 @@ class GroupViewModel(
     group: Group
 ) : ViewModel() {
 
-    private val _screenState = MutableLiveData<GroupScreenState>(
+  /*  private val _screenState = MutableLiveData<GroupScreenState>(
         GroupScreenState.GroupItem(group = group)
     )
-    val screenState: LiveData<GroupScreenState> = _screenState
+    val screenState: LiveData<GroupScreenState> = _screenState*/
 
-    val _errorToast: MutableStateFlow<Int> = MutableStateFlow(0)
-    val errorToast: StateFlow<Int> = _errorToast
+    private val _errorState: MutableStateFlow<GroupScreenErrorState> = MutableStateFlow(GroupScreenErrorState.NoError)
+    val errorState: StateFlow<GroupScreenErrorState> = _errorState
+
+    fun setGroupScreenErrorState(state: GroupScreenErrorState) {
+        _errorState.value = state
+    }
 
 
-    fun makeCallGroup(context: Context, phoneNumber: String) {
+    /* *********** Action ************** */
+    fun handlerGroupScreenAction(action: GroupScreenAction) {
+        when(action) {
+            is GroupScreenAction.CallGroup -> makeCallGroup(action.context, action.phoneNumber)
+            is GroupScreenAction.GroupMap -> showGroupMap(action.context, action.addressForMap)
+
+            is GroupScreenAction.LaunchSkype -> launchSkype(
+                context = action.context,
+                uri = action.uri,
+                skypeLauncher = action.skypeLauncher,
+                playStoreLauncher = action.playStoreLauncher
+            )
+
+            is GroupScreenAction.LaunchTelegram -> launchTelegram(
+                context = action.context,
+                uri = action.uri,
+                telegramLauncher = action.telegramLauncher,
+                playStoreLauncher = action.playStoreLauncher
+            )
+
+            is GroupScreenAction.LaunchZoom -> launchZoom(
+                context = action.context,
+                uri = action.uri,
+                zoomLauncher = action.zoomLauncher,
+                playStoreLauncher = action.playStoreLauncher
+            )
+        }
+    }
+
+
+    private fun makeCallGroup(context: Context, phoneNumber: String) {
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = "tel:$phoneNumber".toUri()
         }
@@ -42,7 +76,7 @@ class GroupViewModel(
         }
     }
 
-    fun showGroupMap(context: Context, addressForMap: String) {
+    private fun showGroupMap(context: Context, addressForMap: String) {
         val gmmIntentUri = Uri.parse("geo:0,0?q=$addressForMap")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage("com.google.android.apps.maps")
@@ -58,7 +92,7 @@ class GroupViewModel(
 
 
     /* ************** Launchers **************** */
-    fun launchTelegram(
+    private fun launchTelegram(
         context: Context,
         uri: String,
         telegramLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
@@ -80,14 +114,14 @@ class GroupViewModel(
                     )
                 )
             } catch (e: Exception) {
-                _errorToast.value = 2
+                _errorState.value = GroupScreenErrorState.TelegramError
 
                 Log.d("Logs", "launchSkype error: $e")
             }
         }
     }
 
-    fun launchSkype(
+    private fun launchSkype(
         context: Context,
         uri: String,
         skypeLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
@@ -110,14 +144,14 @@ class GroupViewModel(
                     )
                 )
             } catch (e: Exception) {
-                _errorToast.value = 1
+                _errorState.value = GroupScreenErrorState.SkypeError
 
                 Log.d("Logs", "launchSkype error: $e")
             }
         }
     }
 
-    fun launchZoom(
+    private fun launchZoom(
         context: Context,
         uri: String,
         zoomLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
@@ -139,16 +173,13 @@ class GroupViewModel(
                     )
                 )
             } catch (e: Exception) {
-                _errorToast.value = 3
+                _errorState.value = GroupScreenErrorState.ZoomError
 
                 Log.d("Logs", "launchSkype error: $e")
             }
         }
     }
 
-    fun setErrorToast(value: Int) {
-        _errorToast.value = value
-    }
 
     // Функція для перевірки, чи встановлено додаток
     private fun isAppInstalled(context: Context, packageName: String): Boolean {
@@ -159,7 +190,6 @@ class GroupViewModel(
             false
         }
     }
-
 
 
 

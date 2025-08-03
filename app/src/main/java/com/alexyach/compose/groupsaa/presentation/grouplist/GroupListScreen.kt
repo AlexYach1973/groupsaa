@@ -26,40 +26,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.App
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Group
-import com.alexyach.compose.groupsaa.presentation.grouplist.FilterGroupsState
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
-import com.alexyach.compose.groupsaa.ui.theme.amatic
-import com.alexyach.compose.groupsaa.ui.theme.backgroundDark
-import com.alexyach.compose.groupsaa.ui.theme.spice_rice
-import com.alexyach.compose.groupsaa.ui.theme.triodionr
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import kotlin.text.lowercase
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +65,7 @@ fun GroupListScreen(
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     /* END Permission */
 
-    val isInternet = viewModel.isInternet.collectAsState(true)
+    val isLoadFromInternet = viewModel.isLoadFromInternet.collectAsState(true)
 
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
 
@@ -87,11 +74,13 @@ fun GroupListScreen(
     /* Buttons */
     Scaffold(
         topBar = {
-
+//            TopAppBar(
+//                title = {
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-//                    .background(Color.Green)
+//                    .background(Color.DarkGray)
                     .fillMaxWidth()
                     .padding(top = 48.dp)
             ) {
@@ -100,17 +89,21 @@ fun GroupListScreen(
 
                     colors = ButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary,
-                        containerColor = Color.Transparent,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+//                        containerColor = Color.Transparent,
                         disabledContainerColor = Color.Gray,
                         disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier
-                        .size(height = 38.dp, width = 110.dp)
+                        .padding(horizontal = 8.dp, vertical = 0.dp)
+//                        .size(height = 38.dp, width = 110.dp)
                         .border(
                             width = 1.dp,
                             color = if (filterForGroups.value == FilterGroupsState.All) {
                                 MaterialTheme.colorScheme.primary
-                            } else { MaterialTheme.colorScheme.onSecondary},
+                            } else {
+                                MaterialTheme.colorScheme.onSecondary
+                            },
 
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -120,6 +113,7 @@ fun GroupListScreen(
                         text = stringResource(R.string.grouplistscreen_button_all),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
+                        modifier = Modifier
                     )
                 }
 
@@ -128,50 +122,67 @@ fun GroupListScreen(
                     colors = ButtonColors(
 
                         contentColor = MaterialTheme.colorScheme.primary,
-                        containerColor = Color.Transparent,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
                         disabledContainerColor = Color.Gray,
                         disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier
-                        .size(height = 38.dp, width = 110.dp)
+                        .padding(horizontal = 16.dp, vertical = 0.dp)
+//                                .size(height = 38.dp, width = 110.dp)
                         .border(
                             width = 1.dp,
                             color = if (filterForGroups.value == FilterGroupsState.Today) {
                                 MaterialTheme.colorScheme.primary
-                            } else { MaterialTheme.colorScheme.onSecondary},
+                            } else {
+                                MaterialTheme.colorScheme.onSecondary
+                            },
                             shape = RoundedCornerShape(16.dp)
                         )
-                ) { Text(
-                    text = stringResource(R.string.grouplistscreen_button_today),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                ) }
+                ) {
+                    Text(
+                        text = stringResource(R.string.grouplistscreen_button_today),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                    )
+                }
 
                 Button(
                     onClick = { viewModel.setFilterForGroups(FilterGroupsState.Now) },
                     colors = ButtonColors(
 
                         contentColor = MaterialTheme.colorScheme.primary,
-                        containerColor = Color.Transparent,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
                         disabledContainerColor = Color.Gray,
                         disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier
-                        .size(height = 38.dp, width = 110.dp)
+                        .padding(horizontal = 16.dp, vertical = 0.dp)
+//                                .size(height = 38.dp, width = 110.dp)
                         .border(
                             width = 1.dp,
                             color = if (filterForGroups.value == FilterGroupsState.Now) {
                                 MaterialTheme.colorScheme.primary
-                            } else { MaterialTheme.colorScheme.onSecondary},
+                            } else {
+                                MaterialTheme.colorScheme.onSecondary
+                            },
                             shape = RoundedCornerShape(16.dp)
                         )
 
-                ) { Text(
-                    text = stringResource(R.string.grouplistscreen_button_now),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                ) }
+                ) {
+                    Text(
+                        text = stringResource(R.string.grouplistscreen_button_now),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                    )
+                }
             }
+//                },
+//                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.secondaryContainer),
+//            )
+
+
         }
 
     ) { paddingValue ->
@@ -187,7 +198,7 @@ fun GroupListScreen(
                     paddingValues = paddingValues,
                     onGroupClickListener = onGroupClickListener,
                     filterForGroups = filterForGroups.value,
-                    isInternet = isInternet.value
+                    isLoadFromInternet = isLoadFromInternet.value
                 )
 
 
@@ -196,12 +207,10 @@ fun GroupListScreen(
             is GroupListScreenState.Loading -> {
                 when (currentState.loadFrom) {
                     LoadInet -> {
-//                    isInternet = true
                         LoadingListGroup("load from Internet")
                     }
 
                     LoadRoom -> {
-//                    isInternet = false
                         LoadingListGroup("load from local BD")
                     }
                 }
@@ -214,7 +223,6 @@ fun GroupListScreen(
             GroupListScreenState.Initial -> {}
         }
     }
-
 
 
 }
@@ -258,7 +266,7 @@ private fun Groups(
     groups: List<Group>,
     viewModel: GroupListViewModel,
     onGroupClickListener: (Group) -> Unit,
-    isInternet: Boolean,
+    isLoadFromInternet: Boolean,
     filterForGroups: FilterGroupsState,
     paddingValues: PaddingValues
 ) {
@@ -271,72 +279,96 @@ private fun Groups(
         groups = groups
     )
 
-    Column(
+    Box(
         modifier = Modifier
-            .verticalScroll(scrollState)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(top = 96.dp, bottom = 132.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(top = 96.dp, bottom = 132.dp)
 //            .padding(paddingValues)
-    )
-    {
-
-        /* Offline */
-        HeaderGroupList(
-            isInternet = isInternet,
-            resStringTitle = R.string.grouplistscreen_offline_title
         )
+        {
 
-        groups
-            .filter { it.latitude != 0.0 }
-            .filter {
-                when(filterForGroups){
-                    is FilterGroupsState.All -> { true }
-                    FilterGroupsState.Today -> { isTodayGroup(group = it) }
-                    FilterGroupsState.Now -> { isActiveGroup(group = it) }
-                }
-            }
-            .sortedBy { it.distance }
-            .forEach { group ->
-            CardGroups(
-                group = group,
-                onGroupClickListener
+            /* *** *** Offline *** *** */
+            HeaderGroupList(
+                isLoadFromInternet = isLoadFromInternet,
+                resStringTitle = R.string.grouplistscreen_offline_title
             )
-        }
 
-        Spacer(modifier = Modifier.padding(4.dp))
 
-        /* Online */
-        HeaderGroupList(
-            isInternet = isInternet,
-            resStringTitle = R.string.grouplistscreen_online_title
-        )
-        Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = Modifier.padding(4.dp))
+            groups
+                .filter { it.latitude != 0.0 }
+                .filter {
+                    when (filterForGroups) {
+                        is FilterGroupsState.All -> {
+                            true
+                        }
 
-        groups
-            .filter { it.latitude == 0.0 }
-            .filter {
-                when(filterForGroups){
-                    is FilterGroupsState.All -> { true }
-                    FilterGroupsState.Today -> { isTodayGroup(group = it) }
-                    FilterGroupsState.Now -> { isActiveGroup(group = it) }
+                        FilterGroupsState.Today -> {
+                            isTodayGroup(group = it)
+                        }
+
+                        FilterGroupsState.Now -> {
+                            isActiveGroup(group = it)
+                        }
+                    }
                 }
-            }
+                .sortedBy { it.distance }
+                .forEach { group ->
+                    CardGroups(
+                        group = group,
+                        onGroupClickListener
+                    )
+                }
+
+
+            /* Online */
+            HeaderGroupList(
+                isLoadFromInternet = isLoadFromInternet,
+                resStringTitle = R.string.grouplistscreen_online_title
+            )
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            groups
+                .filter { it.latitude == 0.0 }
+                .filter {
+                    when (filterForGroups) {
+                        is FilterGroupsState.All -> {
+                            true
+                        }
+
+                        FilterGroupsState.Today -> {
+                            isTodayGroup(group = it)
+                        }
+
+                        FilterGroupsState.Now -> {
+                            isActiveGroup(group = it)
+                        }
+                    }
+                }
 //            .filter { isActiveGroup(it) }
 //            .filter { isTodayGroup(it) }
-            .forEach { group ->
-            CardGroups(
-                group = group,
-                onGroupClickListener
-            )
-        }
+                .forEach { group ->
+                    CardGroups(
+                        group = group,
+                        onGroupClickListener
+                    )
+                }
 
+        }
     }
+
 }
 
 @Composable
 private fun HeaderGroupList(
-    isInternet: Boolean,
+    isLoadFromInternet: Boolean,
     resStringTitle: Int
 ) {
     Row(
@@ -359,7 +391,7 @@ private fun HeaderGroupList(
             )
 
             Text(
-                text = if(isInternet) "internet" else "local DB",
+                text = if (isLoadFromInternet) "internet" else "local DB",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier
