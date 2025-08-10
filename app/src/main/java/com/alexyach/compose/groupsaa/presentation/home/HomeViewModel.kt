@@ -2,13 +2,13 @@ package com.alexyach.compose.groupsaa.presentation.home
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
 import com.alexyach.compose.groupsaa.data.repository.loadDailyFromAssets
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
 import com.alexyach.compose.groupsaa.domain.model.Prayers
+import com.alexyach.compose.groupsaa.domain.model.getAllPrayers
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 
-class HomeViewModel(application: Application) : ViewModel() {
+class HomeViewModel(val application: Application) : ViewModel() {
 
     private val dataStoreManager = DataStoreManager(application)
 
@@ -57,31 +57,19 @@ class HomeViewModel(application: Application) : ViewModel() {
     val dataStoreDay = dataStoreManager.loadDay
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), -1)
 
-    /* Load From Date Store Preferences Show Prayer */
-    val prefMorningPrayer = dataStoreManager.prefMorningPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-    val prefEveningPrayer = dataStoreManager.prefEveningPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-    val prefDelegationPrayer = dataStoreManager.prefDelegationPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-    val prefPeaceOfMindPrayer = dataStoreManager.prefPeaceOfMindPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-    val prefResentmentPrayer = dataStoreManager.prefResentmentPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-    val prefFearPrayer = dataStoreManager.prefFearPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-    val prefStepTenPrayer = dataStoreManager.prefStepTenPrayer
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(3000), true)
-
-
     private val dailyMap: Map<String, DailyReflections> = loadDailyFromAssets(application)
+
+        private val _prefVisiblyPrayerList =
+        MutableStateFlow<List<Prayers>>(getAllPrayers())
+    val prefVisiblyPrayerList: StateFlow<List<Prayers>> = _prefVisiblyPrayerList
+
+
 
     init {
         loadDailyForDate(LocalDate.now())
 //        Log.d("Logs", "date: ${LocalDate.now()}")
 
-//        dataStoreManager.saveIsVisiblePrayer(Prayers.morning_prayer, true)
-
+        loadPrefPrayerList()
     }
 
     fun loadDailyForDate(date: LocalDate) {
@@ -153,14 +141,42 @@ class HomeViewModel(application: Application) : ViewModel() {
 
     }
 
+    /* *** Preference Show Prayer Data Store ** */
 
-    /* *** Save Preference Show Prayer ** */
+    fun savePrefPrayerList(prayers: Prayers, value: Boolean) {
+        val newList = _prefVisiblyPrayerList.value.apply {
+            prayers.isVisible = value
+        }
 
-    fun savePrefPrayer(keyMap: Prayers, value: Boolean) {
+        Log.d("Logs", "HomeViewModel, savePrefPrayerList, newList: ${newList.map { it.isVisible }}")
+
         viewModelScope.launch {
-            dataStoreManager.saveIsVisiblePrayer(keyMap, value)
+            dataStoreManager.savePrefVisiblePrayerList(
+                newList.map {
+                    it.isVisible
+                }
+            )
         }
     }
+
+    fun loadPrefPrayerList() {
+//        val listBooleanPref = listOf<Boolean>()
+        viewModelScope.launch {
+            val listBooleanPref = dataStoreManager.readPrefVisiblePrayerList()
+
+            Log.d("Logs", "HomeViewModel, loadPrefPrayerList, listBooleanPref: $listBooleanPref")
+
+            if (listBooleanPref.isNotEmpty()) {
+                for (i in 0 until listBooleanPref.size) {
+                    _prefVisiblyPrayerList.value[i].isVisible = listBooleanPref[i]
+                }
+            }
+
+        }
+    }
+
+
+
 
 }
 

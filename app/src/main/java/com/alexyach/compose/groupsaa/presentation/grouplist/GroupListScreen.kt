@@ -3,6 +3,7 @@ package com.alexyach.compose.groupsaa.presentation.grouplist
 import android.Manifest
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,10 +12,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,11 +35,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,6 +59,7 @@ import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -66,9 +79,7 @@ fun GroupListScreen(
     /* END Permission */
 
     val isLoadFromInternet = viewModel.isLoadFromInternet.collectAsState(true)
-
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
-
     val filterForGroups = viewModel.filterForGroups.collectAsState(FilterGroupsState.All)
 
     /* Buttons */
@@ -290,6 +301,19 @@ private fun Groups(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(top = 96.dp, bottom = 132.dp)
+                /* Индикатор прокуртки */
+                .drawWithContent{
+                    drawContent()
+
+                    val thumbHeight = size.height * 0.2f // Пропорциональная высота
+                    val thumbOffset = scrollState.value.toFloat() / scrollState.maxValue * (size.height - thumbHeight)
+
+                    drawRect(
+                        color = Color.Gray,
+                        topLeft = Offset(x = size.width - 8.dp.toPx(), y = thumbOffset),
+                        size = Size(width = 4.dp.toPx(), height = thumbHeight)
+                    )
+                }
 //            .padding(paddingValues)
         )
         {
@@ -297,7 +321,8 @@ private fun Groups(
             /* *** *** Offline *** *** */
             HeaderGroupList(
                 isLoadFromInternet = isLoadFromInternet,
-                resStringTitle = R.string.grouplistscreen_offline_title
+                resStringTitle = R.string.grouplistscreen_offline_title,
+                isOffline = true
             )
 
 
@@ -331,7 +356,8 @@ private fun Groups(
             /* Online */
             HeaderGroupList(
                 isLoadFromInternet = isLoadFromInternet,
-                resStringTitle = R.string.grouplistscreen_online_title
+                resStringTitle = R.string.grouplistscreen_online_title,
+                isOffline = false
             )
             Spacer(modifier = Modifier.padding(4.dp))
 
@@ -362,6 +388,8 @@ private fun Groups(
                 }
 
         }
+
+
     }
 
 }
@@ -369,7 +397,8 @@ private fun Groups(
 @Composable
 private fun HeaderGroupList(
     isLoadFromInternet: Boolean,
-    resStringTitle: Int
+    resStringTitle: Int,
+    isOffline: Boolean
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -390,19 +419,25 @@ private fun HeaderGroupList(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Text(
-                text = if (isLoadFromInternet) "internet" else "local DB",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Light,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-            )
-
-
+            if (isOffline) {
+                Icon(
+                    painterResource(
+                        if (isLoadFromInternet) R.drawable.web_icon
+                        else R.drawable.database_icon
+                    ),
+                    tint = Color.DarkGray,
+                    contentDescription = "icon",
+                    modifier = Modifier
+                        .size(25.dp)
+                        .padding(start = 8.dp)
+                )
+            }
         }
 
     }
 }
+
+
 
 
 //    /* ************ */

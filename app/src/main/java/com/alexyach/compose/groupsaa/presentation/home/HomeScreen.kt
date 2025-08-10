@@ -2,6 +2,8 @@ package com.alexyach.compose.groupsaa.presentation.home
 
 import android.app.Application
 import android.content.Context
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +37,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -55,7 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
 import com.alexyach.compose.groupsaa.domain.model.Prayers
-import com.alexyach.compose.groupsaa.ui.theme.amatic
+import com.alexyach.compose.groupsaa.domain.model.getAllPrayers
 import com.alexyach.compose.groupsaa.ui.theme.spice_rice
 import com.alexyach.compose.groupsaa.ui.theme.triodionr
 import java.time.Instant
@@ -85,6 +89,7 @@ fun HomeScreen(
             )
         )
 
+
         val scrollState = rememberScrollState()
 
         val difference by viewModel.difference.collectAsState("")
@@ -100,7 +105,6 @@ fun HomeScreen(
         val dailyItem by viewModel.dailyItem.collectAsState(
             DailyReflections("Title", "", "")
         )
-
 
 
         if (dataStoreYear > 0 && dataStoreMonth > 0 && dataStoreDay > 0) {
@@ -138,15 +142,9 @@ fun HomeScreen(
 
 
             /* *************************   PRAYER ***************************   */
-
-            /* From Data Store Preference Show Prayer */
-            val prefMorningPrayer by viewModel.prefMorningPrayer.collectAsState(true)
-            val prefEveningPrayer by viewModel.prefEveningPrayer.collectAsState(true)
-            val prefDelegationPrayer by viewModel.prefDelegationPrayer.collectAsState(true)
-            val prefPeaceOfMindPrayer by viewModel.prefPeaceOfMindPrayer.collectAsState(true)
-            val prefResentmentPrayer by viewModel.prefResentmentPrayer.collectAsState(true)
-            val prefFearPrayer by viewModel.prefFearPrayer.collectAsState(true)
-            val prefStepTenPrayer by viewModel.prefStepTenPrayer.collectAsState(true)
+            val prefVisibilityPrayersLit by viewModel.prefVisiblyPrayerList.collectAsState(
+                getAllPrayers()
+            )
 
             var isShowPrayerSetting by remember { mutableStateOf(false) }
 
@@ -172,12 +170,18 @@ fun HomeScreen(
                     )
                 }
 
+
+
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .weight(1f)
-                        .clickable { isShowPrayerSetting = !isShowPrayerSetting }
+                        .clickable {
+                            isShowPrayerSetting = !isShowPrayerSetting
+                            /* load preferences visibility Prayers  */
+                            viewModel.loadPrefPrayerList()
+                        }
                 ) {
                     Text(
                         text = "show",
@@ -204,14 +208,16 @@ fun HomeScreen(
                             .size(20.dp)
                     )
                 }
+
             }
             /* *** END TITLE *** */
 
 
             var isHideMorningPrayer by remember { mutableStateOf(true) }
-            var isShowMorningPrayer = prefMorningPrayer
+            var isVisibleMorningPrayer  by remember { mutableStateOf(true) }
+            isVisibleMorningPrayer = prefVisibilityPrayersLit.first { it == Prayers.MorningPrayer }.isVisible
 
-            if (isShowMorningPrayer || isShowPrayerSetting) {
+            if (isVisibleMorningPrayer || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHideMorningPrayer,
                     onClickHideListener = { isHideMorningPrayer = !isHideMorningPrayer },
@@ -219,11 +225,10 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.number_step_eleven_morning_start),
                     resTextFull = stringResource(R.string.number_step_eleven_morning),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowMorningPrayer,
+                    isShowPrayer = isVisibleMorningPrayer,
                     onClickShowMorningPrayer = {
-                        isShowMorningPrayer = !isShowMorningPrayer
-                        viewModel.savePrefPrayer(Prayers.MorningPrayer, isShowMorningPrayer)
-//                    viewModel.savePrefMorningPrayer(isShowMorningPrayer)
+                        isVisibleMorningPrayer = !isVisibleMorningPrayer
+                        viewModel.savePrefPrayerList(Prayers.MorningPrayer, isVisibleMorningPrayer)
                     }
 
                 )
@@ -231,9 +236,10 @@ fun HomeScreen(
 
 
             var isHideEveningPrayer by remember { mutableStateOf(true) }
-            var isShowEveningPrayer = prefEveningPrayer
+            var isVisibleEveningPrayer by remember { mutableStateOf(true) }
+            isVisibleEveningPrayer = prefVisibilityPrayersLit.first { it == Prayers.EveningPrayer }.isVisible
 
-            if (isShowEveningPrayer || isShowPrayerSetting) {
+            if (isVisibleEveningPrayer || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHideEveningPrayer,
                     onClickHideListener = { isHideEveningPrayer = !isHideEveningPrayer },
@@ -241,22 +247,22 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.number_step_eleven_evening_start),
                     resTextFull = stringResource(R.string.number_step_eleven_evening),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowEveningPrayer,
+                    isShowPrayer = isVisibleEveningPrayer,
                     onClickShowMorningPrayer = {
-                        isShowEveningPrayer = !isShowEveningPrayer
-                        viewModel.savePrefPrayer(
-                            keyMap = Prayers.EveningPrayer,
-                            value = isShowEveningPrayer
+                        isVisibleEveningPrayer = !isVisibleEveningPrayer
+                        viewModel.savePrefPrayerList(
+                            prayers = Prayers.EveningPrayer,
+                            value = isVisibleEveningPrayer
                         )
-//                    viewModel.savePrefEveningPrayer(isShowEveningPrayer)
                     }
                 )
             }
 
             var isHidePrayerDelegation by remember { mutableStateOf(true) }
-            var isShowPrayerDelegation = prefDelegationPrayer
+            var isVisiblePrayerDelegation by remember { mutableStateOf(true) }
+            isVisiblePrayerDelegation = prefVisibilityPrayersLit.first { it == Prayers.DelegationPrayer }.isVisible
 
-            if (isShowPrayerDelegation || isShowPrayerSetting) {
+            if (isVisiblePrayerDelegation || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHidePrayerDelegation,
                     onClickHideListener = { isHidePrayerDelegation = !isHidePrayerDelegation },
@@ -264,22 +270,22 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.prayer_delegation_start),
                     resTextFull = stringResource(R.string.prayer_delegation),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowPrayerDelegation,
+                    isShowPrayer = isVisiblePrayerDelegation,
                     onClickShowMorningPrayer = {
-                        isShowPrayerDelegation = !isShowPrayerDelegation
-                        viewModel.savePrefPrayer(
-                            keyMap = Prayers.DelegationPrayer,
-                            value = isShowPrayerDelegation
+                        isVisiblePrayerDelegation = !isVisiblePrayerDelegation
+                        viewModel.savePrefPrayerList(
+                            prayers = Prayers.DelegationPrayer,
+                            value = isVisiblePrayerDelegation
                         )
-//                    viewModel.savePrefDelegationPrayer(isShowPrayerDelegation)
                     }
                 )
             }
 
             var isHidePrayerPeaceOfMind by remember { mutableStateOf(true) }
-            var isShowPrayerPeaceOfMind = prefPeaceOfMindPrayer
+            var isVisiblePrayerPeaceOfMind by remember { mutableStateOf(true) }
+            isVisiblePrayerPeaceOfMind = prefVisibilityPrayersLit.first { it == Prayers.PeaceOfMindPrayer }.isVisible
 
-            if (isShowPrayerPeaceOfMind || isShowPrayerSetting) {
+            if (isVisiblePrayerPeaceOfMind || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHidePrayerPeaceOfMind,
                     onClickHideListener = { isHidePrayerPeaceOfMind = !isHidePrayerPeaceOfMind },
@@ -287,22 +293,22 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.peace_of_mind_start),
                     resTextFull = stringResource(R.string.peace_of_mind_full),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowPrayerPeaceOfMind,
+                    isShowPrayer = isVisiblePrayerPeaceOfMind,
                     onClickShowMorningPrayer = {
-                        isShowPrayerPeaceOfMind = !isShowPrayerPeaceOfMind
-                        viewModel.savePrefPrayer(
-                            keyMap = Prayers.PeaceOfMindPrayer,
-                            value = isShowPrayerPeaceOfMind
+                        isVisiblePrayerPeaceOfMind = !isVisiblePrayerPeaceOfMind
+                        viewModel.savePrefPrayerList(
+                            prayers = Prayers.PeaceOfMindPrayer,
+                            value = isVisiblePrayerPeaceOfMind
                         )
-//                    viewModel.savePrefPeaceOfMindPrayer(isShowPrayerPeaceOfMind)
                     }
                 )
             }
 
             var isHidePrayerResentment by remember { mutableStateOf(true) }
-            var isShowPrayerResentment = prefResentmentPrayer
+            var isVisiblePrayerResentment by remember { mutableStateOf(true) }
+            isVisiblePrayerResentment = prefVisibilityPrayersLit.first { it == Prayers.ResentmentPrayer }.isVisible
 
-            if (isShowPrayerResentment || isShowPrayerSetting) {
+            if (isVisiblePrayerResentment || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHidePrayerResentment,
                     onClickHideListener = { isHidePrayerResentment = !isHidePrayerResentment },
@@ -310,22 +316,22 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.resentment_start),
                     resTextFull = stringResource(R.string.resentment_full),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowPrayerResentment,
+                    isShowPrayer = isVisiblePrayerResentment,
                     onClickShowMorningPrayer = {
-                        isShowPrayerResentment = !isShowPrayerResentment
-                        viewModel.savePrefPrayer(
-                            keyMap = Prayers.ResentmentPrayer,
-                            value = isShowPrayerResentment
+                        isVisiblePrayerResentment = !isVisiblePrayerResentment
+                        viewModel.savePrefPrayerList(
+                            prayers = Prayers.ResentmentPrayer,
+                            value = isVisiblePrayerResentment
                         )
-//                    viewModel.saveResentmentPrayer(isShowPrayerResentment)
                     }
                 )
             }
 
             var isHidePrayerFear by remember { mutableStateOf(true) }
-            var isShowPrayerFear = prefFearPrayer
+            var isVisiblePrayerFear by remember { mutableStateOf(true) }
+            isVisiblePrayerFear = prefVisibilityPrayersLit.first { it == Prayers.FearPrayer }.isVisible
 
-            if (isShowPrayerFear || isShowPrayerSetting) {
+            if (isVisiblePrayerFear || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHidePrayerFear,
                     onClickHideListener = { isHidePrayerFear = !isHidePrayerFear },
@@ -333,22 +339,22 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.prayer_fear_start),
                     resTextFull = stringResource(R.string.prayer_fear_full),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowPrayerFear,
+                    isShowPrayer = isVisiblePrayerFear,
                     onClickShowMorningPrayer = {
-                        isShowPrayerFear = !isShowPrayerFear
-                        viewModel.savePrefPrayer(
-                            keyMap = Prayers.FearPrayer,
-                            value = isShowPrayerFear
+                        isVisiblePrayerFear = !isVisiblePrayerFear
+                        viewModel.savePrefPrayerList(
+                            prayers = Prayers.FearPrayer,
+                            value = isVisiblePrayerFear
                         )
-//                    viewModel.saveFearPrayer(isShowPrayerFear)
                     }
                 )
             }
 
             var isHideStepTen by remember { mutableStateOf(true) }
-            var isShowStepTen = prefStepTenPrayer
+            var isVisibleStepTen  by remember { mutableStateOf(true) }
+            isVisibleStepTen = prefVisibilityPrayersLit.first { it == Prayers.StepTenPrayer }.isVisible
 
-            if (isShowStepTen || isShowPrayerSetting) {
+            if (isVisibleStepTen || isShowPrayerSetting) {
                 PrayerCard(
                     isHide = isHideStepTen,
                     onClickHideListener = { isHideStepTen = !isHideStepTen },
@@ -356,14 +362,13 @@ fun HomeScreen(
                     resTextStart = stringResource(R.string.step_number_ten_start),
                     resTextFull = stringResource(R.string.step_number_ten_full),
                     isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isShowStepTen,
+                    isShowPrayer = isVisibleStepTen,
                     onClickShowMorningPrayer = {
-                        isShowStepTen = !isShowStepTen
-                        viewModel.savePrefPrayer(
-                            keyMap = Prayers.StepTenPrayer,
-                            value = isShowStepTen
+                        isVisibleStepTen = !isVisibleStepTen
+                        viewModel.savePrefPrayerList(
+                            prayers = Prayers.StepTenPrayer,
+                            value = isVisibleStepTen
                         )
-//                    viewModel.saveStepTenPrayer(isShowStepTen)
                     }
                 )
             }
@@ -528,9 +533,10 @@ private fun PeriodOfSobrietyCard(
                                 .padding(end = 8.dp)
                         )
                         Icon(
+//                            painter = painterResource(R.drawable.service),
                             imageVector = Icons.Default.Settings,
                             contentDescription = "setting",
-                            tint = MaterialTheme.colorScheme.primary,
+//                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .size(20.dp)
 //                            .clickable { openDialog = true }
@@ -591,6 +597,10 @@ private fun DailyReflectionCard(
     val datePickerState = rememberDatePickerState()
     var openDialog by remember { mutableStateOf(false) }
 
+//    /* Speech */
+//    var isSpeaking by remember { mutableStateOf(false) }
+//    val tts = rememberTextToSpeech()
+
     /* Title */
 
     Row(
@@ -630,7 +640,7 @@ private fun DailyReflectionCard(
                 datePickerState = datePickerState,
                 onDismissClickListener = { openDialog = it },
                 onConfirmClickListener = {
-                    datePickerState.selectedDateMillis?.let {millis ->
+                    datePickerState.selectedDateMillis?.let { millis ->
 
                         val selectedDate = Instant.ofEpochMilli(millis)
                             .atZone(ZoneId.systemDefault())
@@ -651,6 +661,7 @@ private fun DailyReflectionCard(
 
                 Row(
                     horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .weight(0.3f)
 
@@ -663,6 +674,9 @@ private fun DailyReflectionCard(
                             .padding(8.dp)
                             .clickable { openDialog = true }
                     )
+
+                    /* *** Speech *** */
+                    PlayAudioUkrText("${dailyItem.title}.${dailyItem.quote}.${dailyItem.discussion}")
                 }
 
                 Row(
@@ -746,7 +760,7 @@ private fun DailyReflectionCard(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                ){
+                ) {
                     Text(
                         text = dailyItem.title,
                         fontSize = fontSizeText.sp,
@@ -833,14 +847,18 @@ private fun PrayerCard(
                 .fillMaxWidth()
         ) {
 
+
             /* Text Size */
             if (!isHide) {
+                /* *** Speech *** */
+                PlayAudioUkrText(resTextFull)
+
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "plus",
                     tint = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier
-                        .padding(end = 8.dp)
+                        .padding(end = 8.dp, start = 8.dp)
                         .clickable { fontSizeText++ }
                 )
 
@@ -902,8 +920,78 @@ private fun PrayerCard(
 }
 
 
+/* Speech */
+@Composable
+private fun PlayAudioUkrText(text: String) {
+
+    var isVoiceUkr by remember { mutableStateOf(false) }
+
+//    var isSpeaking by remember { mutableStateOf(false) }
+    val tts = rememberTextToSpeech({ isVoiceUkr = it })
+
+    Log.d("Logs", "HomeScreen PlayAudioUkrText isVoiceUkr= $isVoiceUkr")
 
 
+    if (isVoiceUkr) {
+        Icon(
+            painterResource(R.drawable.text_to_speech),
+            contentDescription = "Play",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .size(30.dp)
+//                .padding(start = 8.dp)
+                .clickable {
+                    if (tts.value?.isSpeaking == true) {
+                        tts.value?.stop()
+//                        isSpeaking = false
+                    } else {
+                        tts.value?.speak(
+                            text,
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            null
+                        )
+//                        isSpeaking = true
+                    }
 
+                }
+        )
+    }
+}
 
+@Composable
+private fun rememberTextToSpeech(isVoiceUkrListener: (Boolean) -> Unit): MutableState<TextToSpeech?> {
+    val context = LocalContext.current
+    val tts = remember { mutableStateOf<TextToSpeech?>(null) }
+
+    var textToSpeech: TextToSpeech? = null
+    val locale = java.util.Locale("uk", "UA")
+
+    DisposableEffect(context) {
+        textToSpeech = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                textToSpeech?.language = locale
+
+                /* Is Ukrainian Voice */
+                tts.let {
+                    val voices = tts.value?.voices
+//                    Log.d("Logs", "rememberTextToSpeech voices= $voices")
+                    val ukrainianVoices =
+                        voices?.filter { it.locale.language == "uk" } ?: emptyList()
+
+                    isVoiceUkrListener(ukrainianVoices.isNotEmpty())
+                }
+
+            }
+        }
+        tts.value = textToSpeech
+
+        onDispose {
+            tts.value?.stop()
+            tts.value?.shutdown()
+        }
+    }
+
+    return tts
+}
 
