@@ -28,10 +28,6 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-
-
-
-
     /* Load Date */
     val loadYear : Flow<Int> = context.dataStore.data
         .map { preferences ->
@@ -47,6 +43,21 @@ class DataStoreManager(private val context: Context) {
         .map { preferences ->
             preferences[KEY_DAY]?: 0
         }
+
+    /* SelectedDate */
+    suspend fun saveSelectedDataList(list: List<Int>) {
+        val serialized = list.joinToString(",") { it.toString() }
+        context.dataStore.edit { prefs ->
+            prefs[SELECTED_DATE_IST_KEY] = serialized
+        }
+    }
+
+    suspend fun readSelectedDataList(): List<Int> {
+        val prefs = context.dataStore.data.first()
+        val serialized = prefs[SELECTED_DATE_IST_KEY] ?: return emptyList()
+        return serialized.split(",").map { it.toInt() }
+    }
+
 
 
     /* Preferences Visible Prayers */
@@ -71,6 +82,7 @@ class DataStoreManager(private val context: Context) {
 
         /* preferences show Prayers */
         val PREF_PRAYERS_LIST_KEY = stringPreferencesKey("pref_prayers_list")
+        val SELECTED_DATE_IST_KEY = stringPreferencesKey("selected_date_list")
 
 
     }

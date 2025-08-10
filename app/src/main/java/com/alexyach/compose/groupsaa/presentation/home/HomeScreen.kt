@@ -58,8 +58,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
-import com.alexyach.compose.groupsaa.domain.model.Prayers
-import com.alexyach.compose.groupsaa.domain.model.getAllPrayers
+import com.alexyach.compose.groupsaa.domain.model.Prayer
+import com.alexyach.compose.groupsaa.domain.model.PrayersEnum
+import com.alexyach.compose.groupsaa.domain.model.getPrayersList
 import com.alexyach.compose.groupsaa.ui.theme.spice_rice
 import com.alexyach.compose.groupsaa.ui.theme.triodionr
 import java.time.Instant
@@ -142,9 +143,16 @@ fun HomeScreen(
 
 
             /* *************************   PRAYER ***************************   */
-            val prefVisibilityPrayersLit by viewModel.prefVisiblyPrayerList.collectAsState(
-                getAllPrayers()
-            )
+
+            val prayerList by viewModel.prayersList.collectAsState( emptyList<Prayer>())//getPrayersList())
+
+            /* Logs */
+//            prayerList.forEach {
+//                Log.d("Logs", "HomeScreen name: ${it.name}; isVisible: ${it.isVisible}")
+//            }
+//            Log.i("Logs", "----------------------------------------------------------------")
+
+
 
             var isShowPrayerSetting by remember { mutableStateOf(false) }
 
@@ -213,9 +221,43 @@ fun HomeScreen(
             /* *** END TITLE *** */
 
 
+           if(prayerList.isNotEmpty()) {
+
+               prayerList.forEach { prayer ->
+
+                   var isHidePrayer by remember { mutableStateOf(true) }
+                   var isVisiblePrayer by remember { mutableStateOf(true) }
+                   isVisiblePrayer = prayer.isVisible
+
+                   if (isVisiblePrayer || isShowPrayerSetting) {
+                       PrayerCard(
+                           isHide = isHidePrayer,
+                           onClickHideListener = { isHidePrayer = !isHidePrayer },
+                           resTextTitle = stringResource(prayer.title),
+                           resTextStart = stringResource(prayer.textShort),
+                           resTextFull = stringResource(prayer.textFull),
+                           isShowPrayerSetting = isShowPrayerSetting,
+                           isShowPrayer = isVisiblePrayer,
+                           onClickShowMorningPrayer = {
+                               isVisiblePrayer = !isVisiblePrayer
+                               prayer.isVisible = !prayer.isVisible
+
+                               viewModel.savePrefPrayerList(
+                                   prayersEnum = prayer.name,
+                                   value = prayer.isVisible
+                               )
+                           }
+                       )
+                   }
+
+               }
+           }
+
+
+            /*
             var isHideMorningPrayer by remember { mutableStateOf(true) }
             var isVisibleMorningPrayer  by remember { mutableStateOf(true) }
-            isVisibleMorningPrayer = prefVisibilityPrayersLit.first { it == Prayers.MorningPrayer }.isVisible
+            isVisibleMorningPrayer = prefVisibilityPrayersLit.first { it == PrayersEnum.MorningPrayer }.isVisible
 
             if (isVisibleMorningPrayer || isShowPrayerSetting) {
                 PrayerCard(
@@ -228,16 +270,17 @@ fun HomeScreen(
                     isShowPrayer = isVisibleMorningPrayer,
                     onClickShowMorningPrayer = {
                         isVisibleMorningPrayer = !isVisibleMorningPrayer
-                        viewModel.savePrefPrayerList(Prayers.MorningPrayer, isVisibleMorningPrayer)
+                        viewModel.savePrefPrayerList(
+                            prayersEnum = PrayersEnum.MorningPrayer,
+                            value = isVisibleMorningPrayer)
                     }
-
                 )
             }
 
 
             var isHideEveningPrayer by remember { mutableStateOf(true) }
             var isVisibleEveningPrayer by remember { mutableStateOf(true) }
-            isVisibleEveningPrayer = prefVisibilityPrayersLit.first { it == Prayers.EveningPrayer }.isVisible
+            isVisibleEveningPrayer = prefVisibilityPrayersLit.first { it == PrayersEnum.EveningPrayer }.isVisible
 
             if (isVisibleEveningPrayer || isShowPrayerSetting) {
                 PrayerCard(
@@ -251,7 +294,7 @@ fun HomeScreen(
                     onClickShowMorningPrayer = {
                         isVisibleEveningPrayer = !isVisibleEveningPrayer
                         viewModel.savePrefPrayerList(
-                            prayers = Prayers.EveningPrayer,
+                            prayersEnum = PrayersEnum.EveningPrayer,
                             value = isVisibleEveningPrayer
                         )
                     }
@@ -260,7 +303,7 @@ fun HomeScreen(
 
             var isHidePrayerDelegation by remember { mutableStateOf(true) }
             var isVisiblePrayerDelegation by remember { mutableStateOf(true) }
-            isVisiblePrayerDelegation = prefVisibilityPrayersLit.first { it == Prayers.DelegationPrayer }.isVisible
+            isVisiblePrayerDelegation = prefVisibilityPrayersLit.first { it == PrayersEnum.DelegationPrayer }.isVisible
 
             if (isVisiblePrayerDelegation || isShowPrayerSetting) {
                 PrayerCard(
@@ -274,7 +317,7 @@ fun HomeScreen(
                     onClickShowMorningPrayer = {
                         isVisiblePrayerDelegation = !isVisiblePrayerDelegation
                         viewModel.savePrefPrayerList(
-                            prayers = Prayers.DelegationPrayer,
+                            prayersEnum = PrayersEnum.DelegationPrayer,
                             value = isVisiblePrayerDelegation
                         )
                     }
@@ -283,7 +326,7 @@ fun HomeScreen(
 
             var isHidePrayerPeaceOfMind by remember { mutableStateOf(true) }
             var isVisiblePrayerPeaceOfMind by remember { mutableStateOf(true) }
-            isVisiblePrayerPeaceOfMind = prefVisibilityPrayersLit.first { it == Prayers.PeaceOfMindPrayer }.isVisible
+            isVisiblePrayerPeaceOfMind = prefVisibilityPrayersLit.first { it == PrayersEnum.PeaceOfMindPrayer }.isVisible
 
             if (isVisiblePrayerPeaceOfMind || isShowPrayerSetting) {
                 PrayerCard(
@@ -297,7 +340,7 @@ fun HomeScreen(
                     onClickShowMorningPrayer = {
                         isVisiblePrayerPeaceOfMind = !isVisiblePrayerPeaceOfMind
                         viewModel.savePrefPrayerList(
-                            prayers = Prayers.PeaceOfMindPrayer,
+                            prayersEnum = PrayersEnum.PeaceOfMindPrayer,
                             value = isVisiblePrayerPeaceOfMind
                         )
                     }
@@ -306,7 +349,7 @@ fun HomeScreen(
 
             var isHidePrayerResentment by remember { mutableStateOf(true) }
             var isVisiblePrayerResentment by remember { mutableStateOf(true) }
-            isVisiblePrayerResentment = prefVisibilityPrayersLit.first { it == Prayers.ResentmentPrayer }.isVisible
+            isVisiblePrayerResentment = prefVisibilityPrayersLit.first { it == PrayersEnum.ResentmentPrayer }.isVisible
 
             if (isVisiblePrayerResentment || isShowPrayerSetting) {
                 PrayerCard(
@@ -320,7 +363,7 @@ fun HomeScreen(
                     onClickShowMorningPrayer = {
                         isVisiblePrayerResentment = !isVisiblePrayerResentment
                         viewModel.savePrefPrayerList(
-                            prayers = Prayers.ResentmentPrayer,
+                            prayersEnum = PrayersEnum.ResentmentPrayer,
                             value = isVisiblePrayerResentment
                         )
                     }
@@ -329,7 +372,7 @@ fun HomeScreen(
 
             var isHidePrayerFear by remember { mutableStateOf(true) }
             var isVisiblePrayerFear by remember { mutableStateOf(true) }
-            isVisiblePrayerFear = prefVisibilityPrayersLit.first { it == Prayers.FearPrayer }.isVisible
+            isVisiblePrayerFear = prefVisibilityPrayersLit.first { it == PrayersEnum.FearPrayer }.isVisible
 
             if (isVisiblePrayerFear || isShowPrayerSetting) {
                 PrayerCard(
@@ -343,7 +386,7 @@ fun HomeScreen(
                     onClickShowMorningPrayer = {
                         isVisiblePrayerFear = !isVisiblePrayerFear
                         viewModel.savePrefPrayerList(
-                            prayers = Prayers.FearPrayer,
+                            prayersEnum = PrayersEnum.FearPrayer,
                             value = isVisiblePrayerFear
                         )
                     }
@@ -352,7 +395,7 @@ fun HomeScreen(
 
             var isHideStepTen by remember { mutableStateOf(true) }
             var isVisibleStepTen  by remember { mutableStateOf(true) }
-            isVisibleStepTen = prefVisibilityPrayersLit.first { it == Prayers.StepTenPrayer }.isVisible
+            isVisibleStepTen = prefVisibilityPrayersLit.first { it == PrayersEnum.StepTenPrayer }.isVisible
 
             if (isVisibleStepTen || isShowPrayerSetting) {
                 PrayerCard(
@@ -366,13 +409,13 @@ fun HomeScreen(
                     onClickShowMorningPrayer = {
                         isVisibleStepTen = !isVisibleStepTen
                         viewModel.savePrefPrayerList(
-                            prayers = Prayers.StepTenPrayer,
+                            prayersEnum = PrayersEnum.StepTenPrayer,
                             value = isVisibleStepTen
                         )
                     }
                 )
             }
-
+*/
 
             /* TEST */
 //        Text(

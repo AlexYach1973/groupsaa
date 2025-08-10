@@ -1,6 +1,6 @@
 package com.alexyach.compose.groupsaa.domain.model
 
-enum class Prayers(var isVisible: Boolean) {
+enum class PrayersEnum(var isVisible: Boolean) {
     MorningPrayer(true),
     EveningPrayer(true),
     DelegationPrayer(true),
@@ -10,4 +10,4 @@ enum class Prayers(var isVisible: Boolean) {
     StepTenPrayer(true)
 }
 
-fun getAllPrayers() = enumValues<Prayers>().toList()
+//fun getAllPrayers() = enumValues<PrayersEnum>().toList()

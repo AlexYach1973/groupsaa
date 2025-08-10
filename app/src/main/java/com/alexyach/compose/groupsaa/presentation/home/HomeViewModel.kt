@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
 import com.alexyach.compose.groupsaa.data.repository.loadDailyFromAssets
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
-import com.alexyach.compose.groupsaa.domain.model.Prayers
-import com.alexyach.compose.groupsaa.domain.model.getAllPrayers
+import com.alexyach.compose.groupsaa.domain.model.Prayer
+import com.alexyach.compose.groupsaa.domain.model.PrayersEnum
+import com.alexyach.compose.groupsaa.domain.model.getPrayersList
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,10 +60,14 @@ class HomeViewModel(val application: Application) : ViewModel() {
 
     private val dailyMap: Map<String, DailyReflections> = loadDailyFromAssets(application)
 
-        private val _prefVisiblyPrayerList =
-        MutableStateFlow<List<Prayers>>(getAllPrayers())
-    val prefVisiblyPrayerList: StateFlow<List<Prayers>> = _prefVisiblyPrayerList
+//    private val _prefVisiblyPrayerList =
+//        MutableStateFlow<List<PrayersEnum>>(getAllPrayers())
+//    val prefVisiblyPrayerList: StateFlow<List<PrayersEnum>> = _prefVisiblyPrayerList
 
+
+    private val prefVisiblePrayerList : List<PrayersEnum> = enumValues<PrayersEnum>().toList()
+    private val _prayersList = MutableStateFlow(getPrayersList())
+    val prayersList: StateFlow<List<Prayer>> = _prayersList
 
 
     init {
@@ -117,6 +122,8 @@ class HomeViewModel(val application: Application) : ViewModel() {
     }
 
 
+
+
     fun formatingDate(values: List<Int>) {
 
         val selectedDate = LocalDate.of(values[0], values[1], values[2])
@@ -143,9 +150,9 @@ class HomeViewModel(val application: Application) : ViewModel() {
 
     /* *** Preference Show Prayer Data Store ** */
 
-    fun savePrefPrayerList(prayers: Prayers, value: Boolean) {
-        val newList = _prefVisiblyPrayerList.value.apply {
-            prayers.isVisible = value
+    fun savePrefPrayerList(prayersEnum: PrayersEnum, value: Boolean) {
+        val newList = prefVisiblePrayerList.apply {
+            prayersEnum.isVisible = value
         }
 
         Log.d("Logs", "HomeViewModel, savePrefPrayerList, newList: ${newList.map { it.isVisible }}")
@@ -160,19 +167,31 @@ class HomeViewModel(val application: Application) : ViewModel() {
     }
 
     fun loadPrefPrayerList() {
-//        val listBooleanPref = listOf<Boolean>()
+
         viewModelScope.launch {
             val listBooleanPref = dataStoreManager.readPrefVisiblePrayerList()
 
-            Log.d("Logs", "HomeViewModel, loadPrefPrayerList, listBooleanPref: $listBooleanPref")
+            Log.d("Logs", "HomeViewModel, listBooleanPref: $listBooleanPref")
 
             if (listBooleanPref.isNotEmpty()) {
                 for (i in 0 until listBooleanPref.size) {
-                    _prefVisiblyPrayerList.value[i].isVisible = listBooleanPref[i]
+                    prefVisiblePrayerList[i].isVisible = listBooleanPref[i]
                 }
             }
 
+            fillPrayersPrefVisible(prefVisiblePrayerList)
         }
+
+
+    }
+
+    private suspend fun fillPrayersPrefVisible(prefVisiblePrayerList: List<PrayersEnum>){
+        _prayersList.value.forEach {prayer ->
+
+            val index : Int = prefVisiblePrayerList.indexOf(prayer.name)
+            prayer.isVisible = prefVisiblePrayerList[index].isVisible
+        }
+//        Log.d("Logs", "ViewModel loadPref Prayers: ${_prayersList.value}")
     }
 
 
