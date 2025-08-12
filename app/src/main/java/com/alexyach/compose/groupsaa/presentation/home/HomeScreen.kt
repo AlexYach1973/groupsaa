@@ -1,5 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
+import HomeScreenSelDateState
 import android.app.Application
 import android.content.Context
 import android.speech.tts.TextToSpeech
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +29,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -53,6 +56,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -93,13 +97,8 @@ fun HomeScreen(
 
         val scrollState = rememberScrollState()
 
-        val difference by viewModel.difference.collectAsState("")
-        val selectedDate by viewModel.selectedDateSobriety.collectAsState("")
-        val totalDays by viewModel.totalDays.collectAsState("")
 
-        val dataStoreYear by viewModel.dataStoreYear.collectAsState(-1)
-        val dataStoreMonth by viewModel.dataStoreMonth.collectAsState(-1)
-        val dataStoreDay by viewModel.dataStoreDay.collectAsState(-1)
+        val selDateState = viewModel.selDateScreenState.collectAsState(HomeScreenSelDateState.Initial)
 
         /* Daily */
         val dailyDate by viewModel.selectDateForDaily.collectAsState(LocalDate.now())
@@ -107,10 +106,6 @@ fun HomeScreen(
             DailyReflections("Title", "", "")
         )
 
-
-        if (dataStoreYear > 0 && dataStoreMonth > 0 && dataStoreDay > 0) {
-            viewModel.formatingDate(listOf(dataStoreYear, dataStoreMonth, dataStoreDay))
-        }
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -125,9 +120,7 @@ fun HomeScreen(
             PeriodOfSobrietyCard(
                 context = context,
                 viewModel = viewModel,
-                difference = difference,
-                selectedDate = selectedDate,
-                totalDays = totalDays
+                selDateState = selDateState.value
             )
 
             /* Daily reflection */
@@ -254,176 +247,6 @@ fun HomeScreen(
            }
 
 
-            /*
-            var isHideMorningPrayer by remember { mutableStateOf(true) }
-            var isVisibleMorningPrayer  by remember { mutableStateOf(true) }
-            isVisibleMorningPrayer = prefVisibilityPrayersLit.first { it == PrayersEnum.MorningPrayer }.isVisible
-
-            if (isVisibleMorningPrayer || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHideMorningPrayer,
-                    onClickHideListener = { isHideMorningPrayer = !isHideMorningPrayer },
-                    resTextTitle = stringResource(R.string.number_step_eleven_morning_title),
-                    resTextStart = stringResource(R.string.number_step_eleven_morning_start),
-                    resTextFull = stringResource(R.string.number_step_eleven_morning),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisibleMorningPrayer,
-                    onClickShowMorningPrayer = {
-                        isVisibleMorningPrayer = !isVisibleMorningPrayer
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.MorningPrayer,
-                            value = isVisibleMorningPrayer)
-                    }
-                )
-            }
-
-
-            var isHideEveningPrayer by remember { mutableStateOf(true) }
-            var isVisibleEveningPrayer by remember { mutableStateOf(true) }
-            isVisibleEveningPrayer = prefVisibilityPrayersLit.first { it == PrayersEnum.EveningPrayer }.isVisible
-
-            if (isVisibleEveningPrayer || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHideEveningPrayer,
-                    onClickHideListener = { isHideEveningPrayer = !isHideEveningPrayer },
-                    resTextTitle = stringResource(R.string.number_step_eleven_evening_title),
-                    resTextStart = stringResource(R.string.number_step_eleven_evening_start),
-                    resTextFull = stringResource(R.string.number_step_eleven_evening),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisibleEveningPrayer,
-                    onClickShowMorningPrayer = {
-                        isVisibleEveningPrayer = !isVisibleEveningPrayer
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.EveningPrayer,
-                            value = isVisibleEveningPrayer
-                        )
-                    }
-                )
-            }
-
-            var isHidePrayerDelegation by remember { mutableStateOf(true) }
-            var isVisiblePrayerDelegation by remember { mutableStateOf(true) }
-            isVisiblePrayerDelegation = prefVisibilityPrayersLit.first { it == PrayersEnum.DelegationPrayer }.isVisible
-
-            if (isVisiblePrayerDelegation || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHidePrayerDelegation,
-                    onClickHideListener = { isHidePrayerDelegation = !isHidePrayerDelegation },
-                    resTextTitle = stringResource(R.string.prayer_delegation_title),
-                    resTextStart = stringResource(R.string.prayer_delegation_start),
-                    resTextFull = stringResource(R.string.prayer_delegation),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisiblePrayerDelegation,
-                    onClickShowMorningPrayer = {
-                        isVisiblePrayerDelegation = !isVisiblePrayerDelegation
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.DelegationPrayer,
-                            value = isVisiblePrayerDelegation
-                        )
-                    }
-                )
-            }
-
-            var isHidePrayerPeaceOfMind by remember { mutableStateOf(true) }
-            var isVisiblePrayerPeaceOfMind by remember { mutableStateOf(true) }
-            isVisiblePrayerPeaceOfMind = prefVisibilityPrayersLit.first { it == PrayersEnum.PeaceOfMindPrayer }.isVisible
-
-            if (isVisiblePrayerPeaceOfMind || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHidePrayerPeaceOfMind,
-                    onClickHideListener = { isHidePrayerPeaceOfMind = !isHidePrayerPeaceOfMind },
-                    resTextTitle = stringResource(R.string.peace_of_mind_title),
-                    resTextStart = stringResource(R.string.peace_of_mind_start),
-                    resTextFull = stringResource(R.string.peace_of_mind_full),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisiblePrayerPeaceOfMind,
-                    onClickShowMorningPrayer = {
-                        isVisiblePrayerPeaceOfMind = !isVisiblePrayerPeaceOfMind
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.PeaceOfMindPrayer,
-                            value = isVisiblePrayerPeaceOfMind
-                        )
-                    }
-                )
-            }
-
-            var isHidePrayerResentment by remember { mutableStateOf(true) }
-            var isVisiblePrayerResentment by remember { mutableStateOf(true) }
-            isVisiblePrayerResentment = prefVisibilityPrayersLit.first { it == PrayersEnum.ResentmentPrayer }.isVisible
-
-            if (isVisiblePrayerResentment || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHidePrayerResentment,
-                    onClickHideListener = { isHidePrayerResentment = !isHidePrayerResentment },
-                    resTextTitle = stringResource(R.string.resentment_title),
-                    resTextStart = stringResource(R.string.resentment_start),
-                    resTextFull = stringResource(R.string.resentment_full),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisiblePrayerResentment,
-                    onClickShowMorningPrayer = {
-                        isVisiblePrayerResentment = !isVisiblePrayerResentment
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.ResentmentPrayer,
-                            value = isVisiblePrayerResentment
-                        )
-                    }
-                )
-            }
-
-            var isHidePrayerFear by remember { mutableStateOf(true) }
-            var isVisiblePrayerFear by remember { mutableStateOf(true) }
-            isVisiblePrayerFear = prefVisibilityPrayersLit.first { it == PrayersEnum.FearPrayer }.isVisible
-
-            if (isVisiblePrayerFear || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHidePrayerFear,
-                    onClickHideListener = { isHidePrayerFear = !isHidePrayerFear },
-                    resTextTitle = stringResource(R.string.prayer_fear_title),
-                    resTextStart = stringResource(R.string.prayer_fear_start),
-                    resTextFull = stringResource(R.string.prayer_fear_full),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisiblePrayerFear,
-                    onClickShowMorningPrayer = {
-                        isVisiblePrayerFear = !isVisiblePrayerFear
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.FearPrayer,
-                            value = isVisiblePrayerFear
-                        )
-                    }
-                )
-            }
-
-            var isHideStepTen by remember { mutableStateOf(true) }
-            var isVisibleStepTen  by remember { mutableStateOf(true) }
-            isVisibleStepTen = prefVisibilityPrayersLit.first { it == PrayersEnum.StepTenPrayer }.isVisible
-
-            if (isVisibleStepTen || isShowPrayerSetting) {
-                PrayerCard(
-                    isHide = isHideStepTen,
-                    onClickHideListener = { isHideStepTen = !isHideStepTen },
-                    resTextTitle = stringResource(R.string.step_number_ten_title),
-                    resTextStart = stringResource(R.string.step_number_ten_start),
-                    resTextFull = stringResource(R.string.step_number_ten_full),
-                    isShowPrayerSetting = isShowPrayerSetting,
-                    isShowPrayer = isVisibleStepTen,
-                    onClickShowMorningPrayer = {
-                        isVisibleStepTen = !isVisibleStepTen
-                        viewModel.savePrefPrayerList(
-                            prayersEnum = PrayersEnum.StepTenPrayer,
-                            value = isVisibleStepTen
-                        )
-                    }
-                )
-            }
-*/
-
-            /* TEST */
-//        Text(
-//            text = "$dataTest day $dataYear year",
-//            fontSize = 25.sp
-//        )
-
-
         }
 
     }
@@ -436,9 +259,7 @@ fun HomeScreen(
 private fun PeriodOfSobrietyCard(
     context: Context,
     viewModel: HomeViewModel,
-    difference: String,
-    selectedDate: String,
-    totalDays: String
+    selDateState: HomeScreenSelDateState
 ) {
 
     Card(
@@ -464,7 +285,10 @@ private fun PeriodOfSobrietyCard(
                 datePickerState = datePickerState,
                 onDismissClickListener = { openDialog = it },
                 onConfirmClickListener =
-                    { viewModel.dataPickerSelected(datePickerState.selectedDateMillis) }
+                    {
+                        viewModel.dataPickerSelected(datePickerState.selectedDateMillis)
+//                        viewModel.loadDateFromDataStore()
+                    }
             )
         }
 
@@ -499,92 +323,128 @@ private fun PeriodOfSobrietyCard(
                     )
                 }
 
-                /* 2 Line */
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    if (difference.isNotEmpty()) {
-                        Text(
-                            text = difference,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 26.sp
-                        )
-                    } else {
-                        Text(
-                            text = context.getString(R.string.homescreen_sobriety_not_date),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontStyle = FontStyle.Italic
-//                            fontSize = 18.sp,
-//                            fontStyle = FontStyle.Italic
-                        )
-                    }
-                }
+                when(selDateState) {
+                    is HomeScreenSelDateState.SelectedDate -> {
 
-                /* 3 Line */
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    if (difference.isNotEmpty()) {
-                        Text(
-                            text = "або $totalDays",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontStyle = FontStyle.Italic,
-                            fontSize = 22.sp
-                        )
-                    }
-                }
-
-
-                /* 4 Line */
-                Row(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier
-                            .weight(4f)
-                    ) {
-                        Text(
-                            text = "від $selectedDate",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
-
-
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { openDialog = true }
-                    ) {
-                        Text(
-                            text = "Edit",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontStyle = FontStyle.Italic,
+                        /* 2 Line */
+                        Row(
                             modifier = Modifier
-                                .padding(end = 8.dp)
-                        )
-                        Icon(
-//                            painter = painterResource(R.drawable.service),
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "setting",
-//                            tint = MaterialTheme.colorScheme.primary,
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+
+                                Text(
+                                    text = selDateState.selDate.difference,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 26.sp
+                                )
+
+                            }
+
+
+                        /* 3 Line */
+                        Row(
                             modifier = Modifier
-                                .size(20.dp)
-//                            .clickable { openDialog = true }
-                        )
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                                Text(
+                                    text = "або ${selDateState.selDate.totalDays}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontStyle = FontStyle.Italic,
+                                    fontSize = 22.sp
+                                )
+                        }
+
+                        /* 4 Line */
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier
+                                    .weight(4f)
+                            ) {
+                                Text(
+                                    text = "від ${ selDateState.selDate.selectedDateSobriety}",
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            }
+
+
+                            Row(
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clickable { openDialog = true }
+                            ) {
+                                Text(
+                                    text = "Edit",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontStyle = FontStyle.Italic,
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = "setting",
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                )
+                            }
+                        }
+
                     }
+
+                    HomeScreenSelDateState.Error -> {
+                        Column(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 16.dp)
+                                .fillMaxWidth()
+
+                        ) {
+                            Text(
+                                text = context.getString(R.string.homescreen_sobriety_not_date),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontStyle = FontStyle.Italic
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .clickable { openDialog = true }
+                                    .fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "Edit",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontStyle = FontStyle.Italic,
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = "setting",
+                                    tint = MaterialTheme.colorScheme.tertiary,
+                                    modifier = Modifier
+                                        .size(25.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    HomeScreenSelDateState.Loading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    HomeScreenSelDateState.Initial -> {}
                 }
 
 
@@ -650,12 +510,14 @@ private fun DailyReflectionCard(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(start = 24.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
     ) {
         Text(
             text = stringResource(R.string.homescreen_daily_title),
             style = MaterialTheme.typography.titleLarge,
-            fontFamily = triodionr
+            fontFamily = triodionr,
+//            modifier = Modifier
+//                .padding(bottom = 32.dp)
         )
     }
 
@@ -886,6 +748,7 @@ private fun PrayerCard(
 
         Row(
             horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -894,25 +757,43 @@ private fun PrayerCard(
             /* Text Size */
             if (!isHide) {
                 /* *** Speech *** */
-                PlayAudioUkrText(resTextFull)
-
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "plus",
-                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                Row(
                     modifier = Modifier
-                        .padding(end = 8.dp, start = 8.dp)
-                        .clickable { fontSizeText++ }
-                )
+                        .weight(0.3f)
+                        .padding(8.dp)
+                ) {
+                    PlayAudioUkrText(resTextFull)
+                }
 
-                Icon(
-                    painter = painterResource(R.drawable.minus),
-                    contentDescription = "minus",
-                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                Row(
+                    modifier = Modifier.weight(0.7f)
+                ) {}
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(end = 8.dp)
-                        .clickable { fontSizeText-- }
-                )
+                        .weight(0.3f)
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "plus",
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        modifier = Modifier
+                            .padding(end = 8.dp, start = 8.dp)
+                            .clickable { fontSizeText++ }
+                    )
+
+                    Icon(
+                        painter = painterResource(R.drawable.minus),
+                        contentDescription = "minus",
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .clickable { fontSizeText-- }
+                    )
+                }
+
             }
         }
 
@@ -950,6 +831,7 @@ private fun PrayerCard(
                 Text(
                     text = resTextFull,
                     fontSize = fontSizeText.sp,
+//                    fontFamily = triodionr,
                     fontFamily = spice_rice,
 //                    color = MaterialTheme.colorScheme.primaryContainer,
                     modifier = Modifier
@@ -975,6 +857,7 @@ private fun PlayAudioUkrText(text: String) {
     Log.d("Logs", "HomeScreen PlayAudioUkrText isVoiceUkr= $isVoiceUkr")
 
 
+//    if (true) {
     if (isVoiceUkr) {
         Icon(
             painterResource(R.drawable.text_to_speech),
@@ -982,11 +865,9 @@ private fun PlayAudioUkrText(text: String) {
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
                 .size(30.dp)
-//                .padding(start = 8.dp)
                 .clickable {
                     if (tts.value?.isSpeaking == true) {
                         tts.value?.stop()
-//                        isSpeaking = false
                     } else {
                         tts.value?.speak(
                             text,
@@ -994,7 +875,6 @@ private fun PlayAudioUkrText(text: String) {
                             null,
                             null
                         )
-//                        isSpeaking = true
                     }
 
                 }
@@ -1038,3 +918,19 @@ private fun rememberTextToSpeech(isVoiceUkrListener: (Boolean) -> Unit): Mutable
     return tts
 }
 
+
+
+//@Composable
+//@Preview
+//private fun PreviewHomeScreen() {
+//    PrayerCard(
+//       isHide = false,
+//        onClickHideListener = {},
+//        resTextTitle = "Title",
+//        resTextStart = "Start start start",
+//        resTextFull = "Tite fulllllllll llllllllllll sulllll lll llll ",
+//        isShowPrayerSetting = false,
+//        isShowPrayer = true,
+//        onClickShowMorningPrayer = { }
+//    )
+//}

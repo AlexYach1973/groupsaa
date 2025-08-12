@@ -59,6 +59,24 @@ fun getPrayersList(): List<Prayer> {
             title = R.string.step_number_ten_title,
             textShort = R.string.step_number_ten_start,
             textFull = R.string.step_number_ten_full
+        ),
+        Prayer(
+            name = PrayersEnum.StepOnePrayer,
+            title = R.string.step_number_one_title,
+            textShort = R.string.step_number_one_start,
+            textFull = R.string.step_number_one_full
+        ),
+        Prayer(
+            name = PrayersEnum.StepSexPrayer,
+            title = R.string.step_number_sex_title,
+            textShort = R.string.step_number_sex_start,
+            textFull = R.string.step_number_sex_full
+        ),
+        Prayer(
+            name = PrayersEnum.StepSevenPrayer,
+            title = R.string.step_number_seven_title,
+            textShort = R.string.step_number_seven_start,
+            textFull = R.string.step_number_seven_full
         )
     )
 }
