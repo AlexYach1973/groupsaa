@@ -1,7 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
 import HomeScreenSelDateState
-import android.app.Application
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,15 +54,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
 import com.alexyach.compose.groupsaa.domain.model.Prayer
-import com.alexyach.compose.groupsaa.domain.model.PrayersEnum
-import com.alexyach.compose.groupsaa.domain.model.getPrayersList
 import com.alexyach.compose.groupsaa.ui.theme.spice_rice
 import com.alexyach.compose.groupsaa.ui.theme.triodionr
 import java.time.Instant
@@ -88,14 +83,7 @@ fun HomeScreen(
 
 
         val context = LocalContext.current
-        val viewModel: HomeViewModel = viewModel(
-            factory = HomeViewModelFactory(
-                application = LocalContext.current.applicationContext as Application
-            )
-        )
-
-
-        val scrollState = rememberScrollState()
+        val viewModel: HomeViewModel = hiltViewModel()
 
 
         val selDateState = viewModel.selDateScreenState.collectAsState(HomeScreenSelDateState.Initial)
@@ -106,6 +94,7 @@ fun HomeScreen(
             DailyReflections("Title", "", "")
         )
 
+        val scrollState = rememberScrollState()
 
         Column(
             verticalArrangement = Arrangement.Center,

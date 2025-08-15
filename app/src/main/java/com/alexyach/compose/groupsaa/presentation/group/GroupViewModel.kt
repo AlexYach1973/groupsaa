@@ -21,11 +21,6 @@ class GroupViewModel(
     group: Group
 ) : ViewModel() {
 
-  /*  private val _screenState = MutableLiveData<GroupScreenState>(
-        GroupScreenState.GroupItem(group = group)
-    )
-    val screenState: LiveData<GroupScreenState> = _screenState*/
-
     private val _errorState: MutableStateFlow<GroupScreenErrorState> = MutableStateFlow(GroupScreenErrorState.NoError)
     val errorState: StateFlow<GroupScreenErrorState> = _errorState
 

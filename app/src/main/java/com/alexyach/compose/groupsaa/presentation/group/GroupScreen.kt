@@ -167,16 +167,14 @@ private fun GroupScreenOffline(
     viewModel: GroupViewModel
 ) {
     val scrollState = rememberScrollState()
-    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+//    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
 
 
 
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.secondaryContainer)
-//                .background(MaterialTheme.colorScheme.background)
             .padding(
-//                    paddingValues = paddingValue)
                 top = 124.dp,
                 end = 8.dp,
                 start = 8.dp,
@@ -250,7 +248,7 @@ private fun GroupScreenOnline(
 ) {
 
     val scrollState = rememberScrollState()
-    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+//    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
 
     /* Лаунчери для запуску додатків */
     val telegramLauncher =
@@ -388,7 +386,7 @@ private fun LaunchOnlineConference(
     resIcon: Int,
     onClickLaunchListener: (GroupViewModel) -> Unit
 ) {
-    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
+//    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -531,9 +529,6 @@ private fun TelephoneGroup(
 fun InternetLink(
     group: Group
 ) {
-    val brush = Brush.verticalGradient(listOf(Color.LightGray, Color.DarkGray))
-
-
 
     Row(
         verticalAlignment = Alignment.CenterVertically,

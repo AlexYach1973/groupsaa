@@ -2,6 +2,7 @@ package com.alexyach.compose.groupsaa.presentation.home
 
 import HomeScreenSelDateState
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,8 @@ import com.alexyach.compose.groupsaa.domain.model.PrayersEnum
 import com.alexyach.compose.groupsaa.domain.model.getPrayersList
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,26 +27,29 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
+import javax.inject.Inject
 
-class HomeViewModel(application: Application) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val dataStoreManager: DataStoreManager,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
 
-    private val dataStoreManager = DataStoreManager(application)
+//    private val dataStoreManager = DataStoreManager(application)
 
     /* Daily*/
     private val _selectDateForDaily = MutableStateFlow(LocalDate.now())
     val selectDateForDaily: StateFlow<LocalDate> = _selectDateForDaily
 
-    private val _dailyItem =
-        MutableStateFlow<DailyReflections?>(null)
+    private val _dailyItem = MutableStateFlow<DailyReflections?>(null)
     val dailyItem: StateFlow<DailyReflections?> = _dailyItem
-    private val dailyMap: Map<String, DailyReflections> = loadDailyFromAssets(application)
+    private val dailyMap: Map<String, DailyReflections> = loadDailyFromAssets(context)
 
     /* End Daily*/
 
 
     val _selDateScreenState: MutableStateFlow<HomeScreenSelDateState> = MutableStateFlow(HomeScreenSelDateState.Initial)
     val selDateScreenState : StateFlow<HomeScreenSelDateState> = _selDateScreenState
-
 
     private val prefVisiblePrayerList : List<PrayersEnum> = enumValues<PrayersEnum>().toList()
     private val _prayersList = MutableStateFlow(getPrayersList())
@@ -52,10 +58,7 @@ class HomeViewModel(application: Application) : ViewModel() {
 
     init {
         loadDailyForDate(LocalDate.now())
-//        Log.d("Logs", "date: ${LocalDate.now()}")
-
         loadPrefPrayerList()
-
         loadDateFromDataStore()
     }
 

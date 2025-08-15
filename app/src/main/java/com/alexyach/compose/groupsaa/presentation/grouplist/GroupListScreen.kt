@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alexyach.compose.groupsaa.App
 import com.alexyach.compose.groupsaa.R
@@ -67,11 +68,8 @@ fun GroupListScreen(
     paddingValues: PaddingValues,
     onGroupClickListener: (Group) -> Unit
 ) {
-    val viewModel: GroupListViewModel = viewModel(
-        factory = GroupListViewModelFactory(
-            application = LocalContext.current.applicationContext as App
-        )
-    )
+    val viewModel: GroupListViewModel = hiltViewModel()
+
 
     /* Permission */
     val context = LocalContext.current

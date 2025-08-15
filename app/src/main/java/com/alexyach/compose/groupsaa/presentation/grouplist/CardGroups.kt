@@ -29,6 +29,8 @@ import com.alexyach.compose.groupsaa.ui.theme.GroupsaaTheme
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+import kotlin.math.round
 
 @Composable
 fun CardGroups(
@@ -114,10 +116,16 @@ private fun DistanceToGroup(group: Group){
                 modifier = Modifier
                     .size(45.dp)
             )
-
+            val distance = group.distance
             Text(
-                text = String.format("%.1f", group.distance) + "км",
-                fontSize = 28.sp,
+                text = if(distance > 1000){
+                    String.format("%.0f", round(distance*0.001)) + "k км"
+                } else if (distance > 100) {
+                    String.format("%.0f", distance) + " км"
+                } else {
+                    String.format("%.1f", distance) + " км"
+                } ,
+                fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.primary
             )
         }

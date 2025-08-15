@@ -12,26 +12,29 @@ import com.alexyach.compose.groupsaa.data.db.GroupDao
 import com.alexyach.compose.groupsaa.data.db.toGroup
 import com.alexyach.compose.groupsaa.data.repository.GroupsRepositoryImpl
 import com.alexyach.compose.groupsaa.domain.model.Group
+import com.alexyach.compose.groupsaa.domain.repository.IRepository
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class GroupListViewModel(
-    private val groupDao: GroupDao
+@HiltViewModel
+class GroupListViewModel @Inject constructor(
+    private val repository: IRepository
 ) : ViewModel() {
 
-    private val repository = GroupsRepositoryImpl(groupDao = groupDao)
 
     private val _screenState =
         MutableLiveData<GroupListScreenState>(GroupListScreenState.Initial)

@@ -1,33 +1,28 @@
 package com.alexyach.compose.groupsaa.data.repository
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settingsData")
-
-
-class DataStoreManager(private val context: Context) {
+class DataStoreManager @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) {
 
 
     /* SelectedDate */
     suspend fun saveSelectedDataList(list: List<Int>) {
         val serialized = list.joinToString(",") { it.toString() }
-        context.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[SELECTED_DATE_LIST_KEY] = serialized
         }
     }
 
     suspend fun readSelectedDataList(): List<Int> {
-        val prefs = context.dataStore.data.first()
+        val prefs = dataStore.data.first()
         val serialized = prefs[SELECTED_DATE_LIST_KEY] ?: return emptyList()
         return serialized.split(",").map { it.toInt() }
     }
@@ -37,13 +32,13 @@ class DataStoreManager(private val context: Context) {
     /* Preferences Visible Prayers */
     suspend fun savePrefVisiblePrayerList(list: List<Boolean>) {
         val serialized = list.joinToString(",") { it.toString() }
-        context.dataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[PREF_PRAYERS_LIST_KEY] = serialized
         }
     }
 
     suspend fun readPrefVisiblePrayerList(): List<Boolean> {
-        val prefs = context.dataStore.data.first()
+        val prefs = dataStore.data.first()
         val serialized = prefs[PREF_PRAYERS_LIST_KEY] ?: return emptyList()
         return serialized.split(",").map { it.toBoolean() }
     }

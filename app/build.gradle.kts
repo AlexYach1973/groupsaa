@@ -6,13 +6,14 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.hilt.android)
     id("kotlin-parcelize")
 }
 
 
 android {
     namespace = "com.alexyach.compose.groupsaa"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.alexyach.compose.groupsaa"
@@ -87,6 +88,11 @@ dependencies {
     implementation(libs.androidx.datastore.preference)
 
     implementation(libs.androidx.coroutines.play.services)
+
+    // Hilt
+    implementation(libs.androidx.hilt.android)
+    implementation(libs.androidx.hilt.navigation)
+    ksp(libs.androidx.hilt.compiler)
 
 
 //    implementation(libs.androidx.foundation)

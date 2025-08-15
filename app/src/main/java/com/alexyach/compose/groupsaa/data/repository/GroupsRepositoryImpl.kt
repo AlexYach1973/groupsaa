@@ -4,17 +4,21 @@ import android.util.Log
 import com.alexyach.compose.groupsaa.data.db.GroupDao
 import com.alexyach.compose.groupsaa.data.db.GroupEntity
 import com.alexyach.compose.groupsaa.data.model.toGroup
-import com.alexyach.compose.groupsaa.data.network.ApiFactory
+import com.alexyach.compose.groupsaa.data.network.ApiService
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.domain.model.toGroupEntity
 import com.alexyach.compose.groupsaa.domain.repository.IRepository
-import com.alexyach.compose.groupsaa.utils.getListGroupTest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GroupsRepositoryImpl(val groupDao: GroupDao) : IRepository {
-    val apiService = ApiFactory.apiService
+@Singleton
+class GroupsRepositoryImpl @Inject constructor(
+    val groupDao: GroupDao,
+    val apiService: ApiService
+) : IRepository {
 
 
     override fun getAllGroupList() = flow {
@@ -35,13 +39,13 @@ class GroupsRepositoryImpl(val groupDao: GroupDao) : IRepository {
     }
 
 
-    fun getAllFromRoom(): Flow<List<GroupEntity>> {
+    override fun getAllFromRoom(): Flow<List<GroupEntity>> {
         Log.d("Logs", "GroupsRepositoryImpl getAllFromRoom")
 
         return groupDao.getAll()
     }
 
-    suspend fun saveToRoom(groupsDto: List<Group>) {
+    override suspend fun saveToRoom(groupsDto: List<Group>) {
         Log.d("Logs", "GroupsRepositoryImpl saveToRoom")
 
         groupsDto.forEach { item ->
@@ -50,7 +54,7 @@ class GroupsRepositoryImpl(val groupDao: GroupDao) : IRepository {
 
     }
 
-    suspend fun deleteAllFromRoom() {
+    override suspend fun deleteAllFromRoom() {
         groupDao.deleteAll()
 
         Log.d("Logs", "GroupsRepositoryImpl deleteAllFromRoom")
