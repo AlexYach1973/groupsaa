@@ -1,13 +1,10 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
 import HomeScreenSelDateState
-import android.app.Application
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alexyach.compose.groupsaa.data.repository.AssetsManager
 import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
-import com.alexyach.compose.groupsaa.data.repository.loadDailyFromAssets
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
 import com.alexyach.compose.groupsaa.domain.model.DateSobriety
 import com.alexyach.compose.groupsaa.domain.model.Prayer
@@ -16,7 +13,6 @@ import com.alexyach.compose.groupsaa.domain.model.getPrayersList
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,10 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
-    @ApplicationContext private val context: Context
+    private val assetsManager: AssetsManager
 ) : ViewModel() {
 
-//    private val dataStoreManager = DataStoreManager(application)
 
     /* Daily*/
     private val _selectDateForDaily = MutableStateFlow(LocalDate.now())
@@ -43,7 +38,7 @@ class HomeViewModel @Inject constructor(
 
     private val _dailyItem = MutableStateFlow<DailyReflections?>(null)
     val dailyItem: StateFlow<DailyReflections?> = _dailyItem
-    private val dailyMap: Map<String, DailyReflections> = loadDailyFromAssets(context)
+    private val dailyMap: Map<String, DailyReflections> = assetsManager.loadDailyFromAssets()
 
     /* End Daily*/
 
