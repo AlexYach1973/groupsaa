@@ -94,6 +94,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation)
     ksp(libs.androidx.hilt.compiler)
 
+    api(libs.coroutines.core)
+
 
 //    implementation(libs.androidx.foundation)
 

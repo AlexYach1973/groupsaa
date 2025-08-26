@@ -57,6 +57,8 @@ import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
+import com.alexyach.compose.groupsaa.presentation.grouplist.components.GroupsContent
+import com.alexyach.compose.groupsaa.presentation.grouplist.components.TopAppBarContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
@@ -68,146 +70,33 @@ fun GroupListScreen(
     paddingValues: PaddingValues,
     onGroupClickListener: (Group) -> Unit
 ) {
+    val context = LocalContext.current
     val viewModel: GroupListViewModel = hiltViewModel()
 
-
-    /* Permission */
-    val context = LocalContext.current
-    val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-    /* END Permission */
-
-    val isLoadFromInternet = viewModel.isLoadFromInternet.collectAsState(true)
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
     val filterForGroups = viewModel.filterForGroups.collectAsState(FilterGroupsState.All)
 
     /* Buttons */
     Scaffold(
         topBar = {
-//            TopAppBar(
-//                title = {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-//                    .background(Color.DarkGray)
-                    .fillMaxWidth()
-                    .padding(top = 48.dp)
-            ) {
-                Button(
-                    onClick = { viewModel.setFilterForGroups(FilterGroupsState.All) },
-
-                    colors = ButtonColors(
-                        contentColor = MaterialTheme.colorScheme.primary,
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-//                        containerColor = Color.Transparent,
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = Color.DarkGray
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 0.dp)
-//                        .size(height = 38.dp, width = 110.dp)
-                        .border(
-                            width = 1.dp,
-                            color = if (filterForGroups.value == FilterGroupsState.All) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSecondary
-                            },
-
-                            shape = RoundedCornerShape(16.dp)
-                        )
-
-                ) {
-                    Text(
-                        text = stringResource(R.string.grouplistscreen_button_all),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                    )
-                }
-
-                Button(
-                    onClick = { viewModel.setFilterForGroups(FilterGroupsState.Today) },
-                    colors = ButtonColors(
-
-                        contentColor = MaterialTheme.colorScheme.primary,
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = Color.DarkGray
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 0.dp)
-//                                .size(height = 38.dp, width = 110.dp)
-                        .border(
-                            width = 1.dp,
-                            color = if (filterForGroups.value == FilterGroupsState.Today) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSecondary
-                            },
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                ) {
-                    Text(
-                        text = stringResource(R.string.grouplistscreen_button_today),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                    )
-                }
-
-                Button(
-                    onClick = { viewModel.setFilterForGroups(FilterGroupsState.Now) },
-                    colors = ButtonColors(
-
-                        contentColor = MaterialTheme.colorScheme.primary,
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = Color.DarkGray
-                    ),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 0.dp)
-//                                .size(height = 38.dp, width = 110.dp)
-                        .border(
-                            width = 1.dp,
-                            color = if (filterForGroups.value == FilterGroupsState.Now) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSecondary
-                            },
-                            shape = RoundedCornerShape(16.dp)
-                        )
-
-                ) {
-                    Text(
-                        text = stringResource(R.string.grouplistscreen_button_now),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                    )
-                }
-            }
-//                },
-//                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.secondaryContainer),
-//            )
-
-
+            TopAppBarContent(
+                viewModel = viewModel,
+                filterForGroups = filterForGroups.value
+            )
         }
 
     ) { paddingValue ->
         val pV = paddingValue
+
         when (val currentState = screenState.value) {
             is GroupListScreenState.Groups -> {
 
-                Groups(
+                GroupsContent(
                     context = context,
-                    permissionState = permissionState,
                     groups = currentState.group,
                     viewModel = viewModel,
-                    paddingValues = paddingValues,
                     onGroupClickListener = onGroupClickListener,
                     filterForGroups = filterForGroups.value,
-                    isLoadFromInternet = isLoadFromInternet.value
                 )
 
 
@@ -265,177 +154,6 @@ fun LoadingListGroup(
         )
     }
 }
-
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun Groups(
-    context: Context,
-    permissionState: PermissionState,
-    groups: List<Group>,
-    viewModel: GroupListViewModel,
-    onGroupClickListener: (Group) -> Unit,
-    isLoadFromInternet: Boolean,
-    filterForGroups: FilterGroupsState,
-    paddingValues: PaddingValues
-) {
-    val scrollState = rememberScrollState()
-
-    /* Get Current Location */
-    viewModel.getLocation(
-        context = context,
-        permissionState = permissionState,
-        groups = groups
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-    ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(top = 96.dp, bottom = 132.dp)
-                /* Индикатор прокуртки */
-                .drawWithContent{
-                    drawContent()
-
-                    val thumbHeight = size.height * 0.2f // Пропорциональная высота
-                    val thumbOffset = scrollState.value.toFloat() / scrollState.maxValue * (size.height - thumbHeight)
-
-                    drawRect(
-                        color = Color.Gray,
-                        topLeft = Offset(x = size.width - 8.dp.toPx(), y = thumbOffset),
-                        size = Size(width = 4.dp.toPx(), height = thumbHeight)
-                    )
-                }
-//            .padding(paddingValues)
-        )
-        {
-
-            /* *** *** Offline *** *** */
-            HeaderGroupList(
-                isLoadFromInternet = isLoadFromInternet,
-                resStringTitle = R.string.grouplistscreen_offline_title,
-                isOffline = true
-            )
-
-
-            Spacer(modifier = Modifier.padding(4.dp))
-            groups
-                .filter { it.latitude != 0.0 }
-                .filter {
-                    when (filterForGroups) {
-                        is FilterGroupsState.All -> {
-                            true
-                        }
-
-                        FilterGroupsState.Today -> {
-                            isTodayGroup(group = it)
-                        }
-
-                        FilterGroupsState.Now -> {
-                            isActiveGroup(group = it)
-                        }
-                    }
-                }
-                .sortedBy { it.distance }
-                .forEach { group ->
-                    CardGroups(
-                        group = group,
-                        onGroupClickListener
-                    )
-                }
-
-
-            /* Online */
-            HeaderGroupList(
-                isLoadFromInternet = isLoadFromInternet,
-                resStringTitle = R.string.grouplistscreen_online_title,
-                isOffline = false
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
-
-            groups
-                .filter { it.latitude == 0.0 }
-                .filter {
-                    when (filterForGroups) {
-                        is FilterGroupsState.All -> {
-                            true
-                        }
-
-                        FilterGroupsState.Today -> {
-                            isTodayGroup(group = it)
-                        }
-
-                        FilterGroupsState.Now -> {
-                            isActiveGroup(group = it)
-                        }
-                    }
-                }
-//            .filter { isActiveGroup(it) }
-//            .filter { isTodayGroup(it) }
-                .forEach { group ->
-                    CardGroups(
-                        group = group,
-                        onGroupClickListener
-                    )
-                }
-
-        }
-
-
-    }
-
-}
-
-@Composable
-private fun HeaderGroupList(
-    isLoadFromInternet: Boolean,
-    resStringTitle: Int,
-    isOffline: Boolean
-) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(resStringTitle),
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            if (isOffline) {
-                Icon(
-                    painterResource(
-                        if (isLoadFromInternet) R.drawable.web_icon
-                        else R.drawable.database_icon
-                    ),
-                    tint = Color.DarkGray,
-                    contentDescription = "icon",
-                    modifier = Modifier
-                        .size(25.dp)
-                        .padding(start = 8.dp)
-                )
-            }
-        }
-
-    }
-}
-
-
 
 
 //    /* ************ */

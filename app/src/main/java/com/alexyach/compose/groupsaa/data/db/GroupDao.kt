@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GroupDao {
-
     @Query("SELECT * FROM GroupEntity")
     fun getAll(): Flow<List<GroupEntity>>
 

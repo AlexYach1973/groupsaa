@@ -1,6 +1,10 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
 import HomeScreenSelDateState
+import android.content.Context
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.repository.AssetsManager
@@ -13,6 +17,7 @@ import com.alexyach.compose.groupsaa.domain.model.getPrayersList
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -28,7 +33,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
-    private val assetsManager: AssetsManager
+    private val assetsManager: AssetsManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
 
@@ -39,9 +45,7 @@ class HomeViewModel @Inject constructor(
     private val _dailyItem = MutableStateFlow<DailyReflections?>(null)
     val dailyItem: StateFlow<DailyReflections?> = _dailyItem
     private val dailyMap: Map<String, DailyReflections> = assetsManager.loadDailyFromAssets()
-
     /* End Daily*/
-
 
     val _selDateScreenState: MutableStateFlow<HomeScreenSelDateState> = MutableStateFlow(HomeScreenSelDateState.Initial)
     val selDateScreenState : StateFlow<HomeScreenSelDateState> = _selDateScreenState
@@ -50,11 +54,19 @@ class HomeViewModel @Inject constructor(
     private val _prayersList = MutableStateFlow(getPrayersList())
     val prayersList: StateFlow<List<Prayer>> = _prayersList
 
+    /* TTS */
+    private val _isUkrVoice: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isUkrVoice: StateFlow<Boolean> = _isUkrVoice
+    private var tts: MutableStateFlow<TextToSpeech?> = MutableStateFlow(null)
+
 
     init {
         loadDailyForDate(LocalDate.now())
         loadPrefPrayerList()
         loadDateFromDataStore()
+
+        /* TEST TTS */
+        textToSpeechTest()
     }
 
     fun loadDailyForDate(date: LocalDate) {
@@ -123,7 +135,7 @@ class HomeViewModel @Inject constructor(
         val selectedDate = LocalDate.of(values[0], values[1], values[2])
 
         /* Формат записи выбраной даты */
-        val formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale("uk", "UA"))
+        val formatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.forLanguageTag("uk-UA"))
         val dateSobriety = selectedDate.format(formatter)
 
         /* Current */
@@ -192,6 +204,57 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    /* *** **************** TTS **************** *** */
+    private fun textToSpeechTest() {
+        var textToSpeech: TextToSpeech?
+        val locale = Locale.forLanguageTag("uk-UA")
+
+        textToSpeech = TextToSpeech(context){ status ->
+
+            if (status == TextToSpeech.SUCCESS) {
+                tts.value?.language = locale
+
+                /* Is Ukrainian Voice */
+                tts.let {
+                    val voices = tts.value?.voices
+                    val ukrainianVoices =
+                        voices?.filter { it.locale.language == "uk" } ?: emptyList()
+
+                    _isUkrVoice.value = ukrainianVoices.isNotEmpty()
+
+//                    Log.d("Logs", "HomeVM, ukrainianVoices: $ukrainianVoices")
+                }
+            }
+        }
+
+        tts.value = textToSpeech
+
+    }
+
+    fun speechUkrainianText(text: String) {
+//        Log.d("Logs", "HomeVM, speechUkrainianText(text)")
+        tts.value?.speak(
+            text,
+            TextToSpeech.QUEUE_FLUSH,
+            null,
+            null
+        )
+    }
+
+    fun isSpeaking(): Boolean {
+//        Log.d("Logs", "HomeVM, isSpeaking(): ${tts.value?.isSpeaking}")
+        return tts.value?.isSpeaking ?: true
+    }
+
+    fun stopUkrainianText() {
+        tts.value?.stop()
+//        Log.d("Logs", "HomeVM, stopUkrainianText()")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        tts.value?.shutdown()
+    }
 
 
 }
