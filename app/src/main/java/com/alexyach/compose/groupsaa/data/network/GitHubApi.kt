@@ -6,7 +6,6 @@ import retrofit2.http.Path
 
 interface GitHubApi {
 
-//    TODO
     @GET("repos/{owner}/{repo}/releases/latest")
     suspend fun getLatestRelease(
         @Path("owner") owner: String,
