@@ -3,8 +3,6 @@ package com.alexyach.compose.groupsaa.presentation.home
 import HomeScreenSelDateState
 import android.content.Context
 import android.speech.tts.TextToSpeech
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.repository.AssetsManager
@@ -14,6 +12,7 @@ import com.alexyach.compose.groupsaa.domain.model.DateSobriety
 import com.alexyach.compose.groupsaa.domain.model.Prayer
 import com.alexyach.compose.groupsaa.domain.model.PrayersEnum
 import com.alexyach.compose.groupsaa.domain.model.getPrayersList
+import com.alexyach.compose.groupsaa.presentation.home.components.UpdateManager
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +33,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val assetsManager: AssetsManager,
+    private val updateManager: UpdateManager ,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -59,14 +59,17 @@ class HomeViewModel @Inject constructor(
     val isUkrVoice: StateFlow<Boolean> = _isUkrVoice
     private var tts: MutableStateFlow<TextToSpeech?> = MutableStateFlow(null)
 
+    /* Update Status */
+    val updateStatus: StateFlow<UpdateStatus> = updateManager.status
+
 
     init {
         loadDailyForDate(LocalDate.now())
         loadPrefPrayerList()
         loadDateFromDataStore()
-
-        /* TEST TTS */
         textToSpeechTest()
+
+
     }
 
     fun loadDailyForDate(date: LocalDate) {
@@ -250,6 +253,16 @@ class HomeViewModel @Inject constructor(
         tts.value?.stop()
 //        Log.d("Logs", "HomeVM, stopUkrainianText()")
     }
+    /* END **************** TTS **************** *** */
+
+
+    /* **************** Update Latest Release **************** */
+    fun triggerUpdate() {
+        updateManager.checkAndUpdate("username", "repo")
+    }
+
+
+
 
     override fun onCleared() {
         super.onCleared()
