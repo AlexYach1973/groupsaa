@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.compose.groupsaa.data.repository.AssetsManager
 import com.alexyach.compose.groupsaa.data.repository.DataStoreManager
+import com.alexyach.compose.groupsaa.data.repository.UpdateManager
 import com.alexyach.compose.groupsaa.domain.model.DailyReflections
 import com.alexyach.compose.groupsaa.domain.model.DateSobriety
 import com.alexyach.compose.groupsaa.domain.model.Prayer
 import com.alexyach.compose.groupsaa.domain.model.PrayersEnum
 import com.alexyach.compose.groupsaa.domain.model.getPrayersList
-import com.alexyach.compose.groupsaa.presentation.home.components.UpdateManager
 import com.alexyach.compose.groupsaa.utils.formatPeriod
 import com.alexyach.compose.groupsaa.utils.formatTotalDays
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val assetsManager: AssetsManager,
-    private val updateManager: UpdateManager ,
+    private val updateManager: UpdateManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -59,8 +59,15 @@ class HomeViewModel @Inject constructor(
     val isUkrVoice: StateFlow<Boolean> = _isUkrVoice
     private var tts: MutableStateFlow<TextToSpeech?> = MutableStateFlow(null)
 
-    /* Update Status */
-    val updateStatus: StateFlow<UpdateStatus> = updateManager.status
+    /* Update Status  */
+    val progress = updateManager.progress
+    val status = updateManager.status
+
+    fun checkForUpdate() {
+        updateManager.checkAndUpdate(owner = "AlexYach1973", repo = "groupsaa")
+    }
+
+
 
 
     init {
@@ -68,7 +75,6 @@ class HomeViewModel @Inject constructor(
         loadPrefPrayerList()
         loadDateFromDataStore()
         textToSpeechTest()
-
 
     }
 
@@ -257,12 +263,125 @@ class HomeViewModel @Inject constructor(
 
 
     /* **************** Update Latest Release **************** */
-    fun triggerUpdate() {
-        updateManager.checkAndUpdate("username", "repo")
+   /* fun triggerUpdate() {
+        updateManager.downloadApk("https://github.com/AlexYach1973/repo/groupsaa/latest/download/update.apk")
+       *//* updateManager.checkAndUpdate(
+            owner = "AlexYach1973",
+            repo = "groupsaa"
+        )*//*
+    }*/
+
+
+
+
+
+//    fun startProgressTracking(downloadId: Long) {
+//        updateManager.observeDownloadProgress(downloadId) { percent ->
+//            _progress.value = percent
+//        }
+//    }
+
+    /* fun checkForUpdate() {
+         Log.d("Logs", "HomeViewModel checking update start")
+
+         val currentVersionName = context.packageManager.
+         getPackageInfo(context.packageName, 0).versionName
+
+         viewModelScope.launch {
+             try {
+                 val release = checkUpdateUseCase("AlexYach1973", "groupsaa")
+
+                 if (release?.tagName != currentVersionName) {
+                     _updateAvailable.value = release?.assets?.firstOrNull()?.downloadUrl
+                 }
+
+ //                val asset = release?.assets?.find { it.name.endsWith(".apk") }
+
+             } catch (e: Exception) {
+                 Log.e("Logs", "HomeViewModel Error checking update", e)
+             }
+         }
+     }
+
+     fun downloadAndInstallApk(url: String) {
+         Log.d("Logs", "HomeViewModel downloadAndInstallApk start")
+
+         val request = DownloadManager.Request(url.toUri()).apply {
+             setTitle("App Update")
+             setDescription("Downloading new version")
+             setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "app-release.apk")
+             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+         }
+
+         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+         val downloadId = downloadManager.enqueue(request)
+
+         *//* Отслеживание завершения загрузки *//*
+        viewModelScope.launch {
+            val query = DownloadManager.Query().setFilterById(downloadId)
+            while (true) {
+                val cursor = downloadManager.query(query)
+
+                if (cursor.moveToFirst()) {
+                    val status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
+
+                    if(status == DownloadManager.STATUS_SUCCESSFUL) {
+                        installApk()
+                        break
+                    } else if(status == DownloadManager.STATUS_FAILED) {
+                        Log.e("UpdateViewModel", "Download failed")
+                        break
+                    }
+                }
+                cursor.close()
+                delay(1000) // Проверка каждую секунду
+            }
+        }
+
+        Log.d("Logs", "HomeViewModel downloadAndInstallApk END")
     }
 
+    private fun installApk() {
+        Log.d("Logs", "HomeViewModel installApk start")
+
+        val apkFile = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            "app-release.apk"
+        )
+
+        val apkUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            apkFile
+        )
+
+        val packageInstaller = context.packageManager.packageInstaller
+        val canInstall = context.packageManager.canRequestPackageInstalls()
+
+        if (canInstall) {
+            *//* Запуск установки *//*
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(apkUri, "application/vnd.android.package-archive")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            context.startActivity(intent)
+        } else {
+            *//* Запрос разрешения *//*
+            val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
+                data = "package:${context.packageName}".toUri()
+            }
+            context.startActivity(intent)
+        }
 
 
+        Log.d("Logs", "HomeViewModel installApk END")
+    }*/
+
+
+    /* OLD Code */
+
+    /* END **************** Update Latest Release **************** */
 
     override fun onCleared() {
         super.onCleared()

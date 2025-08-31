@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.androidx.gson)
     implementation(libs.play.services.location)
     implementation(libs.androidx.compose.permission)
+    implementation(libs.androidx.animation)
+
     // Retrofit
     implementation(libs.androidx.retrofit)
     implementation(libs.androidx.retrofit.gson)

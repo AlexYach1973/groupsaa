@@ -14,6 +14,14 @@
     <string name="homescreen_prayer_title">МОЛИТВИ</string>
     <string name="homescreen_daily_title">ЩОДЕННІ РОЗДУМИ</string>
 
+<!--    UpdateScreen-->
+    <string name="update_screen_check_update">Перевірити оновлення</string>
+    <string name="update_screen_no_update">У тебе остання версія</string>
+    <string name="update_screen_available_update">Доступна нова веерсія</string>
+    <string name="update_screen_installed_update">Встановлення остання версія</string>
+    <string name="update_screen_required_update">дозволити встановлення із невідомого джерела</string>
+
+
 <!--    GroupListScreen-->
     <string name="grouplistscreen_offline_title">Офлайн групи</string>
     <string name="grouplistscreen_online_title">Онлайн групи</string>

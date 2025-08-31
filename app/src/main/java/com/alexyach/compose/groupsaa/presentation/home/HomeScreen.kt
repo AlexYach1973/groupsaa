@@ -1,5 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
+import UpdateScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +21,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.alexyach.compose.groupsaa.presentation.home.components.DailyReflectionCard
 import com.alexyach.compose.groupsaa.presentation.home.components.PeriodOfSobrietyCard
 import com.alexyach.compose.groupsaa.presentation.home.components.PrayersContent
-import com.alexyach.compose.groupsaa.presentation.home.components.UpdateScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,6 +68,7 @@ fun HomeScreen(
 
             /* Update */
             UpdateScreen(
+                context = context,
                 viewModel = viewModel
             )
 
