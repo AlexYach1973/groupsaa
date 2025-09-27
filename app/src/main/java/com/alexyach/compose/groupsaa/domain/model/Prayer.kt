@@ -77,6 +77,12 @@ fun getPrayersList(): List<Prayer> {
             title = R.string.step_number_seven_title,
             textShort = R.string.step_number_seven_start,
             textFull = R.string.step_number_seven_full
-        )
+        ),
+        Prayer(
+            name = PrayersEnum.PrayerForPowerlessness,
+            title = R.string.prayer_for_powerlessness_title,
+            textShort = R.string.prayer_for_powerlessness_start,
+            textFull = R.string.prayer_for_powerlessness_full
+        ),
     )
 }

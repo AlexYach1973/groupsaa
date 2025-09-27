@@ -8,15 +8,21 @@ import android.os.Environment
 import android.provider.Settings
 import android.util.Log
 import androidx.core.net.toUri
+import com.alexyach.compose.groupsaa.data.model.GitHubRelease
 import com.alexyach.compose.groupsaa.domain.usecase.CheckLatestReleaseUseCase
 import com.alexyach.compose.groupsaa.presentation.home.UpdateStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,16 +38,27 @@ class UpdateManager @Inject constructor(
     private val _status = MutableStateFlow<UpdateStatus>(UpdateStatus.Idle)
     val status: StateFlow<UpdateStatus> = _status
 
+    private val _gitHubRelease = MutableStateFlow<GitHubRelease?>(null)
+    val gitHubRelease: StateFlow<GitHubRelease?> = _gitHubRelease
+
 
     val currentVersion =  context.packageManager.
     getPackageInfo(context.packageName, 0).versionName // "1.0.1"
 
 
     fun checkAndUpdate(owner: String, repo: String) {
+        _status.value = UpdateStatus.Idle
 
         CoroutineScope(Dispatchers.IO).launch {
             val release = useCase.invoke(owner, repo)
             val asset = release?.assets?.find { it.name.endsWith(".apk") }
+
+            _gitHubRelease.value = release?.copy(published = formattedUpdateString(release.published))
+
+            /* Logs */
+            Log.i("Logs", "UpdateManager release: ${release.toString()}")
+//            Log.i("Logs", "UpdateManager name: ${release?.name}; " +
+//                    "body: ${release?.body}; published: ${release?.published}")
 
             val latestVersion = release?.tagName?.substringAfter("v")
 
@@ -61,11 +78,13 @@ class UpdateManager @Inject constructor(
 
     private fun downloadApk(url: String) {
         val request = DownloadManager.Request(url.toUri()).apply {
-            setTitle("Обновление")
-            setDescription("Загрузка новой версии")
+            setTitle("Оновлення")
+            setDescription("Завантаження нової версії")
             setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "update.apk")
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         }
+
+//        Log.d("Logs", "UpdateManager request: ${request}")
 
         val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = manager.enqueue(request)
@@ -130,6 +149,14 @@ class UpdateManager @Inject constructor(
 
     }
 
+    private fun formattedUpdateString(date: String) : String {
+
+            val zonedDataTime = ZonedDateTime.parse(date)
+            val formatter = DateTimeFormatter
+                .ofPattern("dd.MM.yyyy", Locale.getDefault())
+            return zonedDataTime.format(formatter)
+
+    }
 
 
 }

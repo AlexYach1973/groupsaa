@@ -59,9 +59,10 @@ class HomeViewModel @Inject constructor(
     val isUkrVoice: StateFlow<Boolean> = _isUkrVoice
     private var tts: MutableStateFlow<TextToSpeech?> = MutableStateFlow(null)
 
-    /* Update Status  */
+    /* From updateManager  */
     val progress = updateManager.progress
     val status = updateManager.status
+    val gitHubRelease = updateManager.gitHubRelease
 
     fun checkForUpdate() {
         updateManager.checkAndUpdate(owner = "AlexYach1973", repo = "groupsaa")

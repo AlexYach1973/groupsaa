@@ -10,7 +10,8 @@ enum class PrayersEnum(var isVisible: Boolean) {
     StepTenPrayer(true),
     StepOnePrayer(true),
     StepSexPrayer(true),
-    StepSevenPrayer(true)
+    StepSevenPrayer(true),
+    PrayerForPowerlessness(true),
 }
 
 //fun getAllPrayers() = enumValues<PrayersEnum>().toList()

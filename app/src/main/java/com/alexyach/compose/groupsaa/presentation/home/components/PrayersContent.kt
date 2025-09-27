@@ -1,37 +1,61 @@
 package com.alexyach.compose.groupsaa.presentation.home.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipState
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alexyach.compose.groupsaa.R
@@ -39,8 +63,11 @@ import com.alexyach.compose.groupsaa.domain.model.Prayer
 import com.alexyach.compose.groupsaa.presentation.home.HomeViewModel
 import com.alexyach.compose.groupsaa.ui.theme.spice_rice
 import com.alexyach.compose.groupsaa.ui.theme.triodionr
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrayersContent(
     viewModel: HomeViewModel,
@@ -51,12 +78,87 @@ fun PrayersContent(
 
     var isShowPrayerSetting by remember { mutableStateOf(false) }
 
-    /* * TITLE * */
-    PrayersTitle(
-        viewModel = viewModel,
-        isShowPrayerSetting = isShowPrayerSetting,
-        isShowPrayerSettingListener = { isShowPrayerSetting = !isShowPrayerSetting }
-    )
+    /* *** Tooltip *** */
+    val tooltipState = rememberTooltipState(isPersistent = true)
+    val scope = rememberCoroutineScope()
+
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+            TooltipAnchorPosition.Below,
+            8.dp
+        ),
+        tooltip = {
+            RichTooltip(
+                caretShape = RectangleShape,
+                tonalElevation = 12.dp,
+                shadowElevation = 4.dp,
+                colors = TooltipDefaults.richTooltipColors(
+                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
+
+                title = {
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                scope.launch {
+                                    tooltipState.dismiss()
+                                }
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Cancel,
+//                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                        Spacer(Modifier.padding(horizontal = 20.dp))
+
+                        Text(
+                            text = stringResource(R.string.homescreen_prayer_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    }
+
+                },
+                action = {}
+
+            ) {
+                val scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+//                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(8.dp)
+                        .clip(
+                            RoundedCornerShape(16.dp)
+                        )
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .padding(8.dp)
+                ) {
+
+                    TooltipContentPrayers()
+                }
+            }
+
+        },
+        state = tooltipState
+    ) {
+        /* * TITLE * */
+        PrayersTitle(
+            viewModel = viewModel,
+            isShowPrayerSetting = isShowPrayerSetting,
+            isShowPrayerSettingListener = { isShowPrayerSetting = !isShowPrayerSetting },
+            tooltipState = tooltipState,
+            scope = scope
+        )
+    }
+    /* END Tooltip *** */
+
 
     /* ** Prayers ** */
     if (prayerList.isNotEmpty()) {
@@ -95,20 +197,40 @@ fun PrayersContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PrayersTitle(
     viewModel: HomeViewModel,
     isShowPrayerSetting: Boolean,
-    isShowPrayerSettingListener: () -> Unit
+    isShowPrayerSettingListener: () -> Unit,
+    tooltipState: TooltipState,
+    scope: CoroutineScope
 ) {
+
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
 //                .background(Color.Green)
             .padding(8.dp),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
+
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = "Info",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .padding(start = 8.dp)
+//                .weight(0.2f)
+                .clickable {
+                    scope.launch {
+                        tooltipState.show()
+                    }
+                }
+        )
+
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -309,4 +431,107 @@ fun PrayerCard(
         }
 
     }
+}
+
+
+@Composable
+private fun TooltipContentPrayers(){
+
+    val iconSize = 18.sp
+
+    val inlineContent = mapOf(
+        "show" to InlineTextContent(
+            Placeholder(
+                width = iconSize,
+                height = iconSize,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Icon(
+                painterResource(R.drawable.hand_eye),
+                contentDescription = "show",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+        },
+
+        "speech" to InlineTextContent(
+            Placeholder(
+                width = iconSize,
+                height = iconSize,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.text_to_speech),
+                contentDescription = "speech",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+        },
+
+        "plus" to InlineTextContent(
+            Placeholder(
+                width = iconSize,
+                height = iconSize,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "plus",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+        },
+
+
+        "minus" to InlineTextContent(
+            Placeholder(
+                width = iconSize,
+                height = iconSize,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.minus),
+                contentDescription = "minus",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+        },
+
+        "check" to InlineTextContent(
+            Placeholder(
+                width = iconSize,
+                height = iconSize,
+                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.CheckBox,
+                contentDescription = "check",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+        },
+    )
+
+    Text(
+        text = buildAnnotatedString {
+            append(stringResource(R.string.homescreen_prayers_info_1) + "  ")
+            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.tertiary)) {
+                append("show")
+            }
+            appendInlineContent("show", "  show")
+            append("  " + stringResource(R.string.homescreen_prayers_info_2) + "  ")
+            appendInlineContent("check", "check")
+            append("  " + stringResource(R.string.homescreen_prayers_info_3))
+            append(stringResource(R.string.homescreen_prayers_info_4) + "  ")
+            appendInlineContent("plus", "plus")
+            append(" , ")
+            appendInlineContent("minus", "minus")
+            append("  " + stringResource(R.string.homescreen_prayers_info_5) + "  ")
+            appendInlineContent("speech", "speech")
+            append("  " + stringResource(R.string.homescreen_prayers_info_6))
+        },
+        inlineContent = inlineContent,
+        style = MaterialTheme.typography.bodyMedium
+    )
+
 }

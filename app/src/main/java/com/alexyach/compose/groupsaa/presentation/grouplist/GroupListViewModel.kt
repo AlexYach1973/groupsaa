@@ -125,7 +125,7 @@ class GroupListViewModel @Inject constructor(
 
 
 
-    /*  New Code Distance */
+    /*  Code Distance */
     @OptIn(ExperimentalPermissionsApi::class)
     @SuppressLint("MissingPermission")
     fun getLocation(
@@ -133,6 +133,8 @@ class GroupListViewModel @Inject constructor(
         permissionState: PermissionState,
         groups: List<Group>
     ) {
+
+//        Log.i("Logs", " GroupListViewModel getLocation Start")
 
         if (permissionState.status.isGranted) {
 
@@ -143,6 +145,7 @@ class GroupListViewModel @Inject constructor(
                     val locationResult = locationClient.lastLocation.await()
 
                     locationResult?.let { location ->
+//                        Log.i("Logs", " GroupListViewModel getLocation lat= ${location.latitude}")
                         distanceToGroups(
                             currentLocation = location,
                             groups = groups
@@ -158,7 +161,7 @@ class GroupListViewModel @Inject constructor(
             permissionState.launchPermissionRequest()
         }
     }
-    /* END New Code */
+    /* END Code Distance */
 
     private fun distanceToGroups(
         currentLocation: Location,
