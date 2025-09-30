@@ -96,6 +96,7 @@ dependencies {
     // Hilt
     implementation(libs.androidx.hilt.android)
     implementation(libs.androidx.hilt.navigation)
+    implementation(libs.androidx.hilt.viewmodel)
     ksp(libs.androidx.hilt.compiler)
 
     api(libs.coroutines.core)

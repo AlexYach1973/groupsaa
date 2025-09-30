@@ -62,8 +62,56 @@
     <string name="grouplistscreen_button_today">сьогодні</string>
     <string name="grouplistscreen_button_now">зараз</string>
 
+    <string name="grouplistscreen_load_from_net">https://gso.aa.kiev.ua/</string>
+    <string name="grouplistscreen_load_from_database">Локальна база даних</string>
+
+    <!--    GroupListScreen Info -->
+    <string name="grouplistscreen_info">На вкладці ГРУПИ зверху є три кнопки. Натискаючи на них
+    екран відображає або всі групи в Київі, або ті, які працюють сьогодні, або які проходять на даний час.\n
+    </string>
+    <string name="grouplistscreen_info_offline_1">Під написом \'Офлайн групи\' згуртовані групи, які можна
+    відвідати, де вказано назва групи, адреса, та орієнтовна відстань. Якщо піктограма гупи </string>
+
+    <string name="grouplistscreen_info_offline_2">світиться зеленим, то група проходить зараз, отже поспішайте.\nДля отримання
+        детальної інформації натиснить на відповідну вкладку групи.</string>
+
+    <string name="grouplistscreen_info_online_1">Під написом \'Онлайн групи\' згуртовані групи, до яких можна долучитися
+    через інтернет. На вкладці групи є інформація про назву групи та через який застосунок можна підключитися
+        до групи. Якщо піктограма гупи </string>
+
+    <string name="grouplistscreen_info_online_2">світиться зеленим, то група проходить зараз,
+        не зволікайте, натискайте на вкладку групи і смиливо приєднуйтесь</string>
+
+
+
 <!--    group Screen-->
     <string name="groupscreen_online_chat">посилання на чат</string>
+
+    <!--    group Screen Info -->
+    <string name="groupscreen_info_offline_1">На вкладинці </string>
+    <string name="groupscreen_info_offline_2">відображена вся наявна інформація про цю групу</string>
+
+    <string name="groupscreen_info_offline_maps_1">\nПри натисканні на піктограму </string>
+    <string name="groupscreen_info_offline_maps_2">з адремою групи відкривається екран з мапою , на якому можна
+    подивитись розташування групи, прокласти маршрут, та використати всі можливості Google Map.</string>
+
+    <string name="groupscreen_info_online_maps_1">\nЗверху є поле \'посиланна на чат\', натискуючи на нього
+        відкриється екран для пидключення до групи, якщо на телефоні не має відповідного додатку, то відкриється
+        Google Play, з якого можна встановити необхідний додаток.</string>
+
+    <string name="groupscreen_info_offline_call_1">\nПри натисканні на піктограму </string>
+    <string name="groupscreen_info_offline_call_2"> можемо одразу зателефонувати на гарячу лінію.</string>
+
+    <string name="groupscreen_info_offline_website_1">\nНатискаючи наполе з піктограмою </string>
+    <string name="groupscreen_info_offline_website_2">відкривається інтенет сторінка групи.</string>
+
+
+
+
+
+
+
+
 
 <!--    Read Screen-->
     <string name="readscreen_iteratura">ЛІТЕРАТУРА</string>

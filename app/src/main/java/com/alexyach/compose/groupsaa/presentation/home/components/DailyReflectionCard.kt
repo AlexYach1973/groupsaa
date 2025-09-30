@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,9 +47,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alexyach.compose.groupsaa.R
@@ -67,11 +70,20 @@ import java.util.Locale
 @Composable
 fun DailyReflectionCard(
     viewModel: HomeViewModel,
-    isUkrVoice: Boolean
+    isUkrVoice: Boolean,
+    infoDailyListener: () -> Unit
 ) {
 
-    val tooltipState = rememberTooltipState(isPersistent = true)
-    val scope = rememberCoroutineScope()
+    var isHide by remember { mutableStateOf(true) }
+    var openDialog by remember { mutableStateOf(false) }
+    var fontSizeText by remember { mutableIntStateOf(16) }
+    val datePickerState = rememberDatePickerState()
+
+    val dailyDate by viewModel.selectDateForDaily.collectAsState(LocalDate.now())
+    val dailyItemFlow by viewModel.dailyItem.collectAsState(
+        DailyReflections("Title", "", "")
+    )
+    val dailyItem = dailyItemFlow?.let { dailyItemFlow } ?: DailyReflections("Нема", "", "")
 
     /* Title */
     Row(
@@ -89,9 +101,7 @@ fun DailyReflectionCard(
             modifier = Modifier
 //                .weight(0.2f)
                 .clickable {
-                    scope.launch {
-                        tooltipState.show()
-                    }
+                    infoDailyListener()
                 }
         )
 
@@ -111,111 +121,8 @@ fun DailyReflectionCard(
         )
     }
 
-    /* *** ToolTip *** */
-    TooltipBox(
-        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-            TooltipAnchorPosition.Above,
-            8.dp
-        ),
-        tooltip = {
-            RichTooltip(
-                caretShape = RectangleShape,
-                tonalElevation = 12.dp,
-                shadowElevation = 4.dp,
-                colors = TooltipDefaults.richTooltipColors(
-                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
-
-                title = {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                scope.launch {
-                                    tooltipState.dismiss()
-                                }
-                            }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Cancel,
-//                            imageVector = Icons.Outlined.Info,
-                            contentDescription = "Info",
-                            tint = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                        Spacer(Modifier.padding(horizontal = 20.dp))
-
-                        Text(
-                            text = stringResource(R.string.homescreen_daily_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                    }
-
-                },
-                action = {
-
-                    /* TextButton(
-                         onClick = {
-                             scope.launch {
-                                 tooltipState.dismiss()
-                             }
-                         }
-                     ) { Text(text = "Скасувати") }*/
-                }
 
 
-            ) {
-                val scrollState = rememberScrollState()
-                Column(
-                    modifier = Modifier
-//                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(8.dp)
-                        .clip(
-                            RoundedCornerShape(16.dp)
-                        )
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(8.dp)
-                ) {
-
-                    TooltipContentDailyReflection()
-                }
-            }
-
-        },
-        state = tooltipState
-    ) {
-
-        AnchorContent(
-            viewModel = viewModel,
-            isUkrVoice = isUkrVoice
-        )
-    }
-
-    /* END ToolTip *** */
-
-}
-
-
-@Composable
-private fun AnchorContent(
-    viewModel: HomeViewModel,
-    isUkrVoice: Boolean
-) {
-
-    var isHide by remember { mutableStateOf(true) }
-    var openDialog by remember { mutableStateOf(false) }
-    var fontSizeText by remember { mutableIntStateOf(16) }
-    val datePickerState = rememberDatePickerState()
-
-    val dailyDate by viewModel.selectDateForDaily.collectAsState(LocalDate.now())
-    val dailyItemFlow by viewModel.dailyItem.collectAsState(
-        DailyReflections("Title", "", "")
-    )
-    val dailyItem = dailyItemFlow?.let { dailyItemFlow } ?: DailyReflections("Нема", "", "")
 
 
     Card(
@@ -407,11 +314,14 @@ private fun AnchorContent(
         }
 
     }
+
 }
 
 
 @Composable
-private fun TooltipContentDailyReflection() {
+fun InfoDailyReflectionContent(
+    infoDailyListener : () -> Unit
+) {
 
     val iconSize = 18.sp
 
@@ -474,21 +384,60 @@ private fun TooltipContentDailyReflection() {
         }
     )
 
-    Text(
-        text = buildAnnotatedString {
-            append(stringResource(R.string.homescreen_daily_info_1) + "  ")
-            appendInlineContent("calendar", "calendar")
-            append("  " + stringResource(R.string.homescreen_daily_info_2) + "  ")
-            appendInlineContent("speech", "speech")
-            append("  " + stringResource(R.string.homescreen_daily_info_3))
-            appendInlineContent("plus", "plus")
-            append(" , ")
-            appendInlineContent("minus", "minus")
-            append("  " + stringResource(R.string.homescreen_daily_info_4))
-        },
-        inlineContent = inlineContent,
-        style = MaterialTheme.typography.bodyMedium
-    )
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 56.dp, vertical = 120.dp)
+            .fillMaxWidth()
+//            .fillMaxHeight()
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                shape = RoundedCornerShape(24.dp)
+            )
+    ) {
+        val scrollState = rememberScrollState()
+
+        Column(
+            modifier = Modifier
+//                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(4.dp)
+                .clip(
+                    RoundedCornerShape(24.dp)
+                )
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Info",
+                tint = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+//                    .padding(start = 16.dp)
+            )
+
+
+            Text(
+                text = buildAnnotatedString {
+                    append(stringResource(R.string.homescreen_daily_info_1) + "  ")
+                    appendInlineContent("calendar", "calendar")
+                    append("  " + stringResource(R.string.homescreen_daily_info_2) + "  ")
+                    appendInlineContent("speech", "speech")
+                    append("  " + stringResource(R.string.homescreen_daily_info_3))
+                    appendInlineContent("plus", "plus")
+                    append(" , ")
+                    appendInlineContent("minus", "minus")
+                    append("  " + stringResource(R.string.homescreen_daily_info_4))
+                },
+                inlineContent = inlineContent,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable { infoDailyListener() }
+            )
+        }
+
+
+    }
 
 }
 

@@ -5,41 +5,31 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipAnchorPosition
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,13 +39,13 @@ import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.presentation.home.HomeViewModel
 import com.alexyach.compose.groupsaa.presentation.home.UpdateStatus
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun UpdateScreen(
     context: Context,
     viewModel: HomeViewModel,
+    infoUpdateListener: () -> Unit
 ) {
 
     val status by viewModel.status.collectAsState()
@@ -75,8 +65,6 @@ fun UpdateScreen(
             .fillMaxWidth()
     ) {
 
-
-
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
 //        horizontalArrangement = Arrangement.End,
@@ -84,9 +72,19 @@ fun UpdateScreen(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            TooltipInfoDownload(
-                versionName = versionName
+
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Info",
+                tint = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+//                .weight(0.2f)
+                    .clickable {
+                        infoUpdateListener()
+                    }
             )
+
 
             Text(
                 text = "ver. $versionName",
@@ -190,110 +188,62 @@ fun DisappearingText(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-private fun TooltipInfoDownload(
-    versionName: String
+fun InfoUpdateContent(
+    infoUpdateListener: () -> Unit
 ) {
 
-    val tooltipState = rememberTooltipState(isPersistent = true)
-    val scope = rememberCoroutineScope()
-
-    TooltipBox(
-        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-            TooltipAnchorPosition.Below,
-            8.dp
-        ),
-        tooltip = {
-            RichTooltip(
-                caretShape = RectangleShape,
-                tonalElevation = 12.dp,
-                shadowElevation = 4.dp,
-                colors = TooltipDefaults.richTooltipColors(
-                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
-
-                title = {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                scope.launch {
-                                    tooltipState.dismiss()
-                                }
-                            }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Cancel,
-//                            imageVector = Icons.Outlined.Info,
-                            contentDescription = "Info",
-                            tint = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                        Spacer(Modifier.padding(horizontal = 20.dp))
-
-                        Text(
-                            text = "ver. $versionName",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                    }
-
-                },
-                action = {}
-
-            ) {
-                val scrollState = rememberScrollState()
-                Column(
-                    modifier = Modifier
-//                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(8.dp)
-                        .clip(
-                            RoundedCornerShape(16.dp)
-                        )
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(8.dp)
-                ) {
-
-                    TooltipContentDownload()
-                }
-            }
-
-        },
-        state = tooltipState
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 56.dp, vertical = 120.dp)
+            .fillMaxWidth()
+//            .fillMaxHeight()
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                shape = RoundedCornerShape(24.dp)
+            )
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Info,
-            contentDescription = "Info",
-            tint = MaterialTheme.colorScheme.tertiary,
+        val scrollState = rememberScrollState()
+
+        Column(
             modifier = Modifier
-                .padding(start = 16.dp)
-//                .weight(0.2f)
-                .clickable {
-                     scope.launch {
-                         tooltipState.show()
-                     }
-                }
-        )
+//                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(4.dp)
+                .clip(
+                    RoundedCornerShape(24.dp)
+                )
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Info",
+                tint = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+//                    .padding(start = 16.dp)
+            )
+
+
+            Text(
+                buildAnnotatedString {
+                    append(stringResource(R.string.homescreen_download_info_1) + " ")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.tertiary)) {
+                        append("ver. 1.*.*")
+                    }
+                    append(" " + stringResource(R.string.homescreen_download_info_2))
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable { infoUpdateListener() }
+            )
+        }
+
+
     }
 
-}
 
-@Composable
-private fun TooltipContentDownload() {
-
-    Text(
-        buildAnnotatedString {
-            append(stringResource(R.string.homescreen_download_info_1) + " ")
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.tertiary)) {
-                append("ver. 1.*.*")
-            }
-            append(" " + stringResource(R.string.homescreen_download_info_2))
-        },
-        style = MaterialTheme.typography.bodyMedium
-    )
 
 }

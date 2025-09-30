@@ -71,93 +71,22 @@ import kotlinx.coroutines.launch
 @Composable
 fun PrayersContent(
     viewModel: HomeViewModel,
-    isUkrVoice: Boolean
+    isUkrVoice: Boolean,
+    infoPrayersListener : () -> Unit
 ) {
 
     val prayerList by viewModel.prayersList.collectAsState(emptyList<Prayer>())//getPrayersList())
 
     var isShowPrayerSetting by remember { mutableStateOf(false) }
 
-    /* *** Tooltip *** */
-    val tooltipState = rememberTooltipState(isPersistent = true)
-    val scope = rememberCoroutineScope()
 
-    TooltipBox(
-        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-            TooltipAnchorPosition.Below,
-            8.dp
-        ),
-        tooltip = {
-            RichTooltip(
-                caretShape = RectangleShape,
-                tonalElevation = 12.dp,
-                shadowElevation = 4.dp,
-                colors = TooltipDefaults.richTooltipColors(
-                    containerColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
-
-                title = {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                scope.launch {
-                                    tooltipState.dismiss()
-                                }
-                            }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Cancel,
-//                            imageVector = Icons.Outlined.Info,
-                            contentDescription = "Info",
-                            tint = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                        Spacer(Modifier.padding(horizontal = 20.dp))
-
-                        Text(
-                            text = stringResource(R.string.homescreen_prayer_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                    }
-
-                },
-                action = {}
-
-            ) {
-                val scrollState = rememberScrollState()
-                Column(
-                    modifier = Modifier
-//                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(8.dp)
-                        .clip(
-                            RoundedCornerShape(16.dp)
-                        )
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(8.dp)
-                ) {
-
-                    TooltipContentPrayers()
-                }
-            }
-
-        },
-        state = tooltipState
-    ) {
-        /* * TITLE * */
-        PrayersTitle(
-            viewModel = viewModel,
-            isShowPrayerSetting = isShowPrayerSetting,
-            isShowPrayerSettingListener = { isShowPrayerSetting = !isShowPrayerSetting },
-            tooltipState = tooltipState,
-            scope = scope
-        )
-    }
-    /* END Tooltip *** */
+    /* * TITLE * */
+    PrayersTitle(
+        viewModel = viewModel,
+        isShowPrayerSetting = isShowPrayerSetting,
+        isShowPrayerSettingListener = { isShowPrayerSetting = !isShowPrayerSetting },
+        infoPrayersListener = infoPrayersListener
+    )
 
 
     /* ** Prayers ** */
@@ -203,8 +132,7 @@ private fun PrayersTitle(
     viewModel: HomeViewModel,
     isShowPrayerSetting: Boolean,
     isShowPrayerSettingListener: () -> Unit,
-    tooltipState: TooltipState,
-    scope: CoroutineScope
+    infoPrayersListener : () -> Unit
 ) {
 
 
@@ -225,9 +153,7 @@ private fun PrayersTitle(
                 .padding(start = 8.dp)
 //                .weight(0.2f)
                 .clickable {
-                    scope.launch {
-                        tooltipState.show()
-                    }
+                    infoPrayersListener()
                 }
         )
 
@@ -435,7 +361,9 @@ fun PrayerCard(
 
 
 @Composable
-private fun TooltipContentPrayers(){
+fun InfoPrayersContent(
+    infoPrayersListener : () -> Unit
+){
 
     val iconSize = 18.sp
 
@@ -512,26 +440,63 @@ private fun TooltipContentPrayers(){
         },
     )
 
-    Text(
-        text = buildAnnotatedString {
-            append(stringResource(R.string.homescreen_prayers_info_1) + "  ")
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.tertiary)) {
-                append("show")
-            }
-            appendInlineContent("show", "  show")
-            append("  " + stringResource(R.string.homescreen_prayers_info_2) + "  ")
-            appendInlineContent("check", "check")
-            append("  " + stringResource(R.string.homescreen_prayers_info_3))
-            append(stringResource(R.string.homescreen_prayers_info_4) + "  ")
-            appendInlineContent("plus", "plus")
-            append(" , ")
-            appendInlineContent("minus", "minus")
-            append("  " + stringResource(R.string.homescreen_prayers_info_5) + "  ")
-            appendInlineContent("speech", "speech")
-            append("  " + stringResource(R.string.homescreen_prayers_info_6))
-        },
-        inlineContent = inlineContent,
-        style = MaterialTheme.typography.bodyMedium
-    )
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 56.dp, vertical = 120.dp)
+            .fillMaxWidth()
+//            .fillMaxHeight()
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                shape = RoundedCornerShape(24.dp)
+            )
+    ) {
+        val scrollState = rememberScrollState()
+
+        Column(
+            modifier = Modifier
+//                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(4.dp)
+                .clip(
+                    RoundedCornerShape(24.dp)
+                )
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Info",
+                tint = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+//                    .padding(start = 16.dp)
+            )
+
+            Text(
+                text = buildAnnotatedString {
+                    append(stringResource(R.string.homescreen_prayers_info_1) + "  ")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.tertiary)) {
+                        append("show")
+                    }
+                    appendInlineContent("show", "  show")
+                    append("  " + stringResource(R.string.homescreen_prayers_info_2) + "  ")
+                    appendInlineContent("check", "check")
+                    append("  " + stringResource(R.string.homescreen_prayers_info_3))
+                    append(stringResource(R.string.homescreen_prayers_info_4) + "  ")
+                    appendInlineContent("plus", "plus")
+                    append(" , ")
+                    appendInlineContent("minus", "minus")
+                    append("  " + stringResource(R.string.homescreen_prayers_info_5) + "  ")
+                    appendInlineContent("speech", "speech")
+                    append("  " + stringResource(R.string.homescreen_prayers_info_6))
+                },
+                inlineContent = inlineContent,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable { infoPrayersListener() }
+            )
+        }
+    }
+
 
 }

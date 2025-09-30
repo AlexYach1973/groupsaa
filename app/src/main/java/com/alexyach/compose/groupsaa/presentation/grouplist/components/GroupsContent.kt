@@ -13,6 +13,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -44,6 +48,9 @@ fun GroupsContent(
 
     val isLoadFromInternet = viewModel.isLoadFromInternet.collectAsState(true)
 
+    var isShowInfoOfflineGroup by remember { mutableStateOf(false) }
+    var isOffline by remember { mutableStateOf(true) }
+
     val scrollState = rememberScrollState()
 
     /* Get Current Location */
@@ -65,11 +72,12 @@ fun GroupsContent(
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(top = 96.dp, bottom = 132.dp)
                 /* Индикатор прокуртки */
-                .drawWithContent{
+                .drawWithContent {
                     drawContent()
 
                     val thumbHeight = size.height * 0.2f // Пропорциональная высота
-                    val thumbOffset = scrollState.value.toFloat() / scrollState.maxValue * (size.height - thumbHeight)
+                    val thumbOffset =
+                        scrollState.value.toFloat() / scrollState.maxValue * (size.height - thumbHeight)
 
                     drawRect(
                         color = Color.Gray,
@@ -85,7 +93,8 @@ fun GroupsContent(
             HeaderGroupList(
                 isLoadFromInternet = isLoadFromInternet.value,
                 resStringTitle = R.string.grouplistscreen_offline_title,
-                isOffline = true
+                isOffline = { isOffline = true },
+                infoOfflineGroupListener = { isShowInfoOfflineGroup = !isShowInfoOfflineGroup }
             )
 
 
@@ -120,7 +129,8 @@ fun GroupsContent(
             HeaderGroupList(
                 isLoadFromInternet = isLoadFromInternet.value,
                 resStringTitle = R.string.grouplistscreen_online_title,
-                isOffline = false
+                isOffline = { isOffline = false },
+                infoOfflineGroupListener = { isShowInfoOfflineGroup = !isShowInfoOfflineGroup }
             )
             Spacer(modifier = Modifier.padding(4.dp))
 
@@ -153,6 +163,15 @@ fun GroupsContent(
         }
 
 
+
+    }
+
+
+    if (isShowInfoOfflineGroup) {
+        InfoOfflineGroup(
+            isOffline = isOffline,
+            infoOfflineGroupListener = { isShowInfoOfflineGroup = !isShowInfoOfflineGroup }
+        )
     }
 
 }
