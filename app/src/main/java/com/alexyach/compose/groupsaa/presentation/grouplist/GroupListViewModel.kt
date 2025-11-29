@@ -17,6 +17,7 @@ import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +52,7 @@ class GroupListViewModel @Inject constructor(
 
     init {
 //        _screenState.value = GroupListScreenState.Groups(getListGroupTest()) // TEST
-
+        Log.d("Logs", "GroupListViewModel init{}")
         getGroupList()
     }
 
@@ -134,9 +135,12 @@ class GroupListViewModel @Inject constructor(
         groups: List<Group>
     ) {
 
-//        Log.i("Logs", " GroupListViewModel getLocation Start")
+//        Log.d("Logs", " GroupListViewModel getLocation, permissionState= ${permissionState.permission}")
+//        Log.d("Logs", " GroupListViewModel getLocation, permissionState.status= ${permissionState.status}")
+//        Log.d("Logs", " GroupListViewModel getLocation, permissionState.status,isGranted= ${permissionState.status.isGranted}")
 
         if (permissionState.status.isGranted) {
+            Log.d("Logs", " GroupListViewModel getLocation, permissionState.status,isGranted= ${permissionState.status.isGranted}")
 
             viewModelScope.launch {
                 try {
@@ -145,7 +149,7 @@ class GroupListViewModel @Inject constructor(
                     val locationResult = locationClient.lastLocation.await()
 
                     locationResult?.let { location ->
-//                        Log.i("Logs", " GroupListViewModel getLocation lat= ${location.latitude}")
+                        Log.i("Logs", " GroupListViewModel getLocation lat= ${location.latitude}")
                         distanceToGroups(
                             currentLocation = location,
                             groups = groups
@@ -158,7 +162,12 @@ class GroupListViewModel @Inject constructor(
             }
 
         } else {
-            permissionState.launchPermissionRequest()
+            Log.d("Logs", " GroupListViewModel getLocation, permissionState.status,isGranted= ${permissionState.status.isGranted}")
+            try {
+                permissionState.launchPermissionRequest()
+            } catch (e: Exception) {
+                Log.d("Logs", "ViewModel permissionState.launchPermissionRequest() error: $e")
+            }
         }
     }
     /* END Code Distance */
