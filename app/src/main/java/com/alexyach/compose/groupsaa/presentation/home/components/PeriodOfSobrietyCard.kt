@@ -2,7 +2,11 @@ package com.alexyach.compose.groupsaa.presentation.home.components
 
 import HomeScreenSelDateState
 import android.content.Context
+import android.util.Log
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,10 +37,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alexyach.compose.groupsaa.R
@@ -46,14 +53,40 @@ import com.alexyach.compose.groupsaa.presentation.home.HomeViewModel
 fun PeriodOfSobrietyCard(
     context: Context,
     viewModel: HomeViewModel,
+    collapseFraction : Float
 ) {
     val selDateState =
         viewModel.selDateScreenState.collectAsState(HomeScreenSelDateState.Initial).value
 
+    /* Animate values for Collapsing */
+    val cardHeight by animateDpAsState(
+        targetValue = (180 - 116 * collapseFraction).coerceAtLeast(64f).dp,
+        label = "cardHeight"
+    )
+
+    val cardPaddingVertical by animateDpAsState(
+        targetValue = (8f - 7 * collapseFraction).coerceAtLeast(1f).dp,
+        label = "cardPaddingVertical"
+    )
+
+    val titleFontSize by animateFloatAsState(
+        targetValue = (26 - 6f * collapseFraction).coerceAtLeast(20f),
+        label = "titleFontSize"
+    )
+
+    val opacity by animateFloatAsState(
+        targetValue = 1f - collapseFraction,
+        label = "opacity"
+    )
+
+    /* END Animate values for Collapsing */
+
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+//            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = cardPaddingVertical)
+            .height(cardHeight)
             .border(
                 width = 2.dp,
                 shape = RoundedCornerShape(8.dp),
@@ -85,30 +118,36 @@ fun PeriodOfSobrietyCard(
                 .fillMaxSize()
 
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.shar),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth, // Масштабування, щоб заповнити екран
-                modifier = Modifier.fillMaxSize()
-            )
+            if (opacity > 0.01f) {
+                Image(
+                    painter = painterResource(id = R.drawable.shar),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds, // Масштабування, щоб заповнити екран
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+//                    .background(Color.Gray)
 
             ) {
                 /* 1 Line */
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = context.getString(R.string.homescreen_sobriety_card_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Normal
+                if (opacity > 0.01f) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = context.getString(R.string.homescreen_sobriety_card_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Normal
 //                        fontSize = 28.sp
 //                        fontStyle = FontStyle.Italic
-                    )
+                        )
+                    }
                 }
 
                 when (selDateState) {
@@ -116,7 +155,9 @@ fun PeriodOfSobrietyCard(
 
                         PeriodOfSobriety(
                             selDateState = selDateState,
-                            openDialogListener = { openDialog = true }
+                            openDialogListener = { openDialog = true },
+                            opacity = opacity,
+                            fontSize = titleFontSize
                         )
 
                     }
@@ -175,13 +216,16 @@ fun PeriodOfSobrietyCard(
 @Composable
 private fun PeriodOfSobriety(
     selDateState: HomeScreenSelDateState.SelectedDate,
-    openDialogListener: () -> Unit
+    openDialogListener: () -> Unit,
+    opacity: Float,
+    fontSize: Float
 ) {
     /* 2 Line */
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+//            .background(Color.Green)
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.Center
     ) {
 
@@ -189,66 +233,70 @@ private fun PeriodOfSobriety(
             text = selDateState.selDate.difference,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            fontSize = 26.sp
+            fontSize = fontSize.sp
+//            fontSize = 26.sp
         )
 
     }
 
 
-    /* 3 Line */
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "або ${selDateState.selDate.totalDays}",
-            style = MaterialTheme.typography.bodyLarge,
-            fontStyle = FontStyle.Italic,
-            fontSize = 22.sp
-        )
-    }
-
-    /* 4 Line */
-    Row(
-        modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-
+    if (opacity > 0.01f) {
+        /* 3 Line */
         Row(
-            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
-                .weight(4f)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "від ${selDateState.selDate.selectedDateSobriety}",
-                style = MaterialTheme.typography.labelMedium
+                text = "або ${selDateState.selDate.totalDays}",
+                style = MaterialTheme.typography.bodyLarge,
+                fontStyle = FontStyle.Italic,
+                fontSize = 22.sp
             )
         }
 
-
+        /* 4 Line */
         Row(
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .weight(1f)
-                .clickable { openDialogListener() /*openDialog = true*/ }
+                .padding(top = 8.dp)
+//            .background(Color.Green)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Edit",
-                style = MaterialTheme.typography.labelMedium,
-                fontStyle = FontStyle.Italic,
+
+            Row(
+                horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
-                    .padding(end = 8.dp)
-            )
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "setting",
+                    .weight(4f)
+            ) {
+                Text(
+                    text = "від ${selDateState.selDate.selectedDateSobriety}",
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .size(20.dp)
-            )
+                    .weight(1f)
+                    .clickable { openDialogListener() /*openDialog = true*/ }
+            ) {
+                Text(
+                    text = "Edit",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontStyle = FontStyle.Italic,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                )
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "setting",
+                    modifier = Modifier
+                        .size(20.dp)
+                )
+            }
         }
     }
 }
