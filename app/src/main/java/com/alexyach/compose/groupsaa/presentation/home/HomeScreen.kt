@@ -98,27 +98,29 @@ fun HomeScreen(
 
 
 
-            /* * Collapsing Period of Sobriety * */
+            /* * Collapsing Card Period of Sobriety * */
             /** smooth scrolling calculation
             collapseFraction = 185
              * x * collapseFraction => 1
              * x = 0.005
              **/
             val coeffCollapseFraction = 0.005f
+            val cardHeight = (180 - 116 * collapseFraction * coeffCollapseFraction)
+                .coerceAtLeast(64f).dp
 
 //            Log.d("Logs", "height= ${(200 - 120 * collapseFraction)}")
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((180 - 116 * collapseFraction * coeffCollapseFraction)
-                        .coerceAtLeast(64f).dp)
+                    .height(cardHeight)
             ) {
 
                 PeriodOfSobrietyCard(
                     context = context,
                     viewModel = viewModel,
-                    collapseFraction = collapseFraction * coeffCollapseFraction
+                    collapseFraction = collapseFraction * coeffCollapseFraction,
+                    cardHeight = cardHeight
                 )
             }
 

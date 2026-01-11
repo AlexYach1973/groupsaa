@@ -1,8 +1,10 @@
 package com.alexyach.compose.groupsaa.domain.model
 
 import com.alexyach.compose.groupsaa.data.db.GroupEntity
+import kotlinx.serialization.Serializable
 import kotlin.String
 
+@Serializable
 data class Group (
      val name: String,
      val addresses: String,

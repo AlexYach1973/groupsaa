@@ -23,8 +23,10 @@ import com.alexyach.compose.groupsaa.presentation.navigation.rememberNavigationS
 import com.alexyach.compose.groupsaa.presentation.news.NewsScreen
 import com.alexyach.compose.groupsaa.presentation.read.ReadScreen
 
+
 @Composable
 fun MainScreen() {
+
 
     val navigationState = rememberNavigationState()
 
@@ -118,6 +120,7 @@ fun MainScreen() {
             },
         )
 
-
     }
+
 }
+

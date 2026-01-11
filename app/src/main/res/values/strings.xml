@@ -2,7 +2,7 @@
     <string name="app_name">groupsAA</string>
 
 <!--    Navigation-->
-    <string name="navigation_item_home">Головна</string>
+    <string name="navigation_item_home">Одужання</string>
     <string name="navigation_item_meeting">групи</string>
     <string name="navigation_item_news">новини</string>
     <string name="navigation_item_read">література</string>

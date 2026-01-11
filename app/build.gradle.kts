@@ -1,5 +1,8 @@
 import android.databinding.tool.ext.cleanLazyProps
 import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -8,6 +11,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.hilt.android)
     id("kotlin-parcelize")
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 
@@ -38,9 +42,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+            freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+        }
     }
+
+
+
+
     buildFeatures {
         compose = true
     }
@@ -54,10 +66,6 @@ android {
 configurations.all {
     exclude(group = "com.intellij", module = "annotations")
 }
-
-//configurations.all {
-//    exclude(group = "com.intellij", module = "annotations")
-//}
 
 
 dependencies {
@@ -73,7 +81,7 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.material.extended)
 
-    implementation(libs.androidx.navigation)
+//    implementation(libs.androidx.navigation)
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.compose.viewmodel)
     implementation(libs.androidx.gson)
@@ -100,6 +108,13 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
 
     api(libs.coroutines.core)
+
+//    nav3
+//    implementation(libs.androidx.navigation3.ui)
+//    implementation(libs.androidx.navigation3.runtime)
+//    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+//    implementation(libs.androidx.material3.adaptive.navigation3)
+//    implementation(libs.kotlinx.serialization.core)
 
 
 //    implementation(libs.androidx.foundation)
