@@ -1,5 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.home.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -108,7 +110,7 @@ fun DailyReflectionCard(
         Text(
             text = stringResource(R.string.homescreen_daily_title),
             style = MaterialTheme.typography.titleLarge,
-            fontFamily = triodionr,
+            fontFamily = spice_rice,
             modifier = Modifier
 //                .weight(0.8f)
 //                .padding(bottom = 32.dp)
@@ -158,7 +160,7 @@ fun DailyReflectionCard(
             )
         }
 
-        /* Text Size */
+        /* Icons */
         if (!isHide) {
             Row(
                 modifier = Modifier
@@ -239,42 +241,43 @@ fun DailyReflectionCard(
             if (viewModel.isSpeaking()) viewModel.stopUkrainianText()
         }
 
+        /* Text */
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
+            /* */
+                .animateContentSize()
         ) {
 
             if (isHide) {
-                /* Title */
-                Row(
-                    horizontalArrangement = Arrangement.Center,
+                Text(
+
+                    text = dailyItem.title,
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = spice_rice,
                     modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = dailyItem.title,
-                        fontSize = 18.sp,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = spice_rice,
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                    )
-                }
+                        .padding(bottom = 8.dp)
+                )
 
                 /* Quote */
                 Text(
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                     text = dailyItem.quote,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     style = MaterialTheme.typography.bodyLarge,
                     fontStyle = FontStyle.Italic,
                     fontFamily = spice_rice
                 )
+
+
             } else {
 
-                /* Title */
+                  /* Title */
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
@@ -291,8 +294,7 @@ fun DailyReflectionCard(
                     )
                 }
 
-
-                /* Quote */
+                 /* Quote */
                 Text(
                     text = dailyItem.quote,
                     fontSize = fontSizeText.sp,
@@ -303,13 +305,14 @@ fun DailyReflectionCard(
                         .padding(bottom = 16.dp)
                 )
 
-                /* Discussion */
+                 /* Discussion */
                 Text(
                     text = dailyItem.discussion,
                     fontSize = fontSizeText.sp,
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = spice_rice
                 )
+
             }
         }
 

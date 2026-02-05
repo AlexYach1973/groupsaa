@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.sp
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Prayer
 import com.alexyach.compose.groupsaa.presentation.home.HomeViewModel
+import com.alexyach.compose.groupsaa.ui.theme.amatic
 import com.alexyach.compose.groupsaa.ui.theme.spice_rice
 import com.alexyach.compose.groupsaa.ui.theme.triodionr
 import kotlinx.coroutines.CoroutineScope
@@ -167,7 +168,7 @@ private fun PrayersTitle(
             Text(
                 text = stringResource(R.string.homescreen_prayer_title),
                 style = MaterialTheme.typography.titleLarge,
-                fontFamily = triodionr
+                fontFamily = spice_rice
             )
         }
 
