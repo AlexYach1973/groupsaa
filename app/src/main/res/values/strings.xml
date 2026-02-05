@@ -7,6 +7,11 @@
     <string name="navigation_item_news">новини</string>
     <string name="navigation_item_read">література</string>
 
+    <!--    Navigation 3 -->
+    <string name="navigation3_item_recovery">Одужання</string>
+    <string name="navigation3_item_service">Служіння</string>
+    <string name="navigation3_item_unity">Єдність</string>
+
 
 <!--    HomeScreen-->
     <string name="homescreen_sobriety_card_title">Ти тверезий на сьогодні:</string>
