@@ -1,5 +1,7 @@
 package com.alexyach.compose.groupsaa.domain.model
 
+import com.alexyach.compose.groupsaa.utils.prayerElevenMorningText
+
 enum class PrayersEnum(var isVisible: Boolean) {
     MorningPrayer(true),
     EveningPrayer(true),
@@ -9,9 +11,8 @@ enum class PrayersEnum(var isVisible: Boolean) {
     FearPrayer(true),
     StepTenPrayer(true),
     StepOnePrayer(true),
-    StepSexPrayer(true),
+    StepSixPrayer(true),
     StepSevenPrayer(true),
     PrayerForPowerlessness(true),
 }
 
-//fun getAllPrayers() = enumValues<PrayersEnum>().toList()

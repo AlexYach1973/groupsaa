@@ -1,88 +1,37 @@
 package com.alexyach.compose.groupsaa.domain.model
 
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import com.alexyach.compose.groupsaa.R
+import com.alexyach.compose.groupsaa.utils.peaceOfMindText
+import com.alexyach.compose.groupsaa.utils.prayerDelegationText
+import com.alexyach.compose.groupsaa.utils.prayerElevenEveningText
+import com.alexyach.compose.groupsaa.utils.prayerElevenMorningText
+import com.alexyach.compose.groupsaa.utils.prayerOfFearText
+import com.alexyach.compose.groupsaa.utils.prayerPowerlessnessText
+import com.alexyach.compose.groupsaa.utils.prayerTenText
+import com.alexyach.compose.groupsaa.utils.resentmentText
+import com.alexyach.compose.groupsaa.utils.stepOneAndTwoText
+import com.alexyach.compose.groupsaa.utils.stepSevenText
+import com.alexyach.compose.groupsaa.utils.stepSixText
 
 data class Prayer(
     val name: PrayersEnum,
-    val title: Int,
-    val textShort: Int,
-    val textFull: Int,
     var isHide: Boolean = false,
     var isVisible: Boolean = true,
 )
 
 fun getPrayersList(): List<Prayer> {
     return listOf(
-        Prayer(
-            name = PrayersEnum.MorningPrayer,
-            title = R.string.number_step_eleven_morning_title,
-            textShort = R.string.number_step_eleven_morning_start,
-            textFull = R.string.number_step_eleven_morning
-        ),
-        Prayer(
-            name = PrayersEnum.EveningPrayer,
-            title = R.string.number_step_eleven_evening_title,
-            textShort = R.string.number_step_eleven_evening_start,
-            textFull = R.string.number_step_eleven_evening
-        ),
-
-        Prayer(
-            name = PrayersEnum.DelegationPrayer,
-            title = R.string.prayer_delegation_title,
-            textShort = R.string.prayer_delegation_start,
-            textFull = R.string.prayer_delegation
-        ),
-
-        Prayer(
-            name = PrayersEnum.PeaceOfMindPrayer,
-            title = R.string.peace_of_mind_title,
-            textShort = R.string.peace_of_mind_start,
-            textFull = R.string.peace_of_mind_full
-        ),
-
-        Prayer(
-            name = PrayersEnum.ResentmentPrayer,
-            title = R.string.resentment_title,
-            textShort = R.string.resentment_start,
-            textFull = R.string.resentment_full
-        ),
-
-        Prayer(
-            name = PrayersEnum.FearPrayer,
-            title = R.string.prayer_fear_title,
-            textShort = R.string.prayer_fear_start,
-            textFull = R.string.prayer_fear_full
-        ),
-        Prayer(
-            name = PrayersEnum.StepTenPrayer,
-            title = R.string.step_number_ten_title,
-            textShort = R.string.step_number_ten_start,
-            textFull = R.string.step_number_ten_full
-        ),
-        Prayer(
-            name = PrayersEnum.StepOnePrayer,
-            title = R.string.step_number_one_title,
-            textShort = R.string.step_number_one_start,
-            textFull = R.string.step_number_one_full
-        ),
-        Prayer(
-            name = PrayersEnum.StepSexPrayer,
-            title = R.string.step_number_sex_title,
-            textShort = R.string.step_number_sex_start,
-            textFull = R.string.step_number_sex_full
-        ),
-        Prayer(
-            name = PrayersEnum.StepSevenPrayer,
-            title = R.string.step_number_seven_title,
-            textShort = R.string.step_number_seven_start,
-            textFull = R.string.step_number_seven_full
-        ),
-        Prayer(
-            name = PrayersEnum.PrayerForPowerlessness,
-            title = R.string.prayer_for_powerlessness_title,
-            textShort = R.string.prayer_for_powerlessness_start,
-            textFull = R.string.prayer_for_powerlessness_full
-        ),
+        Prayer(name = PrayersEnum.MorningPrayer),
+        Prayer(name = PrayersEnum.EveningPrayer),
+        Prayer(name = PrayersEnum.DelegationPrayer),
+        Prayer(name = PrayersEnum.PeaceOfMindPrayer),
+        Prayer(name = PrayersEnum.ResentmentPrayer),
+        Prayer(name = PrayersEnum.FearPrayer),
+        Prayer(name = PrayersEnum.StepTenPrayer),
+        Prayer(name = PrayersEnum.StepOnePrayer),
+        Prayer(name = PrayersEnum.StepSixPrayer),
+        Prayer(name = PrayersEnum.StepSevenPrayer),
+        Prayer(name = PrayersEnum.PrayerForPowerlessness),
     )
 }

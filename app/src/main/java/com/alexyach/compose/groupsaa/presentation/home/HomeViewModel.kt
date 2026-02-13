@@ -1,6 +1,7 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
 import HomeScreenSelDateState
+import HomeScreenSelDateState.*
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.lifecycle.ViewModel
@@ -39,24 +40,24 @@ class HomeViewModel @Inject constructor(
 
 
     /* Daily*/
-    private val _selectDateForDaily = MutableStateFlow(LocalDate.now())
-    val selectDateForDaily: StateFlow<LocalDate> = _selectDateForDaily
+//    private val _selectDateForDaily = MutableStateFlow(LocalDate.now())
+    val selectDateForDaily: StateFlow<LocalDate> field = MutableStateFlow(LocalDate.now())
 
-    private val _dailyItem = MutableStateFlow<DailyReflections?>(null)
-    val dailyItem: StateFlow<DailyReflections?> = _dailyItem
+//    private val _dailyItem = MutableStateFlow<DailyReflections?>(null)
+    val dailyItem: StateFlow<DailyReflections?> field = MutableStateFlow<DailyReflections?>(null)
     private val dailyMap: Map<String, DailyReflections> = assetsManager.loadDailyFromAssets()
     /* End Daily*/
 
-    val _selDateScreenState: MutableStateFlow<HomeScreenSelDateState> = MutableStateFlow(HomeScreenSelDateState.Initial)
-    val selDateScreenState : StateFlow<HomeScreenSelDateState> = _selDateScreenState
+    val _selDateScreenState: MutableStateFlow<HomeScreenSelDateState> = MutableStateFlow(Initial)
+    val selDateScreenState : StateFlow<HomeScreenSelDateState>   =_selDateScreenState
 
     private val prefVisiblePrayerList : List<PrayersEnum> = enumValues<PrayersEnum>().toList()
-    private val _prayersList = MutableStateFlow(getPrayersList())
-    val prayersList: StateFlow<List<Prayer>> = _prayersList
+    val prayersList: StateFlow<List<Prayer>> field = MutableStateFlow(getPrayersList())
 
     /* TTS */
-    private val _isUkrVoice: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isUkrVoice: StateFlow<Boolean> = _isUkrVoice
+//    private val _isUkrVoice: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isUkrVoice: StateFlow<Boolean> field =  MutableStateFlow(false)
+
     private var tts: MutableStateFlow<TextToSpeech?> = MutableStateFlow(null)
 
     /* From updateManager  */
@@ -80,9 +81,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadDailyForDate(date: LocalDate) {
-        _selectDateForDaily.value = date
+        selectDateForDaily.value = date
         val key = date.format(DateTimeFormatter.ofPattern("MM-dd"))
-        _dailyItem.value = dailyMap[key]
+        dailyItem.value = dailyMap[key]
 
 //        Log.d("Logs", "HomeViewmodel  _dailyItem.value: ${ _dailyItem.value?.title }")
     }
@@ -206,7 +207,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fillPrayersPrefVisible(prefVisiblePrayerList: List<PrayersEnum>){
-        _prayersList.value.forEach {prayer ->
+        prayersList.value.forEach {prayer ->
 
             val index : Int = prefVisiblePrayerList.indexOf(prayer.name)
             prayer.isVisible = prefVisiblePrayerList[index].isVisible
@@ -230,7 +231,7 @@ class HomeViewModel @Inject constructor(
                     val ukrainianVoices =
                         voices?.filter { it.locale.language == "uk" } ?: emptyList()
 
-                    _isUkrVoice.value = ukrainianVoices.isNotEmpty()
+                    isUkrVoice.value = ukrainianVoices.isNotEmpty()
 
 //                    Log.d("Logs", "HomeVM, ukrainianVoices: $ukrainianVoices")
                 }

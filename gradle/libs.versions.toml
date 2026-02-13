@@ -24,7 +24,7 @@ coroutinePlayServ = "1.10.2"
 dataStorePref = "1.2.0"
 hilt = "2.59.1"
 hiltViewModel = "1.3.0"
-hiltNavigation = "1.3.0"
+#hiltNavigation = "1.3.0"
 animation = "1.10.2"
 material3 = "1.4.0"
 material = "1.10.2"
@@ -68,7 +68,7 @@ androidx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "k
 androidx-datastore-preference = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStorePref" }
 androidx-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 androidx-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-androidx-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
+#androidx-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
 androidx-hilt-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel-compose", version.ref = "hiltViewModel" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinePlayServ" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
