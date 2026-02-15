@@ -1,7 +1,6 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
-import HomeScreenSelDateState
-import HomeScreenSelDateState.*
+import com.alexyach.compose.groupsaa.presentation.home.HomeScreenSelDateState.*
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.lifecycle.ViewModel
@@ -49,7 +48,7 @@ class HomeViewModel @Inject constructor(
     /* End Daily*/
 
     val _selDateScreenState: MutableStateFlow<HomeScreenSelDateState> = MutableStateFlow(Initial)
-    val selDateScreenState : StateFlow<HomeScreenSelDateState>   =_selDateScreenState
+    val selDateScreenState : StateFlow<HomeScreenSelDateState> = _selDateScreenState
 
     private val prefVisiblePrayerList : List<PrayersEnum> = enumValues<PrayersEnum>().toList()
     val prayersList: StateFlow<List<Prayer>> field = MutableStateFlow(getPrayersList())
@@ -127,7 +126,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadDateFromDataStore() {
-        _selDateScreenState.value = HomeScreenSelDateState.Loading
+        _selDateScreenState.value = Loading
 
         viewModelScope.launch {
             val dateLit = dataStoreManager.readSelectedDataList()
@@ -135,7 +134,7 @@ class HomeViewModel @Inject constructor(
             if (dateLit.isNotEmpty()) {
                 formatingDate(dateLit)
             } else {
-                _selDateScreenState.value = HomeScreenSelDateState.Error
+                _selDateScreenState.value = Error
 
             }
         }
@@ -161,7 +160,7 @@ class HomeViewModel @Inject constructor(
         /* Разница */
         val difference = formatPeriod(period = period)
 
-        _selDateScreenState.value = HomeScreenSelDateState.SelectedDate(
+        _selDateScreenState.value = SelectedDate(
             DateSobriety(
                 selectedDateSobriety = dateSobriety,
                 totalDays = totalDay,

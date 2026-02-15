@@ -1,3 +1,5 @@
+package com.alexyach.compose.groupsaa.presentation.home
+
 import com.alexyach.compose.groupsaa.domain.model.DateSobriety
 
 

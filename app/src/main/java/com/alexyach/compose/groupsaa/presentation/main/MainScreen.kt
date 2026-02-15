@@ -59,7 +59,7 @@ private val TOP_LEVEL_SCREEN = listOf(UnityKey, RecoveryKey, ServiceKey)
 @Composable
 fun MainScreen() {
 
-    val homeKey = RecoveryKey // ServiceKey // UnityKey
+    val homeKey = ServiceKey // RecoveryKey // UnityKey
     val backStack = rememberNavBackStack(homeKey)
 
     Scaffold(

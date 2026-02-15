@@ -1,8 +1,7 @@
 package com.alexyach.compose.groupsaa.presentation.home
 
-import InfoUpdateContent
-import UpdateScreen
-import android.util.Log
+import com.alexyach.compose.groupsaa.presentation.home.components.InfoUpdateContent
+import com.alexyach.compose.groupsaa.presentation.home.components.UpdateScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -32,14 +33,21 @@ class UpdateManager @Inject constructor(
     private val useCase: CheckLatestReleaseUseCase,
 ) {
 
-    private val _progress = MutableStateFlow(0)
-    val progress: StateFlow<Int> = _progress
+    init {
+        Log.d("Logs", " Run UpdateManager")
+//        deleteOldApk()
+    }
+
+//    val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+//    private val _progress = MutableStateFlow(0)
+    val progress: StateFlow<Int> field = MutableStateFlow(0)
 
     private val _status = MutableStateFlow<UpdateStatus>(UpdateStatus.Idle)
     val status: StateFlow<UpdateStatus> = _status
 
-    private val _gitHubRelease = MutableStateFlow<GitHubRelease?>(null)
-    val gitHubRelease: StateFlow<GitHubRelease?> = _gitHubRelease
+//    private val _gitHubRelease = MutableStateFlow<GitHubRelease?>(null)
+    val gitHubRelease: StateFlow<GitHubRelease?> field = MutableStateFlow<GitHubRelease?>(null)
 
 
     val currentVersion =  context.packageManager.
@@ -53,7 +61,7 @@ class UpdateManager @Inject constructor(
             val release = useCase.invoke(owner, repo)
             val asset = release?.assets?.find { it.name.endsWith(".apk") }
 
-            _gitHubRelease.value = release?.copy(published = formattedUpdateString(release.published))
+            gitHubRelease.value = release?.copy(published = formattedUpdateString(release.published))
 
             /* Logs */
             Log.i("Logs", "UpdateManager release: ${release.toString()}")
@@ -104,9 +112,10 @@ class UpdateManager @Inject constructor(
                     val status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
 
                     if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                        val uri = manager.getUriForDownloadedFile(downloadId)
+//                        val uri = manager.getUriForDownloadedFile(downloadId)
                         cursor.close()
-                        installApk(uri)
+                        installApk(manager, downloadId)
+//                        installApk(uri)
                         downloading = false
 //                        _status.value = UpdateStatus.Installed
 //                        Log.i("Logs", "_status.value = UpdateStatus.Installed")
@@ -115,7 +124,7 @@ class UpdateManager @Inject constructor(
 
                     if (total > 0) {
                         val percent = (downloaded * 100) / total
-                        _progress.value = percent
+                        progress.value = percent
                         _status.value = UpdateStatus.Downloading
 //                        Log.i("Logs", "_status.value = UpdateStatus.Downloading")
                     }
@@ -126,7 +135,11 @@ class UpdateManager @Inject constructor(
         }
     }
 
-    private fun installApk(uri: Uri) {
+    private fun installApk(manager: DownloadManager, downloadId: Long) {
+//    private fun installApk(uri: Uri) {
+
+        val uri = manager.getUriForDownloadedFile(downloadId)
+
         if ( !context.packageManager.canRequestPackageInstalls() ) {
             val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
                 data = "package:${context.packageName}".toUri()
@@ -147,16 +160,72 @@ class UpdateManager @Inject constructor(
 
         _status.value = UpdateStatus.Idle
 
+
+        /* DELETE APK */
+        deleteOldApk(manager, downloadId)
     }
+
+
+    private fun deleteOldApk(downloadManager: DownloadManager, downloadId: Long) {
+//        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val query = DownloadManager.Query().setFilterById(downloadId)
+        val cursor = downloadManager.query(query)
+        val uriString = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI))
+        val apkFile = File(uriString.toUri().path!!)
+
+//        apkFile.delete()
+
+    }
+
 
     private fun formattedUpdateString(date: String) : String {
 
-            val zonedDataTime = ZonedDateTime.parse(date)
-            val formatter = DateTimeFormatter
-                .ofPattern("dd.MM.yyyy", Locale.getDefault())
-            return zonedDataTime.format(formatter)
+        val zonedDataTime = ZonedDateTime.parse(date)
+        val formatter = DateTimeFormatter
+            .ofPattern("dd.MM.yyyy", Locale.getDefault())
+        return zonedDataTime.format(formatter)
 
     }
+
+
+
+
+
+//    private fun deleteOldApkOLD() {
+//        // Получить все загрузки вашего приложения
+//        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+//        val query = DownloadManager.Query()
+//        val cursor = manager.query(query)
+//
+//        val testListApk = mutableListOf<String>()
+//
+//        while (cursor.moveToNext()) {
+//
+//            val uri = cursor.getString(
+//                cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
+//            )
+//            val fileName = uri.toUri().path?.substringAfter("/")
+//            fileName?.let { testListApk.add(it) }
+//
+//           /*
+//            if (fileName?.endsWith(".apk", ignoreCase = true) == true) {
+//                val id = cursor.getLong(cursor.getColumnIndexOrThrow(
+//                    DownloadManager.COLUMN_ID)
+//                )
+//                manager.remove(id) // Удаляет запись + файл
+//            }*/
+//
+//
+//        }
+//
+//        /* Logs */
+//        testListApk.forEach {
+//            Log.i("Logs", it)
+//        }
+//
+//
+//    }
+
 
 
 }

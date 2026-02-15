@@ -1,3 +1,5 @@
+package com.alexyach.compose.groupsaa.presentation.home.components
+
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
