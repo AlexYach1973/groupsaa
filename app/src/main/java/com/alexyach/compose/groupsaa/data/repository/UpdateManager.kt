@@ -3,6 +3,7 @@ package com.alexyach.compose.groupsaa.data.repository
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.Settings
@@ -33,12 +34,8 @@ class UpdateManager @Inject constructor(
     private val useCase: CheckLatestReleaseUseCase,
 ) {
 
-    init {
-        Log.d("Logs", " Run UpdateManager")
-//        deleteOldApk()
-    }
 
-//    val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
 //    private val _progress = MutableStateFlow(0)
     val progress: StateFlow<Int> field = MutableStateFlow(0)
@@ -52,6 +49,13 @@ class UpdateManager @Inject constructor(
 
     val currentVersion =  context.packageManager.
     getPackageInfo(context.packageName, 0).versionName // "1.0.1"
+    val nameFileDownloaded = "update.apk"
+
+
+    init {
+        cleanupOldApks()
+        Log.d("Logs", "UpdateManager Start")
+    }
 
 
     fun checkAndUpdate(owner: String, repo: String) {
@@ -86,20 +90,20 @@ class UpdateManager @Inject constructor(
 
     private fun downloadApk(url: String) {
         val request = DownloadManager.Request(url.toUri()).apply {
-            setTitle("Оновлення")
+            setTitle("Оновлення застосунку")
             setDescription("Завантаження нової версії")
-            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "update.apk")
+            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameFileDownloaded)
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         }
 
 //        Log.d("Logs", "UpdateManager request: ${request}")
 
-        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+//        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = manager.enqueue(request)
-        trackProgress(manager, downloadId)
+        trackProgress(downloadId)
     }
 
-    private fun trackProgress(manager: DownloadManager, downloadId: Long) {
+    private fun trackProgress(downloadId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             val query = DownloadManager.Query().setFilterById(downloadId)
             var downloading = true
@@ -112,11 +116,11 @@ class UpdateManager @Inject constructor(
                     val status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
 
                     if (status == DownloadManager.STATUS_SUCCESSFUL) {
-//                        val uri = manager.getUriForDownloadedFile(downloadId)
-                        cursor.close()
-                        installApk(manager, downloadId)
-//                        installApk(uri)
+                        val uri = manager.getUriForDownloadedFile(downloadId)
+                        installApk(uri)
+
                         downloading = false
+                        cursor.close()
 //                        _status.value = UpdateStatus.Installed
 //                        Log.i("Logs", "_status.value = UpdateStatus.Installed")
                         return@launch
@@ -135,10 +139,9 @@ class UpdateManager @Inject constructor(
         }
     }
 
-    private fun installApk(manager: DownloadManager, downloadId: Long) {
-//    private fun installApk(uri: Uri) {
+    private fun installApk(uri: Uri) {
 
-        val uri = manager.getUriForDownloadedFile(downloadId)
+//        Log.d("Logs", "installApk start")
 
         if ( !context.packageManager.canRequestPackageInstalls() ) {
             val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
@@ -159,22 +162,29 @@ class UpdateManager @Inject constructor(
         context.startActivity(intent)
 
         _status.value = UpdateStatus.Idle
-
-
-        /* DELETE APK */
-        deleteOldApk(manager, downloadId)
+//        Log.d("Logs", "installApk  _status.value= ${ _status.value}")
     }
 
 
-    private fun deleteOldApk(downloadManager: DownloadManager, downloadId: Long) {
-//        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val query = DownloadManager.Query().setFilterById(downloadId)
-        val cursor = downloadManager.query(query)
-        val uriString = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI))
-        val apkFile = File(uriString.toUri().path!!)
+    fun cleanupOldApks() {
 
-//        apkFile.delete()
+        val file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
+        file?.listFiles { file ->
+            file.isFile &&
+                    file.name.endsWith(".apk", ignoreCase = true) &&
+                    file.name.startsWith(nameFileDownloaded.substringBefore("."))
+
+        }?.forEach {file ->
+//            Log.i("Logs", "File: $file")
+            try {
+                file.delete()
+                Log.d("Logs", "UpdateManager Delete file: $file")
+            } catch (e: Exception) {
+                Log.d("Logs", "UpdateManager Not delete file: $file")
+                Log.d("Logs", "UpdateManager Exception: $e")
+            }
+        }
     }
 
 
@@ -186,45 +196,6 @@ class UpdateManager @Inject constructor(
         return zonedDataTime.format(formatter)
 
     }
-
-
-
-
-
-//    private fun deleteOldApkOLD() {
-//        // Получить все загрузки вашего приложения
-//        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-//        val query = DownloadManager.Query()
-//        val cursor = manager.query(query)
-//
-//        val testListApk = mutableListOf<String>()
-//
-//        while (cursor.moveToNext()) {
-//
-//            val uri = cursor.getString(
-//                cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
-//            )
-//            val fileName = uri.toUri().path?.substringAfter("/")
-//            fileName?.let { testListApk.add(it) }
-//
-//           /*
-//            if (fileName?.endsWith(".apk", ignoreCase = true) == true) {
-//                val id = cursor.getLong(cursor.getColumnIndexOrThrow(
-//                    DownloadManager.COLUMN_ID)
-//                )
-//                manager.remove(id) // Удаляет запись + файл
-//            }*/
-//
-//
-//        }
-//
-//        /* Logs */
-//        testListApk.forEach {
-//            Log.i("Logs", it)
-//        }
-//
-//
-//    }
 
 
 
