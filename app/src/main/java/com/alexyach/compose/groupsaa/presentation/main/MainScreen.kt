@@ -1,5 +1,13 @@
 package com.alexyach.compose.groupsaa.presentation.main
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -106,7 +114,37 @@ fun MainScreen() {
                     )
                 }
 
-                entry<GroupDetails> {key->
+                entry<GroupDetails>(
+                    /* transition Animation */
+                    metadata = NavDisplay.transitionSpec {
+                        slideInHorizontally(
+                            initialOffsetX = { it },
+                            animationSpec = tween(1000)
+                        ) togetherWith
+                                slideOutHorizontally(
+                                    targetOffsetX = { -it },
+                                    animationSpec = tween(1000)
+                                )
+                    } + NavDisplay.popTransitionSpec {
+                        slideInHorizontally(
+                            initialOffsetX = { -it },
+                            animationSpec = tween(1000)
+                        ) togetherWith
+                                slideOutHorizontally(
+                                    targetOffsetX = { it },
+                                    animationSpec = tween(1000)
+                                )
+                    } + NavDisplay.predictivePopTransitionSpec {
+                        slideInHorizontally(
+                            initialOffsetX = { it },
+                            animationSpec = tween(1000)
+                        ) togetherWith
+                                slideOutHorizontally(targetOffsetX = { -it })
+                    }
+
+                    /* End transition Animation */
+                )
+                {key->
                     GroupScreen(
                         group = key.group,
                         onBackPress = { backStack.removeLastOrNull() }
@@ -125,7 +163,32 @@ fun MainScreen() {
 //                    NewsScreen(paddingValues = paddingValues )
                 }
 
+            },
+            /* Animation */
+            transitionSpec = {
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(1000)
+                ) togetherWith
+                        slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(1000))
+
+            },
+            popTransitionSpec = {
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(1000)
+                ) togetherWith slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(1000))
+            },
+            predictivePopTransitionSpec = {
+//                 Slide in from left when navigating back
+                slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                        slideOutHorizontally(targetOffsetX = { it })
             }
+
         )
 
     }
