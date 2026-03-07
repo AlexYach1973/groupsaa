@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,69 +44,77 @@ fun ReadScreen(
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-    ) {
-        val scrollState = rememberScrollState()
+    Scaffold() {
+        val pValue = it
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+
+        Box(
             modifier = Modifier
-                .padding(paddingValues)
-                .verticalScroll(scrollState)
                 .fillMaxSize()
-//                .background(MaterialTheme.colorScheme.secondaryContainer)
+//                .background(MaterialTheme.colorScheme.primary)
+//                .background(MaterialTheme.colorScheme.surfaceVariant)
+//                .background(MaterialTheme.colorScheme.outlineVariant) //+
+//                .background(MaterialTheme.colorScheme.inversePrimary) // +
+                .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
+            val scrollState = rememberScrollState()
 
-            Text(
-                text = stringResource(R.string.readscreen_iteratura),
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.padding(4.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .verticalScroll(scrollState)
+                    .fillMaxSize()
+//                .background(MaterialTheme.colorScheme.secondaryContainer)
+            ) {
 
-            BookReadCard(
-                titleIdRes = R.string.readscreen_book_bigaa,
-                imageIdRes = R.drawable.book_bigaa,
-                descriptionIdRes = R.string.readscreen_book_bigaa_descr,
-                onClickBigAAListener = {
-                    try {
-                        uriHandler.openUri("https://www.aa.kiev.ua/knyga-anonimni-alkogoliky/")
-                    } catch (e: Exception){
-                        Toast.makeText(context, "Не вдалося", Toast.LENGTH_LONG).show()
+                Text(
+                    text = stringResource(R.string.readscreen_iteratura),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.padding(4.dp))
+
+                BookReadCard(
+                    titleIdRes = R.string.readscreen_book_bigaa,
+                    imageIdRes = R.drawable.book_bigaa,
+                    descriptionIdRes = R.string.readscreen_book_bigaa_descr,
+                    onClickBigAAListener = {
+                        try {
+                            uriHandler.openUri("https://www.aa.kiev.ua/knyga-anonimni-alkogoliky/")
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Не вдалося", Toast.LENGTH_LONG).show()
+                        }
                     }
-                }
-            )
+                )
 
-            BookReadCard(
-                titleIdRes = R.string.readscreen_book_12_12,
-                imageIdRes = R.drawable.book_12_12,
-                descriptionIdRes = R.string.readscreen_book_12_12_descr,
-                onClickBigAAListener = {
-                    try {
-                        uriHandler.openUri("https://www.aa.kiev.ua/dvanadcyat-krokiv-anonimnix-alkogolikiv/")
-                    } catch (e: Exception){
-                        Toast.makeText(context, "Не вдалося", Toast.LENGTH_LONG).show()
+                BookReadCard(
+                    titleIdRes = R.string.readscreen_book_12_12,
+                    imageIdRes = R.drawable.book_12_12,
+                    descriptionIdRes = R.string.readscreen_book_12_12_descr,
+                    onClickBigAAListener = {
+                        try {
+                            uriHandler.openUri("https://www.aa.kiev.ua/dvanadcyat-krokiv-anonimnix-alkogolikiv/")
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Не вдалося", Toast.LENGTH_LONG).show()
+                        }
                     }
-                }
-            )
+                )
 
-            BookReadCard(
-                titleIdRes = R.string.readscreen_book_live_sober,
-                imageIdRes = R.drawable.book_live_soberly,
-                descriptionIdRes = R.string.readscreen_book_live_sober_descr,
-                onClickBigAAListener = {
-                    try {
-                        uriHandler.openUri("https://www.aa.kiev.ua/zhyty-tverezo/")
-                    } catch (e: Exception){
-                        Toast.makeText(context, "Не вдалося", Toast.LENGTH_LONG).show()
+                BookReadCard(
+                    titleIdRes = R.string.readscreen_book_live_sober,
+                    imageIdRes = R.drawable.book_live_soberly,
+                    descriptionIdRes = R.string.readscreen_book_live_sober_descr,
+                    onClickBigAAListener = {
+                        try {
+                            uriHandler.openUri("https://www.aa.kiev.ua/zhyty-tverezo/")
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Не вдалося", Toast.LENGTH_LONG).show()
+                        }
                     }
-                }
-            )
+                )
 
-            /*BookReadCard(
+                /*BookReadCard(
                 titleIdRes = R.string.readscreen_book_sees_bill,
                 imageIdRes = R.drawable.book_sees_bill,
                 descriptionIdRes = R.string.readscreen_book_sees_bill_descr,
@@ -119,23 +128,24 @@ fun ReadScreen(
             )*/
 
 
+                /* Spacer */
+                Spacer(modifier = Modifier.padding(bottom = 132.dp))
 
 
-
+            }
         }
+
+
     }
-
-
-
 }
 
 
 @Composable
 private fun BookReadCard(
-     titleIdRes: Int,
-     imageIdRes: Int,
-     descriptionIdRes: Int,
-     onClickBigAAListener: () -> Unit
+    titleIdRes: Int,
+    imageIdRes: Int,
+    descriptionIdRes: Int,
+    onClickBigAAListener: () -> Unit
 
 ) {
     Card(
@@ -193,17 +203,6 @@ private fun BookReadCard(
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 @Composable

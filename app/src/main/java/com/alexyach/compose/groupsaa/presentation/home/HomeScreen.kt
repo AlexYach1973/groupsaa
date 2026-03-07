@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -45,6 +46,10 @@ fun HomeScreen(
     var isShowInfoUpdate by remember { mutableStateOf(false) }
     var isShowInfoDailyReflection by remember { mutableStateOf(false) }
     var isShowInfoPrayers by remember { mutableStateOf(false) }
+
+//    Scaffold() {
+//        val pValue = it
+
 
     Box(
         modifier = Modifier
@@ -78,7 +83,8 @@ fun HomeScreen(
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(paddingValues)
+//                .padding(bottom = 132.dp)
+//                    .padding(paddingValues)
 //                .verticalScroll(scrollState)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -91,7 +97,6 @@ fun HomeScreen(
                 viewModel = viewModel,
                 infoUpdateListener = { isShowInfoUpdate = !isShowInfoUpdate }
             )
-
 
 
             /* * Collapsing Card Period of Sobriety * */
@@ -131,7 +136,9 @@ fun HomeScreen(
                     DailyReflectionCard(
                         viewModel = viewModel,
                         isUkrVoice = isUkrVoice,
-                        infoDailyListener = { isShowInfoDailyReflection = !isShowInfoDailyReflection }
+                        infoDailyListener = {
+                            isShowInfoDailyReflection = !isShowInfoDailyReflection
+                        }
                     )
                 }
 
@@ -144,7 +151,14 @@ fun HomeScreen(
                     )
                 }
 
+
+
+                /* Spacer for Navigation 3 */
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 132.dp))
+                }
             }
+
 
         }
 
@@ -171,3 +185,4 @@ fun HomeScreen(
 
 }
 
+//}

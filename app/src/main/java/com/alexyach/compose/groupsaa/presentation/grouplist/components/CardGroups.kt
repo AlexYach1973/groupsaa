@@ -1,6 +1,5 @@
-package com.alexyach.compose.groupsaa.presentation.grouplist
+package com.alexyach.compose.groupsaa.presentation.grouplist.components
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +28,6 @@ import com.alexyach.compose.groupsaa.ui.theme.GroupsaaTheme
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import kotlin.math.round
 
 @Composable

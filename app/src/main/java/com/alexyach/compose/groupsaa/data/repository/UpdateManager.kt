@@ -54,7 +54,7 @@ class UpdateManager @Inject constructor(
 
     init {
         cleanupOldApks()
-        Log.d("Logs", "UpdateManager Start")
+//        Log.d("Logs", "UpdateManager Start")
     }
 
 

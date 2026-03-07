@@ -401,7 +401,7 @@ fun prayerElevenEveningText(
         withStyle(
             ParagraphStyle(
                 textAlign = TextAlign.Justify,
-                textIndent = TextIndent(firstLine = 30.sp)
+//                textIndent = TextIndent(firstLine = 30.sp)
             )
         ) {
             withStyle(SpanStyle(fontSize = textSize.sp, fontWeight = FontWeight.Normal)) {
@@ -426,7 +426,7 @@ fun prayerElevenEveningText(
                     "Зробивши інвентаризацію я молюся і прошу прощення у Бога за помилки і запитую, " +
                             "що слід зробити для їх виправлення.\n" +
                             "Однак я мушу бути обережним, щоб це поволі не перейшло у тривогу, жаль або" +
-                            " хворобливі роздуми,бо це зменшить мою корисність для Бога і інших."
+                            " хворобливі роздуми, бо це зменшить мою корисність для Бога і інших."
                 )
             }
 
