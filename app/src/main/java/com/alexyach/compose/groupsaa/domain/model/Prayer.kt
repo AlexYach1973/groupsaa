@@ -1,19 +1,5 @@
 package com.alexyach.compose.groupsaa.domain.model
 
-import androidx.compose.ui.text.AnnotatedString
-import com.alexyach.compose.groupsaa.R
-import com.alexyach.compose.groupsaa.utils.peaceOfMindText
-import com.alexyach.compose.groupsaa.utils.prayerDelegationText
-import com.alexyach.compose.groupsaa.utils.prayerElevenEveningText
-import com.alexyach.compose.groupsaa.utils.prayerElevenMorningText
-import com.alexyach.compose.groupsaa.utils.prayerOfFearText
-import com.alexyach.compose.groupsaa.utils.prayerPowerlessnessText
-import com.alexyach.compose.groupsaa.utils.prayerTenText
-import com.alexyach.compose.groupsaa.utils.resentmentText
-import com.alexyach.compose.groupsaa.utils.stepOneAndTwoText
-import com.alexyach.compose.groupsaa.utils.stepSevenText
-import com.alexyach.compose.groupsaa.utils.stepSixText
-
 data class Prayer(
     val name: PrayersEnum,
     var isHide: Boolean = false,
