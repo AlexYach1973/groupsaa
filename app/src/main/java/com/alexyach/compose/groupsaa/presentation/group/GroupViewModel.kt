@@ -33,7 +33,7 @@ class GroupViewModel(
     fun handlerGroupScreenAction(action: GroupScreenAction) {
         when(action) {
             is GroupScreenAction.CallGroup -> makeCallGroup(action.context, action.phoneNumber)
-            is GroupScreenAction.GroupMap -> showGroupMap(action.context, action.addressForMap)
+            is GroupScreenAction.GroupMap -> showGroupMap(action.context, action.group)
 
             is GroupScreenAction.LaunchSkype -> launchSkype(
                 context = action.context,
@@ -71,8 +71,20 @@ class GroupViewModel(
         }
     }
 
-    private fun showGroupMap(context: Context, addressForMap: String) {
-        val gmmIntentUri = Uri.parse("geo:0,0?q=$addressForMap")
+    private fun showGroupMap(context: Context, group: Group) {
+//    private fun showGroupMap(context: Context, addressForMap: String) {
+
+        var gmmIntentUri: Uri
+        if (group.name.contains("Оболонь")) {
+            gmmIntentUri =
+                "geo:0,0?q=${group.latitude},${group.longitude}(${group.addressForMap})".toUri()
+//                "geo:0,0?q=${group.addressForMap}&center=${group.latitude},${group.longitude}".toUri()
+//                "https://www.google.com/maps/search/?api=1&query=${group.addressForMap}&center=${group.latitude},${group.longitude}".toUri()
+
+        } else {
+            gmmIntentUri = "geo:0,0?q=${group.addressForMap}".toUri()
+        }
+
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage("com.google.android.apps.maps")
 

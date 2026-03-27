@@ -75,7 +75,6 @@ fun prayerElevenMorningText(
         }
 
         /* Space*/
-//        withStyle(SpanStyle(fontSize = 4.sp)) { append(" ") }
         withStyle(ParagraphStyle(lineHeight = 4.sp)) {}
 
         withStyle(ParagraphStyle(textAlign = TextAlign.Start)) {
@@ -163,7 +162,7 @@ fun prayerElevenMorningText(
 
         /* Space*/
 //        withStyle(SpanStyle(fontSize = 4.sp)) { append(" ") }
-        withStyle(ParagraphStyle(lineHeight = 4.sp)) {}
+        withStyle(ParagraphStyle(lineHeight = 8.sp)) {}
 
         withStyle(
             ParagraphStyle(
@@ -214,7 +213,7 @@ fun prayerElevenMorningText(
 
         /* Space*/
 //        withStyle(SpanStyle(fontSize = 4.sp)) { append(" ") }
-        withStyle(ParagraphStyle(lineHeight = 4.sp)) {}
+        withStyle(ParagraphStyle(lineHeight = 8.sp)) {}
 
         withStyle(
             ParagraphStyle(
@@ -447,7 +446,7 @@ fun prayerElevenEveningText(
                     "Боже, я дякую тобі за те, що прожив ще один тверезий день. Допоможи мені побачити мої" +
                             " досягнення сьогодні і не знецінювати те, що було сьогодні. Я прошу у Тебе вибачення за ті" +
                             " помилки, які я припустився. Я знаю, що через мої помилки, я не міг бути таким ефективним" +
-                            " у служінні Тобі та виконанні Твоєї волі яким би я міг бути. Прошу Тебе, прости мене і" +
+                            " у служінні Тобі та виконанні Твоєї волі яким би я міг бути. Прошу Тебе, пробач мені і" +
                             " допоможи завтра виконувати волю Твою краще.\n" +
                             "Боже, я прошу Тебе покажи мені, як виправити ті помилки, яких я сьогодні припустився." +
                             " Веди і спрямовуй мене. Будь ласка, видали мою зарозумілість і мої страхи." +

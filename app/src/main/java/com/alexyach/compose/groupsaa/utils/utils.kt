@@ -84,14 +84,14 @@ fun getListGroupTest(): List<Group> {
     return listOf(
         Group(
             name = "\"Оболонь\"",
-            addresses = " м.\"Героїв Дніпра\", вул. Прирічна, 21а  ",
+            addresses = " м.\"Мінська\", вул. Героїв Полку \"Азов\", 27/23  ",
             schedule = listOf("19:00","13:00,19:00","19:00","19:00","19:00","10:00,19:00","11:00,19:00"),
             telephone = "097-476-3601",
             email = "https://www.aa.kiev.ua/grupa-aa-obolon/",
             note = "Підвальне приміщення з тилу будинку",
-            latitude = 50.52046,
-            longitude = 30.52119,
-            addressForMap = "ул.+Приречная,+21А,+Киев"
+            latitude = 50.50728,
+            longitude = 30.50777,
+            addressForMap = "Героїв+полку+«Азов»,+27%2F23,+Київ"
         ),
         Group(
             name = "\"Фенікс\"",

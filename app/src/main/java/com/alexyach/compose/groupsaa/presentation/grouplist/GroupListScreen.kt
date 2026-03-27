@@ -68,7 +68,7 @@ fun GroupListScreen(
         }
 
     ) { paddingValue ->
-        val pV = paddingValue
+        val paddingValue = paddingValue
 
         when (val currentState = screenState.value) {
             is GroupListScreenState.Groups -> {
@@ -79,7 +79,8 @@ fun GroupListScreen(
                     viewModel = viewModel,
                     onGroupClickListener = onGroupClickListener,
                     filterForGroups = filterForGroups.value,
-                    permissionState = permissionState
+                    permissionState = permissionState,
+                    paddingValue = paddingValue
                 )
 
 

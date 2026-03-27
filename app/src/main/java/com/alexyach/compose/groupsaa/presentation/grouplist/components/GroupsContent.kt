@@ -6,6 +6,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,22 +54,11 @@ fun GroupsContent(
     viewModel: GroupListViewModel,
     onGroupClickListener: (Group) -> Unit,
     filterForGroups: FilterGroupsState,
-    permissionState: PermissionState
+    permissionState: PermissionState,
+    paddingValue: PaddingValues
 ) {
-    Log.d("Logs", "GroupsContent start")
+//    Log.d("Logs", "GroupsContent start")
 
-//    val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-//
-//    LaunchedEffect(Unit) {
-//        if (!permissionState.status.isGranted) {
-//            Log.d("Logs", "GroupsContent, permissionState.isGranted= ${permissionState.status.isGranted}")
-//            permissionState.launchPermissionRequest()
-//        }
-//    }
-
-
-//    Log.d("Logs", "GroupsContent, permissionState= ${permissionState.permission}")
-//    Log.d("Logs", "GroupsContent, permissionState.status= ${permissionState.status}")
 
     val isLoadFromInternet = viewModel.isLoadFromInternet.collectAsState(true)
 
@@ -88,6 +78,8 @@ fun GroupsContent(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(top = 40.dp)
+//            .padding(paddingValue)
     ) {
         Column(
             modifier = Modifier

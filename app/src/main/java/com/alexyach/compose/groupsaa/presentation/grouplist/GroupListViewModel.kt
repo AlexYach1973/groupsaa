@@ -14,6 +14,7 @@ import com.alexyach.compose.groupsaa.data.repository.GroupsRepositoryImpl
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.domain.repository.IRepository
 import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
+import com.alexyach.compose.groupsaa.utils.getListGroupTest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -52,7 +53,6 @@ class GroupListViewModel @Inject constructor(
 
     init {
 //        _screenState.value = GroupListScreenState.Groups(getListGroupTest()) // TEST
-        Log.d("Logs", "GroupListViewModel init{}")
         getGroupList()
     }
 

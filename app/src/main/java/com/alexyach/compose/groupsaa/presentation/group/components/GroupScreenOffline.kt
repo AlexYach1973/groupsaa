@@ -259,7 +259,7 @@ private fun ContentGroupScreenOffline(
                 viewModel.handlerGroupScreenAction(
                     GroupScreenAction.GroupMap(
                         context = context,
-                        addressForMap = group.addressForMap
+                        group = group
                     )
                 )
             }

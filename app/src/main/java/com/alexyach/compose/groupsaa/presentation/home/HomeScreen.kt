@@ -84,7 +84,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
 //                .padding(bottom = 132.dp)
-//                    .padding(paddingValues)
+                    .padding(paddingValues)
 //                .verticalScroll(scrollState)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -154,9 +154,9 @@ fun HomeScreen(
 
 
                 /* Spacer for Navigation 3 */
-                item {
-                    Spacer(modifier = Modifier.padding(bottom = 132.dp))
-                }
+//                item {
+//                    Spacer(modifier = Modifier.padding(bottom = 132.dp))
+//                }
             }
 
 

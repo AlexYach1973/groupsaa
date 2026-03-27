@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
+import com.alexyach.compose.groupsaa.domain.model.Group
 
 sealed class GroupScreenAction {
 
     data class CallGroup(val context:Context, val phoneNumber: String) : GroupScreenAction()
-    data class GroupMap(val context: Context, val addressForMap: String) : GroupScreenAction()
+    data class GroupMap(val context: Context, val group: Group) : GroupScreenAction()
+//    data class GroupMap(val context: Context, val addressForMap: String) : GroupScreenAction()
 
     /* ************** Launchers **************** */
     data class LaunchTelegram(

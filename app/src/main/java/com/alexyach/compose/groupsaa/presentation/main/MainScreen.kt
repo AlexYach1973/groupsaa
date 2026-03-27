@@ -38,14 +38,14 @@ import kotlinx.serialization.Serializable
 @Composable
 fun MainScreen() {
 
-    val homeKey = UnityKey //  ServiceKey // RecoveryKey // UnityKey
+    val homeKey = RecoveryKey // UnityKey //  ServiceKey // RecoveryKey
     val backStack = rememberNavBackStack(homeKey)
 
     Scaffold(
         bottomBar = {
             NavigationBar(
 //                containerColor = Color(0x303E4759)
-                containerColor = Color.Transparent
+//                containerColor = Color.Transparent
 
             ) {
                 TOP_LEVEL_SCREEN.forEach { topLevelScreen ->
@@ -242,4 +242,8 @@ private fun animationGroupDetails(): Map<String, Any> {
         ) togetherWith
                 slideOutHorizontally(targetOffsetX = { -it })
     }
+}
+
+private fun animationAll() {
+
 }
