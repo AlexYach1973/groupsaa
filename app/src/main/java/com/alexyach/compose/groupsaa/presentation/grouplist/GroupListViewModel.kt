@@ -8,17 +8,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexyach.compose.groupsaa.data.db.GroupDao
-import com.alexyach.compose.groupsaa.data.db.toGroup
-import com.alexyach.compose.groupsaa.data.repository.GroupsRepositoryImpl
 import com.alexyach.compose.groupsaa.domain.model.Group
 import com.alexyach.compose.groupsaa.domain.repository.IRepository
-import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
-import com.alexyach.compose.groupsaa.utils.getListGroupTest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +28,7 @@ import kotlin.math.sqrt
 
 @HiltViewModel
 class GroupListViewModel @Inject constructor(
-    private val repository: IRepository
+    private val repository: IRepository,
 ) : ViewModel() {
 
 
@@ -42,8 +36,7 @@ class GroupListViewModel @Inject constructor(
         MutableLiveData<GroupListScreenState>(GroupListScreenState.Initial)
     val screenState: LiveData<GroupListScreenState> = _screenState
 
-    private val _isLoadFromInternet = MutableStateFlow <Boolean>(true)
-    val isLoadFromInternet: StateFlow<Boolean> = _isLoadFromInternet
+    val isLoadFromInternet: StateFlow<Boolean> field = MutableStateFlow <Boolean>(true)
 
     private val _filterForGroups = MutableStateFlow<FilterGroupsState>(FilterGroupsState.All)
     val filterForGroups: StateFlow<FilterGroupsState> = _filterForGroups
@@ -60,65 +53,14 @@ class GroupListViewModel @Inject constructor(
         _filterForGroups.value = filter
     }
 
+
     private fun getGroupList() {
-        _screenState.value = GroupListScreenState.Loading(LoadInet)
+        _screenState.value = GroupListScreenState.Loading
 
         viewModelScope.launch {
-
-            /* From Internet*/
-            repository.getAllGroupList().collect {currentListGroup->
-                _screenState.value = GroupListScreenState.Groups(currentListGroup)
-
-                _isLoadFromInternet.value = true
-
-                /* Оновити Room */
-                updateRoomGroups(currentListGroup)
-
-            }.runCatching {
-                _screenState.value = GroupListScreenState.Loading(LoadingFrom.LoadRoom)
-
-                _isLoadFromInternet.value = false
-
-//                Log.d("Logs", "GroupListViewModel runCatching")
-//                delay(3000)
-
-                /* From Room */
-                repository.getAllFromRoom().collect { listGroupEntity ->
-
-                    val listFromRoom = listGroupEntity.map { it.toGroup() }
-
-                    if (listFromRoom.isEmpty()) {
-                        Log.d("Logs", "GroupListViewModel listFromRoom.isEmpty()")
-                        _screenState.value = GroupListScreenState.Groups(
-                            listOf(
-                                Group("База пуста", "", listOf("","","","","","",""),
-                                    "", "", "", 0.0, 0.0)
-                            )
-                        )
-                    } else {
-                        _screenState.value = GroupListScreenState.Groups(listFromRoom)
-                        Log.d("Logs", "GroupListViewModel listFromRoom NO Empty")
-                    }
-
-                }.runCatching {
-                    Log.d("Logs", "Error ROOM")
-                    _screenState.value = GroupListScreenState.Error
-                }
-            }
-        }
-    }
-
-    private suspend fun updateRoomGroups(currentListGroup: List<Group>) {
-        var listFromRoom : List<Group>
-        repository.getAllFromRoom().collect{ listGroupEntity->
-            listFromRoom = listGroupEntity.map { it.toGroup() }
-
-
-            if (currentListGroup != listFromRoom) {
-                if (listFromRoom.isNotEmpty()){
-                    repository.deleteAllFromRoom()
-                }
-                repository.saveToRoom(currentListGroup)
+            repository.getAllGroupList().collect {(list, source) ->
+                _screenState.value = GroupListScreenState.Groups(list)
+                isLoadFromInternet.value = source
             }
         }
 

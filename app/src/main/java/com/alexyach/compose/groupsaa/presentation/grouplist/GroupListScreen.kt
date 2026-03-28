@@ -23,8 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.alexyach.compose.groupsaa.R
 import com.alexyach.compose.groupsaa.domain.model.Group
-import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadInet
-import com.alexyach.compose.groupsaa.presentation.grouplist.LoadingFrom.LoadRoom
 import com.alexyach.compose.groupsaa.presentation.grouplist.components.GroupsContent
 import com.alexyach.compose.groupsaa.presentation.grouplist.components.TopAppBarContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -43,7 +41,10 @@ fun GroupListScreen(
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
     LaunchedEffect(Unit) {
-        Log.d("Logs", "GroupListScreen, permissionState.isGranted= ${permissionState.status.isGranted}")
+        Log.d(
+            "Logs",
+            "GroupListScreen, permissionState.isGranted= ${permissionState.status.isGranted}"
+        )
         if (!permissionState.status.isGranted) {
             permissionState.launchPermissionRequest()
         }
@@ -55,7 +56,6 @@ fun GroupListScreen(
 
     val screenState = viewModel.screenState.observeAsState(GroupListScreenState.Initial)
     val filterForGroups = viewModel.filterForGroups.collectAsState(FilterGroupsState.All)
-
 
 
     /* Buttons */
@@ -87,15 +87,7 @@ fun GroupListScreen(
             }
 
             is GroupListScreenState.Loading -> {
-                when (currentState.loadFrom) {
-                    LoadInet -> {
-                        LoadingListGroup(stringResource(R.string.grouplistscreen_load_from_net))
-                    }
-
-                    LoadRoom -> {
-                        LoadingListGroup(stringResource(R.string.grouplistscreen_load_from_database))
-                    }
-                }
+                LoadingListGroup()
             }
 
             GroupListScreenState.Error -> {
@@ -105,7 +97,6 @@ fun GroupListScreen(
             GroupListScreenState.Initial -> {}
         }
     }
-
 
 
 }
@@ -124,9 +115,7 @@ fun ErrorListGroup() {
 }
 
 @Composable
-fun LoadingListGroup(
-    loadFrom: String
-) {
+fun LoadingListGroup() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -134,9 +123,6 @@ fun LoadingListGroup(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
-        Text(
-            text = loadFrom
-        )
     }
 }
 

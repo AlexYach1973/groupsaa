@@ -69,6 +69,7 @@
 
     <string name="grouplistscreen_load_from_net">https://gso.aa.kiev.ua/</string>
     <string name="grouplistscreen_load_from_database">Локальна база даних</string>
+    <string name="grouplistscreen_load_empty"></string>
 
     <!--    GroupListScreen Info -->
     <string name="grouplistscreen_info">На вкладці ГРУПИ зверху є три кнопки. Натискаючи на них
